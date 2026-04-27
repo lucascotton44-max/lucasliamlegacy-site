@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /proposal.html
+Disallow: /lucas_liam_funnel.html
+Disallow: /voices-preview.html
+Disallow: /proposal-qa-output/
+Allow: /
+Sitemap: https://lucasliamlegacy.com/sitemap.xml
