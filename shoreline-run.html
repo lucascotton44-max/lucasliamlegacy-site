@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cod B&rsquo;y &amp; Puffy: Shoreline Run | Lucas &amp; Liam Legacy Studios</title>
+<meta name="description" content="A 2D Atlantic Canada side-scroller from the Atlantic Cinematic Universe. Run the shoreline, recover lost story fragments, and cross a haunted Atlantic game world built from real coastal memory.">
+<link rel="canonical" href="https://lucasliamlegacy.com/shoreline-run.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0f1519;
+  --ink-soft: #1c252b;
+  --paper: #f4efe6;
+  --paper-warm: #ebe4d6;
+  --paper-dim: #e2dac9;
+  --ember: #b8502e;
+  --ember-deep: #8a3a20;
+  --sea: #2d4a52;
+  --fog: #8a847b;
+  --line: rgba(15, 21, 25, 0.14);
+  --line-dark: rgba(244, 239, 230, 0.16);
+  --display: 'Fraunces', 'Times New Roman', serif;
+  --body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --edge: clamp(1.25rem, 4vw, 4rem);
+  --max: 1180px;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  background: var(--ink);
+  color: var(--ink);
+}
+
+body {
+  margin: 0;
+  font-family: var(--body);
+  background:
+    radial-gradient(circle at top left, rgba(184, 80, 46, 0.16), transparent 36rem),
+    linear-gradient(180deg, var(--paper) 0%, var(--paper-warm) 100%);
+  color: var(--ink);
+  line-height: 1.55;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  z-index: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--ember);
+  outline-offset: 4px;
+}
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem var(--edge);
+  background: rgba(244, 239, 230, 0.92);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(14px);
+}
+
+.nav__mark {
+  font-family: var(--display);
+  font-size: clamp(1.2rem, 2vw, 1.55rem);
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.nav__links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.8rem, 2vw, 1.35rem);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.nav__links a {
+  color: rgba(15, 21, 25, 0.74);
+}
+
+.nav__links a:hover {
+  color: var(--ink);
+}
+
+.nav__cta,
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 2.75rem;
+  padding: 0.78rem 1.15rem;
+  border-radius: 999px;
+  border: 1px solid var(--ink);
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: transform 180ms ease, background 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+
+.nav__cta,
+.btn--primary {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.btn--secondary {
+  background: transparent;
+  color: var(--ink);
+}
+
+.nav__cta:hover,
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn--primary:hover {
+  background: var(--ember);
+  border-color: var(--ember);
+}
+
+.wrap {
+  width: min(100% - (var(--edge) * 2), var(--max));
+  margin-inline: auto;
+}
+
+.wrap--narrow {
+  max-width: 820px;
+}
+
+.section {
+  position: relative;
+  z-index: 1;
+  padding: clamp(4rem, 8vw, 7rem) 0;
+}
+
+.section--dark {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.section--warm {
+  background: rgba(235, 228, 214, 0.74);
+  border-block: 1px solid var(--line);
+}
+
+.eyebrow {
+  margin: 0 0 0.75rem;
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ember);
+}
+
+.section--dark .eyebrow {
+  color: #d37a55;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--display);
+  line-height: 0.98;
+  letter-spacing: 0;
+}
+
+h1 {
+  max-width: 980px;
+  margin-bottom: 1.35rem;
+  font-size: clamp(3.2rem, 10vw, 8.4rem);
+  font-weight: 500;
+}
+
+h2 {
+  max-width: 900px;
+  margin-bottom: 1.2rem;
+  font-size: clamp(2.25rem, 5vw, 4.8rem);
+  font-weight: 500;
+}
+
+h3 {
+  font-size: clamp(1.35rem, 2.4vw, 2rem);
+  font-weight: 500;
+}
+
+.lede {
+  max-width: 810px;
+  font-size: clamp(1.08rem, 2vw, 1.35rem);
+  color: rgba(15, 21, 25, 0.76);
+}
+
+.section--dark .lede,
+.section--dark .muted {
+  color: rgba(244, 239, 230, 0.72);
+}
+
+/* Hero body paragraph: secondary size under the lede subtitle */
+.hero__copy {
+  max-width: 810px;
+  margin: 0.65rem 0 0;
+  font-size: clamp(1rem, 1.7vw, 1.18rem);
+  color: rgba(15, 21, 25, 0.68);
+  line-height: 1.65;
+}
+
+.hero {
+  position: relative;
+  z-index: 1;
+  min-height: 78vh;
+  display: grid;
+  align-items: center;
+  padding: clamp(5.5rem, 9vw, 8rem) 0 clamp(4rem, 7vw, 6rem);
+}
+
+.hero__meta,
+.micro-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(15, 21, 25, 0.62);
+}
+
+.hero__actions,
+.cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 2rem;
+}
+
+.cta-row--center {
+  justify-content: center;
+}
+
+.positioning {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: start;
+}
+
+.statement-list {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.statement-list li {
+  padding: 1.15rem 0;
+  border-bottom: 1px solid var(--line);
+  font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.grid--four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.card {
+  min-width: 0;
+  border: 1px solid var(--line);
+  background: rgba(244, 239, 230, 0.78);
+  border-radius: 0.75rem;
+  padding: clamp(1.1rem, 2.5vw, 1.55rem);
+}
+
+.section--dark .card {
+  border-color: var(--line-dark);
+  background: rgba(244, 239, 230, 0.055);
+}
+
+.card h3 {
+  margin-bottom: 0.7rem;
+}
+
+.muted,
+.card p {
+  color: rgba(15, 21, 25, 0.72);
+}
+
+.section--dark .card p {
+  color: rgba(244, 239, 230, 0.72);
+}
+
+.note {
+  margin-top: 1rem;
+  padding: 1rem 1.2rem;
+  border-left: 4px solid var(--ember);
+  background: rgba(184, 80, 46, 0.09);
+  color: rgba(15, 21, 25, 0.76);
+}
+
+.footer {
+  position: relative;
+  z-index: 1;
+  padding: 3rem var(--edge);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.footer__inner {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(3, 1fr);
+  gap: 2rem;
+  width: min(100%, var(--max));
+  margin-inline: auto;
+}
+
+.footer h3,
+.footer h4 {
+  margin-bottom: 0.8rem;
+}
+
+.footer ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer li {
+  margin: 0.42rem 0;
+}
+
+.footer a,
+.footer p,
+.footer li {
+  color: rgba(244, 239, 230, 0.72);
+}
+
+.footer a:hover {
+  color: var(--paper);
+}
+
+.footer__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  width: min(100%, var(--max));
+  margin: 2.5rem auto 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line-dark);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: rgba(244, 239, 230, 0.55);
+}
+
+@media (max-width: 980px) {
+  .nav {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .nav__links {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .positioning,
+  .footer__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .grid,
+  .grid--four {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .grid,
+  .grid--four {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    min-height: auto;
+  }
+
+  .btn,
+  .nav__cta {
+    width: 100%;
+  }
+}
+
+@media print {
+  html,
+  body {
+    background: #fff !important;
+    color: #111 !important;
+  }
+
+  body::before,
+  .nav,
+  .hero__actions,
+  .cta-row {
+    display: none !important;
+  }
+
+  .section,
+  .hero,
+  .footer {
+    padding: 1rem 0 !important;
+    background: #fff !important;
+    color: #111 !important;
+  }
+
+  .wrap {
+    width: 100% !important;
+  }
+
+  .card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    border-color: #999 !important;
+    background: #fff !important;
+  }
+
+  .grid,
+  .grid--four,
+  .footer__inner {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<header class="nav" aria-label="Site navigation">
+  <a class="nav__mark" href="index.html">Lucas <span>&amp;</span> Liam<span>.</span></a>
+  <nav class="nav__links" aria-label="Page navigation">
+    <a href="index.html">Home</a>
+    <a href="index.html#work">The Work</a>
+    <a href="story-packages.html">Story Packages</a>
+  </nav>
+  <a class="nav__cta" href="https://cal.com/lucasliamlegacy/discovery-call" target="_blank" rel="noopener noreferrer">Start a Project</a>
+</header>
+
+<main>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero__meta">
+      <span>Atlantic Cinematic Universe</span>
+      <span>Browser Game &middot; Proof of Concept</span>
+    </div>
+    <h1>Cod B&rsquo;y &amp; Puffy:<br>Shoreline Run</h1>
+    <p class="lede">A 2D Atlantic Canada side-scroller from the Atlantic Cinematic Universe.</p>
+    <p class="hero__copy">Run the shoreline, recover lost story fragments, and cross a haunted Atlantic game world built from real coastal memory.</p>
+    <div class="hero__actions">
+      <a class="btn btn--primary" href="https://youtu.be/fHuVAigyaEc?si=z5ARUzJ7uX3KRTiq" target="_blank" rel="noopener noreferrer">Watch the Trailer <span aria-hidden="true">&rarr;</span></a>
+      <a class="btn btn--secondary" href="index.html">Back to Lucas &amp; Liam Legacy Studios</a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section section--warm" id="about" aria-labelledby="about-title">
+  <div class="wrap positioning">
+    <div>
+      <p class="eyebrow">About the Game</p>
+      <h2 id="about-title">A browser-based proof of concept built from Atlantic memory.</h2>
+    </div>
+    <div>
+      <p class="lede">Shoreline Run is an early browser-based proof-of-concept platformer set in the Atlantic Cinematic Universe. Players run a 2D coastal world as Cod B&rsquo;y or Puffy, collecting story fragments tied to real Atlantic Canadian places, communities, and coastal history.</p>
+      <ul class="statement-list">
+        <li>Platforming across familiar Atlantic shoreline terrain</li>
+        <li>Switch between Cod B&rsquo;y and Puffy mid-run</li>
+        <li>Recover scattered story fragments to progress</li>
+        <li>Locations drawn from real Cape Breton and Atlantic coastal geography</li>
+        <li>Place-based storytelling built into the structure of the world</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section section--dark" id="features" aria-labelledby="features-title">
+  <div class="wrap">
+    <p class="eyebrow">What it is</p>
+    <h2 id="features-title">Four things that define it.</h2>
+    <div class="grid grid--four">
+      <article class="card">
+        <h3>Playable Atlantic side-scroller</h3>
+        <p>A 2D platformer running in the browser, grounded in Atlantic coastal landscape, atmosphere, and real place.</p>
+      </article>
+      <article class="card">
+        <h3>Cod B&rsquo;y and Puffy character switching</h3>
+        <p>Two characters from the Atlantic Cinematic Universe, each with distinct movement and ability mid-run.</p>
+      </article>
+      <article class="card">
+        <h3>Story fragments and local memory</h3>
+        <p>Collectibles that carry fragments of Atlantic place, community, and coastal history woven into the game world.</p>
+      </article>
+      <article class="card">
+        <h3>Part of the Atlantic Cinematic Universe</h3>
+        <p>Shoreline Run is one entry point into a broader ACU world of characters, places, and ongoing story.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- TRAILER / DEMO -->
+<section class="section" id="trailer" aria-labelledby="trailer-title">
+  <div class="wrap wrap--narrow">
+    <p class="eyebrow">Current State</p>
+    <h2 id="trailer-title">Early prototype.<br>Proof established.</h2>
+    <p class="lede">Shoreline Run is an early-stage browser prototype, not a finished release. The core mechanic runs. The world is established. The characters are in it. The trailer documents the proof-of-concept state.</p>
+    <div class="note">
+      This is a working game world in its early form. No platform release dates. No download. No launch claim. Development is ongoing.
+    </div>
+    <div class="cta-row">
+      <a class="btn btn--primary" href="https://youtu.be/fHuVAigyaEc?si=z5ARUzJ7uX3KRTiq" target="_blank" rel="noopener noreferrer">Watch the Trailer <span aria-hidden="true">&rarr;</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- FOLLOW UPDATES -->
+<section class="section section--warm" id="follow" aria-labelledby="follow-title">
+  <div class="wrap wrap--narrow">
+    <p class="eyebrow">Follow the Work</p>
+    <h2 id="follow-title">Stay with the studio as the story builds.</h2>
+    <p class="lede">Lucas &amp; Liam Legacy Studios posts production updates, Atlantic Cinematic Universe news, and new work across YouTube and Instagram. Follow along to watch Shoreline Run and the broader ACU world develop.</p>
+    <div class="cta-row">
+      <a class="btn btn--primary" href="https://www.youtube.com/@lucasliamlegacy" target="_blank" rel="noopener noreferrer">Follow on YouTube <span aria-hidden="true">&rarr;</span></a>
+      <a class="btn btn--secondary" href="https://www.instagram.com/lucasliamlegacy" target="_blank" rel="noopener noreferrer">Instagram</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <div>
+      <h3>Lucas <em>&amp; Liam.</em></h3>
+      <p>Stories worth leaving behind. Cape Breton, Nova Scotia.</p>
+      <p><a href="mailto:lucasliamlegacystudios@gmail.com">lucasliamlegacystudios@gmail.com</a></p>
+      <p><a href="https://lucasliamlegacy.com/" target="_blank" rel="noopener noreferrer">lucasliamlegacy.com</a></p>
+    </div>
+
+    <div>
+      <h4>Navigate</h4>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="story-packages.html">Story Packages</a></li>
+        <li><a href="shoreline-run.html">Shoreline Run</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h4>Connect</h4>
+      <ul>
+        <li><a href="https://www.youtube.com/@lucasliamlegacy" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+        <li><a href="https://www.instagram.com/lucasliamlegacy" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+        <li><a href="https://www.tiktok.com/@lucasliamlegacy" target="_blank" rel="noopener noreferrer">TikTok</a></li>
+        <li><a href="https://open.spotify.com/album/2UuUJi4bV0gdQ6upxQi9vp" target="_blank" rel="noopener noreferrer">Spotify</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h4>Media &amp; Community References</h4>
+      <ul>
+        <li>Telile Community TV work</li>
+        <li>101.5 The Hawk</li>
+        <li>Port Hawkesbury Reporter coverage</li>
+        <li>Atlantic Cinematic Universe</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer__bottom">
+    <span>&copy; 2026 Lucas &amp; Liam Legacy Studios &middot; Cape Breton, Nova Scotia</span>
+    <span>Shoreline Run</span>
+  </div>
+</footer>
+
+<script>
+// Subtle nav shrink on scroll
+const nav = document.querySelector('.nav');
+window.addEventListener('scroll', () => {
+  nav.style.padding = window.scrollY > 60
+    ? '0.85rem var(--edge)'
+    : '1rem var(--edge)';
+}, { passive: true });
+</script>
+
+</body>
+</html>
