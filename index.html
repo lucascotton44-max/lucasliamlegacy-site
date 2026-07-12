@@ -497,20 +497,21 @@ a { color: inherit; text-decoration: none; }
   transform: scale(1.03);
 }
 
+/* Caption sits below the photo on the paper background — the photo carries its own
+   baked-in lettering, so nothing is rendered over the image. */
 .studio__portrait-meta {
-  position: absolute;
-  bottom: 1.5rem;
-  left: 1.5rem;
-  right: 1.5rem;
-  color: var(--paper);
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  color: var(--fog);
   font-family: var(--mono);
   font-size: 0.6875rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   display: flex;
   justify-content: space-between;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(244, 239, 230, 0.3);
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .studio__copy h3 {
@@ -1807,8 +1808,10 @@ a { color: inherit; text-decoration: none; }
     <h2 class="section__title reveal">A studio built at the intersection of <em>craft and place.</em></h2>
 
     <div class="studio__grid">
-      <div class="studio__portrait reveal">
-        <img src="https://lucasliamlegacy.com/lucas_liam_photo.jpg" alt="Lucas Cotton and Liam &mdash; Cape Breton" onerror="this.style.background='linear-gradient(135deg, #2d4a52 0%, #0f1519 100%)'; this.removeAttribute('src');">
+      <div class="reveal">
+        <div class="studio__portrait">
+          <img src="https://lucasliamlegacy.com/lucas_liam_photo.jpg" alt="Lucas Cotton and Liam &mdash; Cape Breton" onerror="this.style.background='linear-gradient(135deg, #2d4a52 0%, #0f1519 100%)'; this.removeAttribute('src');">
+        </div>
         <div class="studio__portrait-meta">
           <span>Lucas &amp; Liam Cotton</span>
           <span>St. Peter's, Cape Breton</span>
