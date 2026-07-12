@@ -214,6 +214,21 @@ Harbour Wars has **zero presence** in the repo — no page, no tile, no mention.
 
 ---
 
+## 4b. Case-study template (added Stage 2 — reuse verbatim for Harbour Wars)
+
+First instance: `/work/the-land-yacht/index.html` (directory + `index.html` → clean `/work/<slug>` URL on Netlify; no `_redirects` entry needed). Copy the file, swap content, keep the class names and section order:
+
+1. `.nav` — homepage fixed nav, simplified (mark / Selected Work / Packages / Story Packages / cal.com CTA). Root-absolute links (`/`, `/#work`).
+2. `.case-hero` — `__eyebrow` (mono label + ember dash) → `__title` (Fraunces 300, clamp 3–8rem) → `__meta` (mono row: location · status) → `__media` (16:9 aspect box, poster image, `onerror` gradient fallback).
+3. `.case-overview` — `.section` + `.section__label` "Overview — 001"; two-column `__grid`: "The challenge" / "The approach" (Fraunces italic ember h2s, Fraunces editorial body).
+4. `.case-work` — paper-warm band; `.section__label` "The Work — 002"; `.case-tile` click-out film tiles (16:9; add `--portrait` modifier for 9:16 verticals), same solid-bottom scrim + chip + title + "Watch the Film →" as homepage cards. External YouTube links, `target="_blank" rel="noopener noreferrer"`. No iframes (CSP).
+5. `.case-deliverables` — "Deliverables — 003"; `__list` (ember-dash list, verified items only); optional `__note` italic continuation line.
+6. `.case-quote` — paper-warm band; "Client Response — 004"; testimonial figure (ember left rule, Fraunces italic quote, mono cite).
+7. `.case-cta` — centred close: Fraunces title with ember italic em + primary cal.com button + ghost "Back to Selected Work".
+8. `.foot` — compact single-row footer.
+
+Metadata pattern: unique title/description, canonical `https://lucasliamlegacy.com/work/<slug>`, OG (`og:type` article) + Twitter card per homepage pattern, OG image = poster frame. VideoObject structured data deferred to the SEO stage.
+
 ## 5. Rules later stages must follow (inherited)
 
 - `CLAUDE.md` in this repo is binding: preserve the design system, keep `index.html`/`story-packages.html` in sync, don't touch pricing/CTA URL/`_redirects` without instruction, treat `_headers` (CSP) edits as low-confidence/ask-first, verify mobile (375–430px) and anchor IDs after structural edits, no invented proof.
