@@ -634,8 +634,9 @@ a { color: inherit; text-decoration: none; }
   justify-content: space-between;
   color: var(--paper);
   /* Bottom-anchored legibility scrim: overlay text always sits on a controlled dark base,
-     regardless of the artwork behind it. */
-  background: linear-gradient(180deg, rgba(15,21,25,0) 0%, rgba(15,21,25,0) 42%, rgba(15,21,25,0.35) 65%, rgba(15,21,25,0.85) 100%);
+     regardless of the artwork behind it. The bottom band runs near-solid so location/action
+     lines stay separated from baked-in lettering inside the artwork (e.g. banner titles). */
+  background: linear-gradient(180deg, rgba(15,21,25,0) 0%, rgba(15,21,25,0) 38%, rgba(15,21,25,0.42) 60%, rgba(15,21,25,0.88) 82%, rgba(15,21,25,0.94) 100%);
   pointer-events: none;
 }
 
@@ -1911,7 +1912,11 @@ a { color: inherit; text-decoration: none; }
          [MISSING: film-still-quality hero image for the case study — landyacht.jpg (960x682) is tile-grade] -->
     <!-- Card face reduced to chip + location + action: the artwork carries its own baked-in
          "LAND YACHT" title, so a repeated overlay title would collide with it. Full title and
-         description retained in the aria-label. -->
+         description retained in the aria-label.
+         NOTE: the silver/blue octagonal "porthole" badge visible centre-frame is baked into
+         landyacht.jpg itself (the property's logo in the still) — it is not a page element and
+         cannot be removed via markup/CSS. Replace the still to lose it:
+         [need: film-still-quality hero image without baked-in titles/badge] -->
     <a href="https://youtu.be/8gsKhBnx9Uw" class="work__item work__item--half reveal" target="_blank" rel="noopener noreferrer" aria-label="The Land Yacht &mdash; completed tourism campaign for a premium stay in Ingramport, Nova Scotia. A campaign made to turn a one-of-a-kind stay into a destination guests can see, feel, and remember. Watch the film on YouTube.">
       <img src="https://lucasliamlegacy.com/landyacht.jpg" alt="The Land Yacht &mdash; Ingramport" class="work__img" onerror="this.style.background='linear-gradient(135deg, #b8502e, #2d4a52)'; this.removeAttribute('src');">
       <div class="work__meta">
