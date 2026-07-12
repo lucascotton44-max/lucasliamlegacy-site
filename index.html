@@ -633,7 +633,9 @@ a { color: inherit; text-decoration: none; }
   flex-direction: column;
   justify-content: space-between;
   color: var(--paper);
-  background: linear-gradient(180deg, transparent 0%, transparent 55%, rgba(15,21,25,0.75) 100%);
+  /* Bottom-anchored legibility scrim: overlay text always sits on a controlled dark base,
+     regardless of the artwork behind it. */
+  background: linear-gradient(180deg, rgba(15,21,25,0) 0%, rgba(15,21,25,0) 42%, rgba(15,21,25,0.35) 65%, rgba(15,21,25,0.85) 100%);
   pointer-events: none;
 }
 
@@ -644,7 +646,7 @@ a { color: inherit; text-decoration: none; }
   text-transform: uppercase;
   padding: 0.4rem 0.75rem;
   border: 1px solid rgba(244, 239, 230, 0.4);
-  background: rgba(15, 21, 25, 0.5);
+  background: rgba(15, 21, 25, 0.85);
   backdrop-filter: blur(6px);
   align-self: flex-start;
 }
@@ -662,9 +664,23 @@ a { color: inherit; text-decoration: none; }
   font-size: 0.6875rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  opacity: 0.75;
+  opacity: 0.9;
   margin-top: 0.5rem;
 }
+
+.work__action {
+  display: inline-block;
+  margin-top: 0.625rem;
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--paper);
+}
+
+.work__action .btn__arrow { display: inline-block; transition: transform 0.35s ease; }
+.work__item:hover .work__action .btn__arrow { transform: translateX(4px); }
 
 @media (max-width: 880px) {
   .work__grid { grid-template-columns: 1fr; }
@@ -1893,13 +1909,16 @@ a { color: inherit; text-decoration: none; }
          [MISSING: self-hostable file or unlisted YouTube for vertical edit 1]
          [MISSING: self-hostable file or unlisted YouTube for vertical edit 2]
          [MISSING: film-still-quality hero image for the case study — landyacht.jpg (960x682) is tile-grade] -->
-    <a href="https://youtu.be/8gsKhBnx9Uw" class="work__item work__item--half reveal" target="_blank" rel="noopener noreferrer">
+    <!-- Card face reduced to chip + location + action: the artwork carries its own baked-in
+         "LAND YACHT" title, so a repeated overlay title would collide with it. Full title and
+         description retained in the aria-label. -->
+    <a href="https://youtu.be/8gsKhBnx9Uw" class="work__item work__item--half reveal" target="_blank" rel="noopener noreferrer" aria-label="The Land Yacht &mdash; completed tourism campaign for a premium stay in Ingramport, Nova Scotia. A campaign made to turn a one-of-a-kind stay into a destination guests can see, feel, and remember. Watch the film on YouTube.">
       <img src="https://lucasliamlegacy.com/landyacht.jpg" alt="The Land Yacht &mdash; Ingramport" class="work__img" onerror="this.style.background='linear-gradient(135deg, #b8502e, #2d4a52)'; this.removeAttribute('src');">
       <div class="work__meta">
         <span class="work__tag">Tourism Campaign &middot; Premium Stay</span>
         <div>
-          <h3 class="work__title">The Land Yacht</h3>
-          <p class="work__location">A tourism campaign built to turn a one-of-a-kind Nova Scotia stay into a destination guests can see, feel, and remember. &middot; Ingramport, NS &middot; Watch the Film &rarr;</p>
+          <p class="work__location">Ingramport, Nova Scotia</p>
+          <span class="work__action">Watch the Film <span class="btn__arrow">&rarr;</span></span>
         </div>
       </div>
     </a>
@@ -1917,23 +1936,27 @@ a { color: inherit; text-decoration: none; }
         <span class="work__tag">Eco-Tourism &middot; In Production</span>
         <div>
           <h3 class="work__title">FlowEdge Riverside</h3>
-          <p class="work__location">Elderbank, NS &middot; Riverside glamping / eco-tourism project</p>
+          <!-- Removed from card face: "Riverside glamping / eco-tourism project" descriptor. -->
+          <p class="work__location">Elderbank, Nova Scotia</p>
         </div>
       </div>
     </div>
 
     <!-- Row 2: Heritage documentary work (landscape + portrait) -->
-    <a href="https://www.youtube.com/watch?v=vFJU9NN8CIw" class="work__item work__item--lg reveal" target="_blank" rel="noopener noreferrer">
+    <!-- Card face reduced to chip + location + action: the video thumbnail carries its own
+         baked-in "ST. PETER'S CANAL" title. Full title retained in the aria-label. -->
+    <a href="https://www.youtube.com/watch?v=vFJU9NN8CIw" class="work__item work__item--lg reveal" target="_blank" rel="noopener noreferrer" aria-label="St. Peter's Canal &mdash; Where Water Learned to Wait. Heritage documentary, Cape Breton, Nova Scotia, 2024. Watch the film on YouTube.">
       <img src="https://img.youtube.com/vi/vFJU9NN8CIw/maxresdefault.jpg" alt="St. Peter's Canal documentary" class="work__img" onerror="this.style.background='linear-gradient(135deg, #2d4a52, #0f1519)'; this.removeAttribute('src');">
       <div class="work__meta">
         <span class="work__tag">Heritage Documentary &middot; Telile</span>
         <div>
-          <h3 class="work__title">St. Peter's Canal &mdash; Where Water Learned to Wait</h3>
           <p class="work__location">Cape Breton, Nova Scotia &middot; 2024</p>
+          <span class="work__action">Watch the Film <span class="btn__arrow">&rarr;</span></span>
         </div>
       </div>
     </a>
 
+    <!-- Overlay title kept: this thumbnail's baked-in text does not name the project. -->
     <a href="https://www.youtube.com/watch?v=qUq5QlpFP0w" class="work__item work__item--md reveal reveal--delay-1" target="_blank" rel="noopener noreferrer">
       <img src="https://img.youtube.com/vi/qUq5QlpFP0w/maxresdefault.jpg" alt="LeNoir Forge documentary" class="work__img" onerror="this.style.background='linear-gradient(135deg, #8a3a20, #0f1519)'; this.removeAttribute('src');">
       <div class="work__meta">
@@ -1941,30 +1964,35 @@ a { color: inherit; text-decoration: none; }
         <div>
           <h3 class="work__title">LeNoir / Forest Land History</h3>
           <p class="work__location">Arichat, Cape Breton &middot; 2024</p>
+          <span class="work__action">Watch the Film <span class="btn__arrow">&rarr;</span></span>
         </div>
       </div>
     </a>
 
     <!-- Row 3: ACU hero tile &mdash; the differentiator -->
-    <a href="https://www.youtube.com/playlist?list=PLv_b9VrY0Og-0u3wyq3-OXNooVnFfcZC1" class="work__item work__item--full reveal" target="_blank" rel="noopener noreferrer">
+    <!-- Card face reduced to chip + location + action: the artwork carries its own baked-in
+         "THE COD B'Y ... CHRONICLES" titles (including a bottom-centre banner). Full title
+         retained in the aria-label; overlay stays bottom-left to clear the banner. -->
+    <a href="https://www.youtube.com/playlist?list=PLv_b9VrY0Og-0u3wyq3-OXNooVnFfcZC1" class="work__item work__item--full reveal" target="_blank" rel="noopener noreferrer" aria-label="The Cod B'y Chronicles &mdash; original animation series from the Atlantic Cinematic Universe. Watch the full series on YouTube.">
       <img src="codby-chronicles.jpg" alt="Cod B'y Chronicles &mdash; Atlantic Cinematic Universe" class="work__img">
       <div class="work__meta">
         <span class="work__tag">ACU &middot; Original Animation Series</span>
         <div>
-          <h3 class="work__title">The Cod B'y Chronicles</h3>
-          <p class="work__location">Atlantic Cinematic Universe &middot; Watch the Full Series</p>
+          <p class="work__location">Atlantic Cinematic Universe</p>
+          <span class="work__action">Watch the Series <span class="btn__arrow">&rarr;</span></span>
         </div>
       </div>
     </a>
 
     <!-- ACU Game Prototype -->
-    <a href="shoreline-run.html" class="work__item work__item--full reveal">
+    <a href="shoreline-run.html" class="work__item work__item--full reveal" aria-label="Cod B'y and Puffy: Shoreline Run &mdash; a haunted Atlantic side-scroller drawn from real places and local memory. View the project page.">
       <img src="images/shoreline-run-homepage-tile.png" alt="Cod B'y and Puffy running across a rugged Atlantic shoreline game world." class="work__img">
       <div class="work__meta">
         <span class="work__tag">ACU Game Prototype</span>
         <div>
           <h3 class="work__title">Cod B&rsquo;y &amp; Puffy: Shoreline Run</h3>
-          <p class="work__location">A haunted Atlantic side-scroller built from real places, local memory, and playable coastal adventure. &middot; View Project &rarr;</p>
+          <p class="work__location">Atlantic Cinematic Universe</p>
+          <span class="work__action">View Project <span class="btn__arrow">&rarr;</span></span>
         </div>
       </div>
     </a>
