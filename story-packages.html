@@ -160,6 +160,7 @@ button:focus-visible {
   position: relative;
   z-index: 1;
   padding: clamp(4rem, 8vw, 7rem) 0;
+  scroll-margin-top: 5rem; /* keep anchored section titles clear of the sticky nav */
 }
 
 .section--dark {
@@ -791,9 +792,9 @@ h3 {
             </tr>
             <tr>
               <td><strong>Live Event Production</strong></td>
-              <td>Custom quoted</td>
-              <td>Events that need multi-camera coverage of the day itself</td>
-              <td>Multi-camera event coverage, scoped per event</td>
+              <td>Custom &middot; quoted per event</td>
+              <td>Events that need multi-camera live-stream coverage of the day itself</td>
+              <td>Multi-camera live-stream + full replay, scoped per event</td>
               <td>Confirmed after the discovery call</td>
               <td>Scoped in quote</td>
             </tr>
@@ -871,19 +872,24 @@ h3 {
         </article>
 
         <!-- Live Event Production: offered capability, custom quoted. Capability framing only —
-             do not cite completed live-event results or client names until approved assets exist. -->
+             never name a specific past or upcoming event, and no results/attendance/client names. -->
         <article class="package">
           <div class="package__num">Package 05</div>
           <h3>Live Event Production</h3>
-          <div class="package__price">Custom quoted</div>
-          <p><strong>Best for:</strong> events that need multi-camera coverage of the day itself.</p>
-          <p><strong>Main deliverable:</strong> multi-camera event coverage, scoped per event.</p>
+          <div class="package__price">Custom</div>
+          <p class="muted">Quoted per event</p>
+          <p><strong>Best for:</strong> events that need multi-camera live-stream coverage of the day itself.</p>
+          <p><strong>Main deliverable:</strong> multi-camera live-stream coverage for community events, fundraisers, ceremonies, and performances &mdash; planned with you, filmed on site, delivered as a replayable record.</p>
           <ul>
-            <li>Multi-camera coverage planned around the event</li>
-            <li>Filmed on site</li>
-            <li>Crew, coverage, and deliverables scoped on the call</li>
+            <li>Multi-camera coverage &mdash; hardwired + roaming (scope depends on the event)</li>
+            <li>Live switching</li>
+            <li>Professional event audio &mdash; announcer + ambient</li>
+            <li>Stream graphics package</li>
+            <li>Full replay delivery</li>
+            <li>Optional highlight edits</li>
           </ul>
           <p class="muted"><strong>Timeline:</strong> confirmed after the discovery call.</p>
+          <a class="link-card" href="#live-events">Full live production detail</a>
         </article>
       </div>
 
@@ -902,6 +908,42 @@ h3 {
         <div class="addon"><strong>Extra Social Clips</strong><span class="muted">Additional short-form cuts from existing footage.</span></div>
         <div class="addon"><strong>Google Business Profile</strong><span class="muted">Setup and optimization for local search presence.</span></div>
         <div class="addon"><strong>Discovery Call</strong><span class="muted">A free 20-minute conversation to find the right scope.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Event Production: offered capability only. Never name a specific past or upcoming
+       event here; no results, attendance figures, or client names. "Live-stream," not
+       "broadcast" — the delivery spec is a multi-camera livestream. -->
+  <section class="section" id="live-events" aria-labelledby="live-events-title">
+    <div class="wrap">
+      <p class="eyebrow">Live Event Production</p>
+      <h2 id="live-events-title">Multi-camera live-stream coverage, planned around your event.</h2>
+      <p class="lede">For community events, fundraisers, ceremonies, and performances &mdash; planned with you, filmed on site, and delivered as a replayable record. Custom pricing, quoted per event.</p>
+
+      <h3 class="subsection-heading">What a production can include</h3>
+      <p class="muted">Scope depends on the event.</p>
+      <div class="grid">
+        <article class="card"><h3>Multi-camera coverage</h3><p>Hardwired and roaming cameras placed around the venue.</p></article>
+        <article class="card"><h3>Live switching</h3><p>Camera feeds cut live as the event unfolds.</p></article>
+        <article class="card"><h3>Professional event audio</h3><p>Announcer and ambient sound, mixed for the stream.</p></article>
+        <article class="card"><h3>Stream graphics package</h3><p>Starting-soon, sponsor, thank-you, and outro cards.</p></article>
+        <article class="card"><h3>Full replay delivery</h3><p>The complete event delivered as a watchable replay.</p></article>
+        <article class="card"><h3>Optional highlight edits</h3><p>Short cuts from the day, ready for later use.</p></article>
+      </div>
+
+      <h3 class="subsection-heading">What that does for the event</h3>
+      <ul class="statement-list">
+        <li>Remote audiences can watch from anywhere.</li>
+        <li>The event is preserved as a replayable asset.</li>
+        <li>Sponsors and stakeholders get visibility on stream.</li>
+        <li>Organizers keep a public-facing media asset afterward.</li>
+      </ul>
+
+      <p class="note">Final scope depends on venue, event length, camera count, audio needs, internet availability, and distribution platform. Pricing is custom and quoted per event.</p>
+
+      <div class="cta-row">
+        <a class="btn btn--primary" href="https://cal.com/lucasliamlegacy/discovery-call" target="_blank" rel="noopener noreferrer">Plan a Live Production <span aria-hidden="true">&rarr;</span></a>
       </div>
     </div>
   </section>
