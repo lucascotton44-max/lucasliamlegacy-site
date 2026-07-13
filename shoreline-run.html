@@ -196,7 +196,7 @@ button:focus-visible {
   font-size: 0.74rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--ember);
+  color: var(--ember-deep); /* AA for small mono on paper */
 }
 
 .section--dark .eyebrow {
@@ -449,6 +449,12 @@ h3 {
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .btn, .nav__cta { transition: none; }
+  .btn:hover, .nav__cta:hover { transform: none; }
+}
+
 @media print {
   html,
   body {
@@ -645,13 +651,15 @@ h3 {
 </footer>
 
 <script>
-// Subtle nav shrink on scroll
-const nav = document.querySelector('.nav');
-window.addEventListener('scroll', () => {
-  nav.style.padding = window.scrollY > 60
-    ? '0.85rem var(--edge)'
-    : '1rem var(--edge)';
-}, { passive: true });
+// Subtle nav shrink on scroll (skipped for reduced-motion users)
+if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const nav = document.querySelector('.nav');
+  window.addEventListener('scroll', () => {
+    nav.style.padding = window.scrollY > 60
+      ? '0.85rem var(--edge)'
+      : '1rem var(--edge)';
+  }, { passive: true });
+}
 </script>
 
 </body>

@@ -76,7 +76,7 @@
   --ember: #b8502e;         /* deep rust coral &mdash; Cape Breton fall, coal embers */
   --ember-deep: #8a3a20;
   --sea: #2d4a52;           /* bras d'or slate */
-  --fog: #8a847b;           /* middle grey, warm */
+  --fog: #6b665e;           /* middle grey, warm — darkened from #8a847b for WCAG AA on paper; dark-bg meta text pins the original tone below */
   --line: rgba(15, 21, 25, 0.12);
   --line-soft: rgba(15, 21, 25, 0.06);
   
@@ -125,6 +125,13 @@ body::before {
 
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
+
+/* Visible keyboard focus — same treatment as the subpages */
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--ember);
+  outline-offset: 4px;
+}
 
 /* &mdash;&mdash;&mdash; NAV &mdash;&mdash;&mdash; */
 
@@ -198,7 +205,7 @@ a { color: inherit; text-decoration: none; }
   font-family: var(--display);
   font-style: italic;
   font-size: 0.9375rem;
-  color: var(--ember);
+  color: var(--ember-deep); /* AA for 15px text on paper */
 }
 
 .nav__cta::after {
@@ -321,7 +328,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .hero__lede .accent {
-  color: var(--ember);
+  color: var(--ember-deep); /* AA at the lede's smaller fluid sizes */
   font-style: italic;
 }
 
@@ -771,7 +778,7 @@ a { color: inherit; text-decoration: none; }
 .pkg__num {
   font-family: var(--mono);
   font-size: 0.8125rem;
-  color: var(--ember);
+  color: #d37a55; /* AA on ink */
   letter-spacing: 0.08em;
   padding-top: 0.5rem;
 }
@@ -794,7 +801,7 @@ a { color: inherit; text-decoration: none; }
   font-family: var(--display);
   font-style: italic;
   font-size: 0.9375rem;
-  color: var(--ember);
+  color: #d37a55; /* AA on ink */
   margin-bottom: 1.5rem;
 }
 
@@ -813,7 +820,7 @@ a { color: inherit; text-decoration: none; }
   font-size: 0.6875rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--fog);
+  color: #8a847b; /* original fog — sits on ink, 5:1 */
   margin-top: 0.5rem;
 }
 
@@ -880,7 +887,7 @@ a { color: inherit; text-decoration: none; }
   font-size: 0.625rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--ember);
+  color: #d37a55; /* AA on ink; border stays ember (non-text, 3.7:1 passes) */
   padding: 0.4rem 0.75rem;
   border: 1px solid var(--ember);
 }
@@ -990,6 +997,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .addon--featured:hover { background: var(--ink-soft); }
+.addon--featured .addon__unit { color: #8a847b; } /* original fog — sits on ink, 5:1 */
 .addon--featured .addon__price { color: var(--ember); }
 .addon--featured .addon__desc { color: var(--paper-dim); }
 
@@ -1040,7 +1048,7 @@ a { color: inherit; text-decoration: none; }
   font-family: var(--mono);
   font-size: 0.75rem;
   letter-spacing: 0.16em;
-  color: var(--ember);
+  color: var(--ember-deep); /* AA on paper-warm */
   margin-bottom: 1.5rem;
 }
 
@@ -1398,7 +1406,7 @@ a { color: inherit; text-decoration: none; }
   font-size: 0.6875rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--ember);
+  color: #d37a55; /* AA on ink */
   margin-bottom: 1.25rem;
   font-weight: 500;
 }
@@ -1423,7 +1431,7 @@ a { color: inherit; text-decoration: none; }
   font-size: 0.6875rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--fog);
+  color: #8a847b; /* original fog — sits on ink, 5:1 */
   flex-wrap: wrap;
   gap: 1rem;
 }
@@ -1433,7 +1441,7 @@ a { color: inherit; text-decoration: none; }
   font-style: italic;
   text-transform: none;
   letter-spacing: 0;
-  color: var(--ember);
+  color: #d37a55; /* AA on ink */
   font-size: 0.875rem;
 }
 
@@ -1722,6 +1730,35 @@ a { color: inherit; text-decoration: none; }
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* &mdash;&mdash;&mdash; REDUCED MOTION &mdash;&mdash;&mdash; */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal,
+  .hero__meta, .hero__title .line, .hero__bottom > * {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    animation: none;
+  }
+  .strip__track { animation: none; }
+  .hero__meta .dot { animation: none; }
+  .btn, .btn__arrow, .work__item, .work__img, .work__action .btn__arrow,
+  .press__item, .press__arrow, .voice, .addon, .pkg, .pkg__cta,
+  .nav, .nav__links a::after, .nav__cta::after, .contact__email,
+  .studio__portrait img {
+    transition: none;
+  }
+  .btn:hover, .btn--primary:hover, .btn--ghost:hover,
+  .work__item:hover, .voice:hover { transform: none; }
+  .work__item:hover .work__img { transform: none; }
+  .studio__portrait:hover img { transform: none; }
+  .nav__cta:hover::after,
+  .btn:hover .btn__arrow,
+  .work__item:hover .work__action .btn__arrow { transform: none; }
+  .press__item:hover .press__arrow { transform: none; }
+}
+
 </style>
 </head>
 
@@ -1742,6 +1779,8 @@ a { color: inherit; text-decoration: none; }
   </div>
   <a href="https://cal.com/lucasliamlegacy/discovery-call" target="_blank" rel="noopener noreferrer" class="nav__cta">Start a Project</a>
 </nav>
+
+<main>
 
 <!-- &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; HERO &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; -->
 <section class="hero">
@@ -2339,6 +2378,8 @@ a { color: inherit; text-decoration: none; }
   </div>
 </section>
 
+</main>
+
 <!-- &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; FOOTER &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; -->
 <footer class="foot">
   <div class="foot__inner">
@@ -2402,20 +2443,23 @@ const io = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-// Subtle nav shrink on scroll
+// Subtle nav shrink on scroll (skipped for reduced-motion users)
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let lastY = 0;
 const nav = document.querySelector('.nav');
 const navToggle = document.querySelector('.nav__toggle');
 const navLinks = document.querySelector('.nav__links');
-window.addEventListener('scroll', () => {
-  const y = window.scrollY;
-  if (y > 60) {
-    nav.style.padding = '0.85rem var(--edge)';
-  } else {
-    nav.style.padding = '1.25rem var(--edge)';
-  }
-  lastY = y;
-}, { passive: true });
+if (!prefersReducedMotion) {
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (y > 60) {
+      nav.style.padding = '0.85rem var(--edge)';
+    } else {
+      nav.style.padding = '1.25rem var(--edge)';
+    }
+    lastY = y;
+  }, { passive: true });
+}
 
 if (navToggle && navLinks) {
   navToggle.addEventListener('click', () => {
@@ -2440,7 +2484,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
       if (target) {
         e.preventDefault();
         const top = target.getBoundingClientRect().top + window.scrollY - 60;
-        window.scrollTo({ top, behavior: 'smooth' });
+        window.scrollTo({ top, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
       }
     }
   });

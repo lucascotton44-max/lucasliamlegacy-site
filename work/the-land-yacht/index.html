@@ -83,7 +83,7 @@
   --ember: #b8502e;
   --ember-deep: #8a3a20;
   --sea: #2d4a52;
-  --fog: #8a847b;
+  --fog: #6b665e; /* darkened from #8a847b for WCAG AA on paper; footer pins the original tone */
   --line: rgba(15, 21, 25, 0.12);
   --line-soft: rgba(15, 21, 25, 0.06);
   --display: 'Fraunces', 'Times New Roman', serif;
@@ -128,6 +128,13 @@ body::before {
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
 
+/* Visible keyboard focus — same treatment as the rest of the site */
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--ember);
+  outline-offset: 4px;
+}
+
 /* ——— NAV (homepage pattern, simplified) ——— */
 
 .nav {
@@ -166,7 +173,7 @@ a { color: inherit; text-decoration: none; }
   font-family: var(--display);
   font-style: italic;
   font-size: 0.9375rem;
-  color: var(--ember);
+  color: var(--ember-deep); /* AA for 15px text on paper */
 }
 
 .nav__cta::after {
@@ -540,7 +547,7 @@ a { color: inherit; text-decoration: none; }
   font-size: 0.6875rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--fog);
+  color: #8a847b; /* original fog — sits on ink, 5:1 */
   flex-wrap: wrap;
   gap: 1rem;
 }
@@ -557,6 +564,21 @@ a { color: inherit; text-decoration: none; }
 
 .reveal.is-in { opacity: 1; transform: translateY(0); }
 .reveal--delay-1 { transition-delay: 0.1s; }
+
+/* ——— REDUCED MOTION ——— */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .btn, .btn__arrow, .case-tile, .case-tile__img, .case-tile__action .btn__arrow,
+  .nav, .nav__cta::after {
+    transition: none;
+  }
+  .btn:hover, .btn--primary:hover, .btn--ghost:hover, .case-tile:hover { transform: none; }
+  .case-tile:hover .case-tile__img { transform: none; }
+  .nav__cta:hover::after, .btn:hover .btn__arrow,
+  .case-tile:hover .case-tile__action .btn__arrow { transform: none; }
+}
 </style>
 </head>
 
@@ -574,6 +596,8 @@ a { color: inherit; text-decoration: none; }
   </div>
   <a href="https://cal.com/lucasliamlegacy/discovery-call" target="_blank" rel="noopener noreferrer" class="nav__cta">Start a Project</a>
 </nav>
+
+<main>
 
 <!-- ——————— CASE HERO ——————— -->
 <header class="case-hero">
@@ -678,6 +702,8 @@ a { color: inherit; text-decoration: none; }
   </div>
 </section>
 
+</main>
+
 <!-- ——————— FOOTER ——————— -->
 <footer class="foot">
   <div class="foot__bottom">
@@ -699,11 +725,13 @@ const io = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-// Nav shrink on scroll (homepage pattern)
-const nav = document.querySelector('.nav');
-window.addEventListener('scroll', () => {
-  nav.style.padding = window.scrollY > 60 ? '0.85rem var(--edge)' : '1.25rem var(--edge)';
-}, { passive: true });
+// Nav shrink on scroll (homepage pattern; skipped for reduced-motion users)
+if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const nav = document.querySelector('.nav');
+  window.addEventListener('scroll', () => {
+    nav.style.padding = window.scrollY > 60 ? '0.85rem var(--edge)' : '1.25rem var(--edge)';
+  }, { passive: true });
+}
 </script>
 
 </body>

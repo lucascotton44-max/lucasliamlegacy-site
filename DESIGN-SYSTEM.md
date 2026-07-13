@@ -61,11 +61,14 @@ Defined identically in `index.html`, `story-packages.html`, `shoreline-run.html`
 | `--ember` | `#b8502e` | **The accent** — rust coral; italics, labels, hovers, rules |
 | `--ember-deep` | `#8a3a20` | Deep accent (gradients, dark-bg labels on subpages) |
 | `--sea` | `#2d4a52` | Bras d'Or slate — gradient fallbacks |
-| `--fog` | `#8a847b` | Warm middle grey — meta text |
+| `--fog` | `#6b665e` | Warm middle grey — meta text on light backgrounds (darkened from `#8a847b` in the a11y pass for WCAG AA on paper) |
+| — | `#8a847b` | Original fog, kept for meta text on ink backgrounds only (pkg price-meta, footer bottoms, featured add-on unit) |
 | `--line` | `rgba(15,21,25,0.12)` home / `0.14` subpages | Hairline rules |
 | `--line-soft` | `rgba(15,21,25,0.06)` (home only) | Softest rule |
 | `--line-dark` | `rgba(244,239,230,0.16)` (subpages) | Rules on dark |
-| — | `#d37a55` | Eyebrow colour on dark sections (subpages, untokenised) |
+| — | `#d37a55` | Small ember-family text on ink (dark eyebrows, pkg numbers/taglines, footer h4s, Most Popular badge) |
+
+**A11y contrast rules (added in the accessibility pass — follow for all new work):** small text in the ember family uses `--ember-deep` on paper and `#d37a55` on ink (`--ember` itself only passes AA at large sizes, ≥24px); every page carries the shared `a:focus-visible`/`button:focus-visible` ember outline and a `prefers-reduced-motion: reduce` block; nav-shrink and smooth-scroll JS is gated behind the same media query; all content sits in `<main>` landmarks.
 
 **Off-system exception:** `404.html` uses a different palette (`--atlantic #0E2A33`, `--ember #C25A2C`, `--parchment #F2EAD8`, Georgia serif). Pre-dates the current system; do not copy it into new work.
 
