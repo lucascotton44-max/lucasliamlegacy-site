@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lucas & Liam Legacy Studios &mdash; Cape Breton Cinematic Storytelling</title>
-<meta name="description" content="Cape Breton cinematic production studio. Brand films, heritage documentaries, and digital identity built for Atlantic Canada. Founded by Lucas Cotton in St. Peter's, Nova Scotia.">
+<title>Lucas & Liam Legacy Studios &mdash; Cinematic Production, NS</title>
+<meta name="description" content="Brand films, documentary storytelling, live-event production, and campaign media built for Atlantic Canada &mdash; by someone who grew up here.">
 
 <!-- Canonical -->
 <link rel="canonical" href="https://lucasliamlegacy.com/">
+<link rel="icon" type="image/png" href="/favicon.png">
 
 <!-- Google Search Console verification &mdash; REPLACE the content value with the token from Search Console before deploying -->
 <meta name="google-site-verification" content="WrYWP23KDGar4QiZNBMcts_2XcYP9Sv8c9rhooXDGmQ" />
@@ -16,20 +17,44 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Lucas & Liam Legacy Studios">
 <meta property="og:url" content="https://lucasliamlegacy.com/">
-<meta property="og:title" content="Lucas & Liam Legacy Studios &mdash; Cape Breton Cinematic Storytelling">
-<meta property="og:description" content="Brand films, heritage documentaries, and digital identity for Atlantic Canada. Founded by Lucas Cotton in St. Peter's, Nova Scotia.">
+<meta property="og:title" content="Lucas & Liam Legacy Studios &mdash; Cinematic Production, NS">
+<meta property="og:description" content="Brand films, documentary storytelling, live-event production, and campaign media built for Atlantic Canada.">
 <meta property="og:image" content="https://lucasliamlegacy.com/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Lucas & Liam Legacy Studios &mdash; Cape Breton cinematic storytelling">
+<meta property="og:image:alt" content="Lucas &amp; Liam Legacy Studios &mdash; cinematic production, Cape Breton, Nova Scotia">
 <meta property="og:locale" content="en_CA">
 
 <!-- Twitter / X Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:url" content="https://lucasliamlegacy.com/">
-<meta name="twitter:title" content="Lucas & Liam Legacy Studios &mdash; Cape Breton Cinematic Storytelling">
-<meta name="twitter:description" content="Brand films, heritage documentaries, and digital identity for Atlantic Canada. Founded by Lucas Cotton in St. Peter's, Nova Scotia.">
+<meta name="twitter:title" content="Lucas & Liam Legacy Studios &mdash; Cinematic Production, NS">
+<meta name="twitter:description" content="Brand films, documentary storytelling, live-event production, and campaign media built for Atlantic Canada.">
 <meta name="twitter:image" content="https://lucasliamlegacy.com/og-image.jpg">
+
+<!-- Organization structured data. Fields limited to what is real and public: no logo file exists
+     yet (favicon is 32px), so logo is omitted; no ratings/reviews/prices; street address omitted
+     on purpose. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Lucas & Liam Legacy Studios",
+  "url": "https://lucasliamlegacy.com/",
+  "email": "lucasliamlegacystudios@gmail.com",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "St. Peter's",
+    "addressRegion": "NS",
+    "addressCountry": "CA"
+  },
+  "sameAs": [
+    "https://www.youtube.com/@lucasliamlegacy",
+    "https://www.instagram.com/lucasliamlegacy",
+    "https://www.tiktok.com/@lucasliamlegacy"
+  ]
+}
+</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -51,7 +76,7 @@
   --ember: #b8502e;         /* deep rust coral &mdash; Cape Breton fall, coal embers */
   --ember-deep: #8a3a20;
   --sea: #2d4a52;           /* bras d'or slate */
-  --fog: #8a847b;           /* middle grey, warm */
+  --fog: #6b665e;           /* middle grey, warm — darkened from #8a847b for WCAG AA on paper; dark-bg meta text pins the original tone below */
   --line: rgba(15, 21, 25, 0.12);
   --line-soft: rgba(15, 21, 25, 0.06);
   
@@ -100,6 +125,13 @@ body::before {
 
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
+
+/* Visible keyboard focus — same treatment as the subpages */
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--ember);
+  outline-offset: 4px;
+}
 
 /* &mdash;&mdash;&mdash; NAV &mdash;&mdash;&mdash; */
 
@@ -173,7 +205,7 @@ a { color: inherit; text-decoration: none; }
   font-family: var(--display);
   font-style: italic;
   font-size: 0.9375rem;
-  color: var(--ember);
+  color: var(--ember-deep); /* AA for 15px text on paper */
 }
 
 .nav__cta::after {
@@ -296,7 +328,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .hero__lede .accent {
-  color: var(--ember);
+  color: var(--ember-deep); /* AA at the lede's smaller fluid sizes */
   font-style: italic;
 }
 
@@ -497,20 +529,21 @@ a { color: inherit; text-decoration: none; }
   transform: scale(1.03);
 }
 
+/* Caption sits below the photo on the paper background — the photo carries its own
+   baked-in lettering, so nothing is rendered over the image. */
 .studio__portrait-meta {
-  position: absolute;
-  bottom: 1.5rem;
-  left: 1.5rem;
-  right: 1.5rem;
-  color: var(--paper);
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  color: var(--fog);
   font-family: var(--mono);
   font-size: 0.6875rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   display: flex;
   justify-content: space-between;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(244, 239, 230, 0.3);
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .studio__copy h3 {
@@ -633,7 +666,10 @@ a { color: inherit; text-decoration: none; }
   flex-direction: column;
   justify-content: space-between;
   color: var(--paper);
-  background: linear-gradient(180deg, transparent 0%, transparent 55%, rgba(15,21,25,0.75) 100%);
+  /* Bottom-anchored legibility scrim: the band eases in from 30% and runs FULLY OPAQUE from
+     68% down, so the location/action block always sits on solid ink no matter what lettering
+     the artwork itself carries (partial opacity leaves large baked-in titles faintly visible). */
+  background: linear-gradient(180deg, rgba(15,21,25,0) 0%, rgba(15,21,25,0) 30%, rgba(15,21,25,0.5) 50%, rgba(15,21,25,0.9) 60%, rgba(15,21,25,1) 68%, rgba(15,21,25,1) 100%);
   pointer-events: none;
 }
 
@@ -644,7 +680,7 @@ a { color: inherit; text-decoration: none; }
   text-transform: uppercase;
   padding: 0.4rem 0.75rem;
   border: 1px solid rgba(244, 239, 230, 0.4);
-  background: rgba(15, 21, 25, 0.5);
+  background: rgba(15, 21, 25, 0.85);
   backdrop-filter: blur(6px);
   align-self: flex-start;
 }
@@ -662,9 +698,23 @@ a { color: inherit; text-decoration: none; }
   font-size: 0.6875rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  opacity: 0.75;
+  opacity: 0.9;
   margin-top: 0.5rem;
 }
+
+.work__action {
+  display: inline-block;
+  margin-top: 0.625rem;
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--paper);
+}
+
+.work__action .btn__arrow { display: inline-block; transition: transform 0.35s ease; }
+.work__item:hover .work__action .btn__arrow { transform: translateX(4px); }
 
 @media (max-width: 880px) {
   .work__grid { grid-template-columns: 1fr; }
@@ -728,7 +778,7 @@ a { color: inherit; text-decoration: none; }
 .pkg__num {
   font-family: var(--mono);
   font-size: 0.8125rem;
-  color: var(--ember);
+  color: #d37a55; /* AA on ink */
   letter-spacing: 0.08em;
   padding-top: 0.5rem;
 }
@@ -751,7 +801,7 @@ a { color: inherit; text-decoration: none; }
   font-family: var(--display);
   font-style: italic;
   font-size: 0.9375rem;
-  color: var(--ember);
+  color: #d37a55; /* AA on ink */
   margin-bottom: 1.5rem;
 }
 
@@ -770,7 +820,7 @@ a { color: inherit; text-decoration: none; }
   font-size: 0.6875rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--fog);
+  color: #8a847b; /* original fog — sits on ink, 5:1 */
   margin-top: 0.5rem;
 }
 
@@ -837,7 +887,7 @@ a { color: inherit; text-decoration: none; }
   font-size: 0.625rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--ember);
+  color: #d37a55; /* AA on ink; border stays ember (non-text, 3.7:1 passes) */
   padding: 0.4rem 0.75rem;
   border: 1px solid var(--ember);
 }
@@ -947,6 +997,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .addon--featured:hover { background: var(--ink-soft); }
+.addon--featured .addon__unit { color: #8a847b; } /* original fog — sits on ink, 5:1 */
 .addon--featured .addon__price { color: var(--ember); }
 .addon--featured .addon__desc { color: var(--paper-dim); }
 
@@ -997,7 +1048,7 @@ a { color: inherit; text-decoration: none; }
   font-family: var(--mono);
   font-size: 0.75rem;
   letter-spacing: 0.16em;
-  color: var(--ember);
+  color: var(--ember-deep); /* AA on paper-warm */
   margin-bottom: 1.5rem;
 }
 
@@ -1355,7 +1406,7 @@ a { color: inherit; text-decoration: none; }
   font-size: 0.6875rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--ember);
+  color: #d37a55; /* AA on ink */
   margin-bottom: 1.25rem;
   font-weight: 500;
 }
@@ -1380,7 +1431,7 @@ a { color: inherit; text-decoration: none; }
   font-size: 0.6875rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--fog);
+  color: #8a847b; /* original fog — sits on ink, 5:1 */
   flex-wrap: wrap;
   gap: 1rem;
 }
@@ -1390,7 +1441,7 @@ a { color: inherit; text-decoration: none; }
   font-style: italic;
   text-transform: none;
   letter-spacing: 0;
-  color: var(--ember);
+  color: #d37a55; /* AA on ink */
   font-size: 0.875rem;
 }
 
@@ -1679,6 +1730,35 @@ a { color: inherit; text-decoration: none; }
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* &mdash;&mdash;&mdash; REDUCED MOTION &mdash;&mdash;&mdash; */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal,
+  .hero__meta, .hero__title .line, .hero__bottom > * {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    animation: none;
+  }
+  .strip__track { animation: none; }
+  .hero__meta .dot { animation: none; }
+  .btn, .btn__arrow, .work__item, .work__img, .work__action .btn__arrow,
+  .press__item, .press__arrow, .voice, .addon, .pkg, .pkg__cta,
+  .nav, .nav__links a::after, .nav__cta::after, .contact__email,
+  .studio__portrait img {
+    transition: none;
+  }
+  .btn:hover, .btn--primary:hover, .btn--ghost:hover,
+  .work__item:hover, .voice:hover { transform: none; }
+  .work__item:hover .work__img { transform: none; }
+  .studio__portrait:hover img { transform: none; }
+  .nav__cta:hover::after,
+  .btn:hover .btn__arrow,
+  .work__item:hover .work__action .btn__arrow { transform: none; }
+  .press__item:hover .press__arrow { transform: none; }
+}
+
 </style>
 </head>
 
@@ -1688,16 +1768,19 @@ a { color: inherit; text-decoration: none; }
 <nav class="nav">
   <a href="#" class="nav__mark">Lucas <span>&amp;</span> Liam<span>.</span></a>
   <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="site-nav-links">Menu</button>
+  <!-- Story Packages removed from top nav (redundant with Packages); the page stays reachable
+       via the "Compare Story Packages" button in the Packages section and the footer. -->
   <div class="nav__links" id="site-nav-links">
     <a href="#work">Work</a>
     <a href="#packages">Packages</a>
-    <a href="story-packages.html">Story Packages</a>
     <a href="#process">Process</a>
     <a href="#press">Press</a>
     <a href="#studio">Studio</a>
   </div>
   <a href="https://cal.com/lucasliamlegacy/discovery-call" target="_blank" rel="noopener noreferrer" class="nav__cta">Start a Project</a>
 </nav>
+
+<main>
 
 <!-- &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; HERO &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; -->
 <section class="hero">
@@ -1715,11 +1798,11 @@ a { color: inherit; text-decoration: none; }
 
   <div class="hero__bottom">
     <p class="hero__lede">
-      Brand films, documentary storytelling, and campaign media <span class="accent">built for Atlantic Canada</span> &mdash; by someone who grew up here.
+      Brand films, documentary storytelling, live-event production, and campaign media <span class="accent">built for Atlantic Canada</span> &mdash; by someone who grew up here.
     </p>
     <div class="hero__actions">
-      <a href="https://cal.com/lucasliamlegacy/discovery-call" target="_blank" rel="noopener noreferrer" class="btn btn--primary">Book a Discovery Call <span class="btn__arrow">&rarr;</span></a>
-      <a href="#packages" class="btn btn--ghost">See the Packages</a>
+      <a href="https://cal.com/lucasliamlegacy/discovery-call" target="_blank" rel="noopener noreferrer" class="btn btn--primary">Start a Project <span class="btn__arrow">&rarr;</span></a>
+      <a href="#work" class="btn btn--ghost">View Selected Work</a>
     </div>
     <div class="hero__proof">
       <div class="hero__proof-item">
@@ -1745,6 +1828,7 @@ a { color: inherit; text-decoration: none; }
       Broadcast work on Telile Community Television <span class="star">&#10022;</span>
       101.5 The Hawk &mdash; East Coast Rising <span class="star">&#10022;</span>
       Port Hawkesbury Reporter coverage <span class="star">&#10022;</span>
+      Multi-camera live-event production <span class="star">&#10022;</span>
       Gilbert salmon storytelling <span class="star">&#10022;</span>
       Atlantic Cinematic Universe <span class="star">&#10022;</span>
       Rogue Tide &mdash; Streaming Everywhere <span class="star">&#10022;</span>
@@ -1752,6 +1836,7 @@ a { color: inherit; text-decoration: none; }
       Broadcast work on Telile Community Television <span class="star">&#10022;</span>
       101.5 The Hawk &mdash; East Coast Rising <span class="star">&#10022;</span>
       Port Hawkesbury Reporter coverage <span class="star">&#10022;</span>
+      Multi-camera live-event production <span class="star">&#10022;</span>
       Gilbert salmon storytelling <span class="star">&#10022;</span>
       Atlantic Cinematic Universe <span class="star">&#10022;</span>
       Rogue Tide &mdash; Streaming Everywhere <span class="star">&#10022;</span>
@@ -1788,8 +1873,10 @@ a { color: inherit; text-decoration: none; }
     <h2 class="section__title reveal">A studio built at the intersection of <em>craft and place.</em></h2>
 
     <div class="studio__grid">
-      <div class="studio__portrait reveal">
-        <img src="https://lucasliamlegacy.com/lucas_liam_photo.jpg" alt="Lucas Cotton and Liam &mdash; Cape Breton" onerror="this.style.background='linear-gradient(135deg, #2d4a52 0%, #0f1519 100%)'; this.removeAttribute('src');">
+      <div class="reveal">
+        <div class="studio__portrait">
+          <img src="lucas_liam_photo.jpg" alt="Lucas Cotton and Liam &mdash; Cape Breton" onerror="this.style.background='linear-gradient(135deg, #2d4a52 0%, #0f1519 100%)'; this.removeAttribute('src');">
+        </div>
         <div class="studio__portrait-meta">
           <span>Lucas &amp; Liam Cotton</span>
           <span>St. Peter's, Cape Breton</span>
@@ -1810,9 +1897,12 @@ a { color: inherit; text-decoration: none; }
             <dt>Home Base</dt>
             <dd>St. Peter's</dd>
           </div>
+          <!-- [MISSING: verified per-package turnaround figures] Specific turnaround stat removed;
+               public wording site-wide is "Project schedules are confirmed after the discovery call."
+               Reinstate a concrete figure here only once confirmed. -->
           <div class="studio__stat">
-            <dt>Turnaround</dt>
-            <dd>2&ndash;3 Weeks</dd>
+            <dt>Discovery Call</dt>
+            <dd>Free &middot; 20 Min</dd>
           </div>
           <div class="studio__stat">
             <dt>Broadcast</dt>
@@ -1877,22 +1967,50 @@ a { color: inherit; text-decoration: none; }
 
 <!-- &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; WORK &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; -->
 <section class="section" id="work">
-  <div class="section__label">Recent Work &mdash; 004</div>
+  <div class="section__label">Selected Work &mdash; 004</div>
   <h2 class="section__title reveal">What we <em>make.</em></h2>
 
   <div class="work__grid">
-    <!-- Row 1: Heritage documentary work (landscape + portrait) -->
-    <a href="https://www.youtube.com/watch?v=vFJU9NN8CIw" class="work__item work__item--lg reveal" target="_blank" rel="noopener noreferrer">
-      <img src="https://img.youtube.com/vi/vFJU9NN8CIw/maxresdefault.jpg" alt="St. Peter's Canal documentary" class="work__img" onerror="this.style.background='linear-gradient(135deg, #2d4a52, #0f1519)'; this.removeAttribute('src');">
+    <!-- Cards are ranked by strength of viewable proof: completed, watchable work first;
+         unlinked in-production work last. -->
+    <!-- 1. Land Yacht: campaign COMPLETE. Links to the case study at /work/the-land-yacht.
+         Card face uses the delivered film's own thumbnail frame (the blue porthole badge +
+         "LAND YACHT" lettering are baked into landyacht.jpg, kept only as onerror fallback).
+         [need: film-still-quality hero image without baked-in titles/badge]
+         [need: self-hostable files or unlisted YouTube for the two vertical edits] -->
+    <a href="/work/the-land-yacht" class="work__item work__item--full reveal" aria-label="The Land Yacht &mdash; completed tourism campaign for a premium stay in Ingramport, Nova Scotia. A campaign made to turn a one-of-a-kind stay into a destination guests can see, feel, and remember. View the case study.">
+      <img src="https://img.youtube.com/vi/8gsKhBnx9Uw/maxresdefault.jpg" alt="The Land Yacht &mdash; Ingramport" class="work__img" onerror="this.onerror=null; this.src='landyacht.jpg';">
       <div class="work__meta">
-        <span class="work__tag">Heritage Documentary &middot; Telile</span>
+        <span class="work__tag">Tourism Campaign &middot; Premium Stay</span>
         <div>
-          <h3 class="work__title">St. Peter's Canal &mdash; Where Water Learned to Wait</h3>
-          <p class="work__location">Cape Breton, Nova Scotia &middot; 2024</p>
+          <p class="work__location">Ingramport, Nova Scotia</p>
+          <span class="work__action">View Case Study <span class="btn__arrow">&rarr;</span></span>
         </div>
       </div>
     </a>
 
+    <!-- Harbour Wars case study: HELD pending approved assets. Do not publish a card, teaser, or
+         "coming soon" reference until all four items land:
+         [MISSING: Harbour Wars full replay]
+         [MISSING: Harbour Wars highlight film]
+         [MISSING: Harbour Wars event hero image]
+         [MISSING: Harbour Wars approved logos] -->
+
+    <!-- 2 + 3: Heritage documentary work (landscape + portrait) -->
+    <!-- Card face reduced to chip + location + action: the video thumbnail carries its own
+         baked-in "ST. PETER'S CANAL" title. Full title retained in the aria-label. -->
+    <a href="https://www.youtube.com/watch?v=vFJU9NN8CIw" class="work__item work__item--lg reveal" target="_blank" rel="noopener noreferrer" aria-label="St. Peter's Canal &mdash; Where Water Learned to Wait. Heritage documentary, Cape Breton, Nova Scotia, 2024. Watch the film on YouTube.">
+      <img src="https://img.youtube.com/vi/vFJU9NN8CIw/maxresdefault.jpg" alt="St. Peter's Canal documentary" class="work__img" onerror="this.style.background='linear-gradient(135deg, #2d4a52, #0f1519)'; this.removeAttribute('src');">
+      <div class="work__meta">
+        <span class="work__tag">Heritage Documentary &middot; Telile</span>
+        <div>
+          <p class="work__location">Cape Breton, Nova Scotia &middot; 2024</p>
+          <span class="work__action">Watch the Film <span class="btn__arrow">&rarr;</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Overlay title kept: this thumbnail's baked-in text does not name the project. -->
     <a href="https://www.youtube.com/watch?v=qUq5QlpFP0w" class="work__item work__item--md reveal reveal--delay-1" target="_blank" rel="noopener noreferrer">
       <img src="https://img.youtube.com/vi/qUq5QlpFP0w/maxresdefault.jpg" alt="LeNoir Forge documentary" class="work__img" onerror="this.style.background='linear-gradient(135deg, #8a3a20, #0f1519)'; this.removeAttribute('src');">
       <div class="work__meta">
@@ -1900,56 +2018,51 @@ a { color: inherit; text-decoration: none; }
         <div>
           <h3 class="work__title">LeNoir / Forest Land History</h3>
           <p class="work__location">Arichat, Cape Breton &middot; 2024</p>
+          <span class="work__action">Watch the Film <span class="btn__arrow">&rarr;</span></span>
         </div>
       </div>
     </a>
 
-    <!-- Row 2: ACU hero tile &mdash; the differentiator -->
-    <a href="https://www.youtube.com/playlist?list=PLv_b9VrY0Og-0u3wyq3-OXNooVnFfcZC1" class="work__item work__item--full reveal" target="_blank" rel="noopener noreferrer">
+    <!-- 4. ACU hero tile &mdash; the differentiator -->
+    <!-- Card face reduced to chip + location + action: the artwork carries its own baked-in
+         "THE COD B'Y ... CHRONICLES" titles (including a bottom-centre banner). Full title
+         retained in the aria-label; overlay stays bottom-left to clear the banner. -->
+    <a href="https://www.youtube.com/playlist?list=PLv_b9VrY0Og-0u3wyq3-OXNooVnFfcZC1" class="work__item work__item--full reveal" target="_blank" rel="noopener noreferrer" aria-label="The Cod B'y Chronicles &mdash; original animation series from the Atlantic Cinematic Universe. Watch the full series on YouTube.">
       <img src="codby-chronicles.jpg" alt="Cod B'y Chronicles &mdash; Atlantic Cinematic Universe" class="work__img">
       <div class="work__meta">
         <span class="work__tag">ACU &middot; Original Animation Series</span>
         <div>
-          <h3 class="work__title">The Cod B'y Chronicles</h3>
-          <p class="work__location">Atlantic Cinematic Universe &middot; Watch the Full Series</p>
+          <p class="work__location">Atlantic Cinematic Universe</p>
+          <span class="work__action">Watch the Series <span class="btn__arrow">&rarr;</span></span>
         </div>
       </div>
     </a>
 
-    <!-- Row 3: In-production tourism work (half + half landscape) -->
-    <div class="work__item work__item--half reveal">
-      <img src="https://lucasliamlegacy.com/landyacht.jpg" alt="The Land Yacht &mdash; Ingramport" class="work__img" onerror="this.style.background='linear-gradient(135deg, #b8502e, #2d4a52)'; this.removeAttribute('src');">
-      <div class="work__meta">
-        <span class="work__tag">In Production &middot; Premium Stay</span>
-        <div>
-          <h3 class="work__title">The Land Yacht</h3>
-          <p class="work__location">Ingramport, NS &middot; Coming Soon</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="work__item work__item--half reveal reveal--delay-1">
-      <img src="https://lucasliamlegacy.com/flowedge.jpg" alt="FlowEdge Riverside Getaway" class="work__img" onerror="this.style.background='linear-gradient(135deg, #2d4a52, #8a3a20)'; this.removeAttribute('src');">
-      <div class="work__meta">
-        <span class="work__tag">Eco-Tourism &middot; In Production</span>
-        <div>
-          <h3 class="work__title">FlowEdge Riverside</h3>
-          <p class="work__location">Elderbank, NS &middot; Riverside glamping / eco-tourism project</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ACU Game Prototype -->
-    <a href="shoreline-run.html" class="work__item work__item--full reveal">
+    <!-- 5. ACU Game Prototype -->
+    <a href="shoreline-run.html" class="work__item work__item--full reveal" aria-label="Cod B'y and Puffy: Shoreline Run &mdash; a haunted Atlantic side-scroller drawn from real places and local memory. View the project page.">
       <img src="images/shoreline-run-homepage-tile.png" alt="Cod B'y and Puffy running across a rugged Atlantic shoreline game world." class="work__img">
       <div class="work__meta">
         <span class="work__tag">ACU Game Prototype</span>
         <div>
           <h3 class="work__title">Cod B&rsquo;y &amp; Puffy: Shoreline Run</h3>
-          <p class="work__location">A haunted Atlantic side-scroller built from real places, local memory, and playable coastal adventure. &middot; View Project &rarr;</p>
+          <p class="work__location">Atlantic Cinematic Universe</p>
+          <span class="work__action">View Project <span class="btn__arrow">&rarr;</span></span>
         </div>
       </div>
     </a>
+
+    <!-- 6. FlowEdge: in production, no viewable film yet — ranked last on purpose and kept
+         quieter (half width, no link). Invent no link, date, or result. -->
+    <div class="work__item work__item--half reveal">
+      <img src="flowedge.jpg" alt="FlowEdge Riverside Getaway" class="work__img" onerror="this.style.background='linear-gradient(135deg, #2d4a52, #8a3a20)'; this.removeAttribute('src');">
+      <div class="work__meta">
+        <span class="work__tag">Eco-Tourism &middot; In Production</span>
+        <div>
+          <h3 class="work__title">FlowEdge Riverside</h3>
+          <p class="work__location">Elderbank, Nova Scotia</p>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1978,10 +2091,10 @@ a { color: inherit; text-decoration: none; }
 <section class="packages" id="packages">
   <div class="packages__inner">
     <div class="section__label">What We Build For You &mdash; 006</div>
-    <h2 class="section__title reveal">Four ways to turn your story into <em>public-facing media that works.</em></h2>
+    <h2 class="section__title reveal">Five ways to turn what you do into <em>public-facing media that works.</em></h2>
 
     <p class="packages__rationale reveal reveal--delay-1">
-      Every package is built by <strong>Lucas directly</strong> &mdash; no account managers, no agency layers, no footage shot by someone who's never been here. Whether you need to attract visitors, strengthen public trust, document local history, or explain a conservation issue clearly, each option is built to give you polished media you can actually use. Prices below are starting points &mdash; every quote is custom, and every discovery call is free.
+      Every package is handled by <strong>Lucas directly</strong> &mdash; no account managers, no agency layers, no footage shot by someone who's never been here. Whether you need to attract visitors, strengthen public trust, document local history, or explain a conservation issue clearly, each option gives you polished media you can actually use. Prices below are starting points &mdash; every quote is custom, and every discovery call is free. Project schedules are confirmed after the discovery call. Full deliverables and scope terms live on the Story Packages page.
     </p>
     <p class="packages__rationale reveal reveal--delay-1">
       <a href="story-packages.html" class="btn btn--ghost">Compare Story Packages</a>
@@ -1999,14 +2112,7 @@ a { color: inherit; text-decoration: none; }
           <p class="pkg__price-meta">One shoot day &middot; from</p>
         </div>
         <div>
-          <p class="pkg__body">You need one cinematic piece that says exactly who you are &mdash; something you can put on your homepage, pin to your social, and send to anyone who asks "what do you actually do?" This is the foot in the door. Built for speed.</p>
-          <ul class="pkg__features">
-            <li>60&ndash;90 second cinematic short, one location, one shoot day</li>
-            <li>2 short-form social cuts (Reels / TikTok / Stories)</li>
-            <li>Colour-graded final edit</li>
-            <li>One round of revisions</li>
-            <li>Promotional usage rights for client-owned web, social, email, and presentation use</li>
-          </ul>
+          <p class="pkg__body">One 60&ndash;90 second film that says exactly who you are &mdash; something you can put on your homepage, pin to your social, and send to anyone who asks "what do you actually do?" This is the foot in the door.</p>
         </div>
         <div>
           <a href="https://cal.com/lucasliamlegacy/discovery-call" target="_blank" rel="noopener noreferrer" class="pkg__cta">Start Here &rarr;</a>
@@ -2024,15 +2130,7 @@ a { color: inherit; text-decoration: none; }
           <p class="pkg__price-meta">One-time investment &middot; from</p>
         </div>
         <div>
-          <p class="pkg__body">You have a website. You need a cinematic film that finally does your experience justice &mdash; and a suite of social content that stops the scroll. This is the piece that becomes the front door to your business for the next five years.</p>
-          <ul class="pkg__features">
-            <li>2&ndash;3 minute cinematic brand film, shot on location</li>
-            <li>4 short-form social clips cut from footage</li>
-            <li>Colour-graded final edit</li>
-            <li>Two rounds of revisions</li>
-            <li>Raw footage handoff available if scoped in the quote</li>
-            <li>Usage rights are scoped in the quote; paid placement, broadcast, sublicensing, and third-party distribution can be quoted separately.</li>
-          </ul>
+          <p class="pkg__body">A 2&ndash;3 minute brand film that finally does your experience justice &mdash; plus social cuts that stop the scroll. This is the piece that becomes the front door to your business for the next five years.</p>
         </div>
         <div>
           <a href="https://cal.com/lucasliamlegacy/discovery-call" target="_blank" rel="noopener noreferrer" class="pkg__cta">Start Here &rarr;</a>
@@ -2049,16 +2147,7 @@ a { color: inherit; text-decoration: none; }
           <p class="pkg__price-meta">Complete package &middot; from</p>
         </div>
         <div>
-          <p class="pkg__body">Stop paying Airbnb commission. Own your bookings, own your brand. Film and full website &mdash; built as one cohesive thing, by one person, with one creative vision holding it together.</p>
-          <ul class="pkg__features">
-            <li>2&ndash;3 minute cinematic brand film</li>
-            <li>5-page website built around your film</li>
-            <li>Online booking / contact integration</li>
-            <li>Google Business Profile setup</li>
-            <li>3 short-form social clips</li>
-            <li>SEO foundation included</li>
-            <li>Two rounds of revisions across film and site</li>
-          </ul>
+          <p class="pkg__body">Stop paying Airbnb commission. Own your bookings, own your brand. A film and a full five-page website &mdash; one cohesive package, by one person, with one creative vision holding it together.</p>
         </div>
         <div>
           <a href="https://cal.com/lucasliamlegacy/discovery-call" target="_blank" rel="noopener noreferrer" class="pkg__cta">Start Here &rarr;</a>
@@ -2075,17 +2164,28 @@ a { color: inherit; text-decoration: none; }
           <p class="pkg__price-meta">Documentary package &middot; from</p>
         </div>
         <div>
-          <p class="pkg__body">For heritage societies, conservation groups, First Nations communities, and anyone with a story that needs to exist permanently. Research-driven. Built for long-term public and archival use.</p>
-          <ul class="pkg__features">
-            <li>10&ndash;20 minute documentary short</li>
-            <li>Research, scripting, filming, full edit</li>
-            <li>Formatted for broadcast review where applicable</li>
-            <li>Digital archive companion page</li>
-            <li>Grant-aligned project materials can be scoped where useful</li>
-          </ul>
+          <p class="pkg__body">For heritage societies, conservation groups, First Nations communities, and anyone with history that needs to exist permanently. A researched, scripted 10&ndash;20 minute documentary made for long-term public and archival use.</p>
         </div>
         <div>
           <a href="https://cal.com/lucasliamlegacy/discovery-call" target="_blank" rel="noopener noreferrer" class="pkg__cta">Start Here &rarr;</a>
+        </div>
+      </div>
+
+      <!-- Live Event Production: offered capability, custom quoted. Framed as capability only —
+           do not cite completed live-event results or client names here until approved assets exist. -->
+      <div class="pkg">
+        <div class="pkg__num">05</div>
+        <div class="pkg__head">
+          <h3 class="pkg__name">Live Event Production</h3>
+          <p class="pkg__tagline">Multi-Camera Live-Stream</p>
+          <div class="pkg__price">Custom</div>
+          <p class="pkg__price-meta">Quoted per event</p>
+        </div>
+        <div>
+          <p class="pkg__body">Multi-camera live-stream coverage for community events, fundraisers, ceremonies, and performances &mdash; live switching, professional event audio, and stream graphics on site, delivered afterward as a replayable record with optional highlight edits. Crew and coverage are scoped to the event on the call.</p>
+        </div>
+        <div>
+          <a href="https://cal.com/lucasliamlegacy/discovery-call" target="_blank" rel="noopener noreferrer" class="pkg__cta">Plan an Event Broadcast &rarr;</a>
         </div>
       </div>
 
@@ -2095,6 +2195,7 @@ a { color: inherit; text-decoration: none; }
 
 <!-- &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; ADD-ONS &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; -->
 <section class="addons">
+  <div class="section__label">Add-Ons &mdash; 007</div>
   <div class="addons__header">
     <h3 class="addons__title">Optional <em>add-ons.</em></h3>
     <p class="addons__sub">Bolt these onto any package &mdash; or start here.</p>
@@ -2148,7 +2249,7 @@ a { color: inherit; text-decoration: none; }
 <!-- &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; PROCESS &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; -->
 <section class="process" id="process">
   <div class="process__inner">
-    <div class="section__label">How It Works &mdash; 007</div>
+    <div class="section__label">How It Works &mdash; 008</div>
     <h2 class="section__title reveal">Simple process. <em>Done right.</em> Every time.</h2>
 
     <div class="process__steps">
@@ -2174,7 +2275,9 @@ a { color: inherit; text-decoration: none; }
         <div class="process__step-num">04 &mdash; Deliver</div>
         <h3 class="process__step-title">Everything handed over</h3>
         <p class="process__step-desc">Film edited and graded. Website built around it. Social clips formatted. Usage rights scoped clearly. Done.</p>
-        <p class="process__step-time">2&ndash;3 weeks after filming</p>
+        <!-- [MISSING: verified per-package turnaround figures] Was "2–3 weeks after filming";
+             replaced with the site-wide schedule wording until real figures are confirmed. -->
+        <p class="process__step-time">Schedule confirmed on the call</p>
       </div>
     </div>
   </div>
@@ -2185,7 +2288,7 @@ a { color: inherit; text-decoration: none; }
   <div class="music__inner">
     <div class="music__grid">
       <div class="reveal">
-        <div class="section__label">Rogue Tide &mdash; Current Release</div>
+        <div class="section__label">Rogue Tide &mdash; 009</div>
         <h2 class="music__title">The Clapping <em>Stopped.</em></h2>
         <p class="music__body">Written in solidarity with <strong>2,200 CUPE Nova Scotia long-term care workers</strong> &mdash; on strike across 24 homes from Yarmouth to Glace Bay.</p>
         <p class="music__body">During COVID, long-term care workers across Nova Scotia masked up, doubled shifts, and walked straight into outbreaks. When families were locked outside &mdash; they were in there. Holding hands. Sitting with people in their last hours so they wouldn't be alone.</p>
@@ -2206,9 +2309,12 @@ a { color: inherit; text-decoration: none; }
 
 <!-- &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; PRESS &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; -->
 <section class="press" id="press">
-  <div class="section__label">Press &amp; Media &mdash; 008</div>
+  <div class="section__label">Press &amp; Media &mdash; 010</div>
   <h2 class="section__title reveal">In the <em>record.</em></h2>
-  <p class="press__lede reveal reveal--delay-1">Coverage across broadcast, radio, and print &mdash; all in the studio's first four months.</p>
+  <!-- Time-bound founding framing ("all in the studio's first four months") removed as stale.
+       If a founding reference is wanted later, confirm the wording with Lucas first — insert no
+       founding claim without instruction. -->
+  <p class="press__lede reveal reveal--delay-1">Coverage across broadcast, radio, and print.</p>
 
   <div class="press__grid">
     <a href="https://porthawkesburyreporter.com/st-peters-video-studio-making-waves/" class="press__item" target="_blank" rel="noopener noreferrer">
@@ -2259,18 +2365,20 @@ a { color: inherit; text-decoration: none; }
 <!-- &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; CONTACT &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; -->
 <section class="section" id="contact">
   <div class="contact">
-    <p class="contact__kicker">Let's Begin &middot; 008</p>
+    <p class="contact__kicker">Let's Begin &middot; 011</p>
     <h2 class="contact__title">Let's make something <em>real.</em></h2>
     <p class="contact__body">Tourism operator, heritage organization, conservation group, broadcaster, or someone with a story worth telling &mdash; every project starts with a free 20-minute conversation with Lucas directly. No agency. No middleman.</p>
 
     <div class="contact__actions">
-      <a href="https://cal.com/lucasliamlegacy/discovery-call" target="_blank" rel="noopener noreferrer" class="btn btn--primary">Book a Discovery Call <span class="btn__arrow">&rarr;</span></a>
+      <a href="https://cal.com/lucasliamlegacy/discovery-call" target="_blank" rel="noopener noreferrer" class="btn btn--primary">Start a Project <span class="btn__arrow">&rarr;</span></a>
       <a href="#packages" class="btn btn--ghost">See the Packages</a>
     </div>
 
     <a href="mailto:lucasliamlegacystudios@gmail.com" class="contact__email">lucasliamlegacystudios@gmail.com</a>
   </div>
 </section>
+
+</main>
 
 <!-- &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; FOOTER &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; -->
 <footer class="foot">
@@ -2335,20 +2443,23 @@ const io = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-// Subtle nav shrink on scroll
+// Subtle nav shrink on scroll (skipped for reduced-motion users)
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let lastY = 0;
 const nav = document.querySelector('.nav');
 const navToggle = document.querySelector('.nav__toggle');
 const navLinks = document.querySelector('.nav__links');
-window.addEventListener('scroll', () => {
-  const y = window.scrollY;
-  if (y > 60) {
-    nav.style.padding = '0.85rem var(--edge)';
-  } else {
-    nav.style.padding = '1.25rem var(--edge)';
-  }
-  lastY = y;
-}, { passive: true });
+if (!prefersReducedMotion) {
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (y > 60) {
+      nav.style.padding = '0.85rem var(--edge)';
+    } else {
+      nav.style.padding = '1.25rem var(--edge)';
+    }
+    lastY = y;
+  }, { passive: true });
+}
 
 if (navToggle && navLinks) {
   navToggle.addEventListener('click', () => {
@@ -2373,7 +2484,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
       if (target) {
         e.preventDefault();
         const top = target.getBoundingClientRect().top + window.scrollY - 60;
-        window.scrollTo({ top, behavior: 'smooth' });
+        window.scrollTo({ top, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
       }
     }
   });

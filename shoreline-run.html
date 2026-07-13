@@ -6,6 +6,24 @@
 <title>Cod B&rsquo;y &amp; Puffy: Shoreline Run | Lucas &amp; Liam Legacy Studios</title>
 <meta name="description" content="A haunted Atlantic side-scroller about the stories the tide almost took. Early browser prototype from the Atlantic Cinematic Universe.">
 <link rel="canonical" href="https://lucasliamlegacy.com/shoreline-run.html">
+<link rel="icon" type="image/png" href="/favicon.png">
+
+<!-- Open Graph / Twitter (site OG pattern) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Lucas &amp; Liam Legacy Studios">
+<meta property="og:url" content="https://lucasliamlegacy.com/shoreline-run.html">
+<meta property="og:title" content="Cod B&rsquo;y &amp; Puffy: Shoreline Run | Lucas &amp; Liam Legacy Studios">
+<meta property="og:description" content="A haunted Atlantic side-scroller from the Atlantic Cinematic Universe &mdash; an early browser prototype.">
+<meta property="og:image" content="https://lucasliamlegacy.com/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_CA">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://lucasliamlegacy.com/shoreline-run.html">
+<meta name="twitter:title" content="Cod B&rsquo;y &amp; Puffy: Shoreline Run | Lucas &amp; Liam Legacy Studios">
+<meta name="twitter:description" content="A haunted Atlantic side-scroller about the stories the tide almost took.">
+<meta name="twitter:image" content="https://lucasliamlegacy.com/og-image.jpg">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -178,7 +196,7 @@ button:focus-visible {
   font-size: 0.74rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--ember);
+  color: var(--ember-deep); /* AA for small mono on paper */
 }
 
 .section--dark .eyebrow {
@@ -431,6 +449,12 @@ h3 {
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .btn, .nav__cta { transition: none; }
+  .btn:hover, .nav__cta:hover { transform: none; }
+}
+
 @media print {
   html,
   body {
@@ -476,10 +500,12 @@ h3 {
 
 <header class="nav" aria-label="Site navigation">
   <a class="nav__mark" href="index.html">Lucas <span>&amp;</span> Liam<span>.</span></a>
-  <nav class="nav__links" aria-label="Page navigation">
-    <a href="index.html">Home</a>
-    <a href="index.html#work">The Work</a>
-    <a href="story-packages.html">Story Packages</a>
+  <nav class="nav__links" aria-label="Site navigation">
+    <a href="index.html#work">Work</a>
+    <a href="index.html#packages">Packages</a>
+    <a href="index.html#process">Process</a>
+    <a href="index.html#press">Press</a>
+    <a href="index.html#studio">Studio</a>
   </nav>
   <a class="nav__cta" href="https://cal.com/lucasliamlegacy/discovery-call" target="_blank" rel="noopener noreferrer">Start a Project</a>
 </header>
@@ -625,13 +651,15 @@ h3 {
 </footer>
 
 <script>
-// Subtle nav shrink on scroll
-const nav = document.querySelector('.nav');
-window.addEventListener('scroll', () => {
-  nav.style.padding = window.scrollY > 60
-    ? '0.85rem var(--edge)'
-    : '1rem var(--edge)';
-}, { passive: true });
+// Subtle nav shrink on scroll (skipped for reduced-motion users)
+if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const nav = document.querySelector('.nav');
+  window.addEventListener('scroll', () => {
+    nav.style.padding = window.scrollY > 60
+      ? '0.85rem var(--edge)'
+      : '1rem var(--edge)';
+  }, { passive: true });
+}
 </script>
 
 </body>

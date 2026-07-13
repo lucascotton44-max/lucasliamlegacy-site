@@ -4,8 +4,26 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Story Packages | Lucas &amp; Liam Legacy Studios</title>
-<meta name="description" content="Cinematic story packages for Atlantic Canadian tourism, heritage, conservation, and community organizations. Brand films, documentary shorts, social cutdowns, websites, and story assets built from Cape Breton.">
+<meta name="description" content="Brand films, documentary shorts, live-event production, social cutdowns, and websites for Atlantic Canadian tourism, heritage, and community organizations.">
 <link rel="canonical" href="https://lucasliamlegacy.com/story-packages.html">
+<link rel="icon" type="image/png" href="/favicon.png">
+
+<!-- Open Graph / Twitter (site OG pattern) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Lucas &amp; Liam Legacy Studios">
+<meta property="og:url" content="https://lucasliamlegacy.com/story-packages.html">
+<meta property="og:title" content="Story Packages | Lucas &amp; Liam Legacy Studios">
+<meta property="og:description" content="Brand films, documentary shorts, live-event production, social cutdowns, and websites for Atlantic Canadian organizations.">
+<meta property="og:image" content="https://lucasliamlegacy.com/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_CA">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://lucasliamlegacy.com/story-packages.html">
+<meta name="twitter:title" content="Story Packages | Lucas &amp; Liam Legacy Studios">
+<meta name="twitter:description" content="Story packages for Atlantic Canadian tourism, heritage, conservation, and community organizations.">
+<meta name="twitter:image" content="https://lucasliamlegacy.com/og-image.jpg">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -160,6 +178,7 @@ button:focus-visible {
   position: relative;
   z-index: 1;
   padding: clamp(4rem, 8vw, 7rem) 0;
+  scroll-margin-top: 5rem; /* keep anchored section titles clear of the sticky nav */
 }
 
 .section--dark {
@@ -178,7 +197,7 @@ button:focus-visible {
   font-size: 0.74rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--ember);
+  color: var(--ember-deep); /* AA for small mono on paper */
 }
 
 .section--dark .eyebrow {
@@ -483,7 +502,11 @@ h3 {
   font-size: 0.74rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--ember);
+  color: var(--ember-deep); /* AA for small mono on paper */
+}
+
+.section--dark .link-card {
+  color: #d37a55; /* AA on ink */
 }
 
 .link-card::after {
@@ -609,6 +632,12 @@ h3 {
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .btn, .nav__cta { transition: none; }
+  .btn:hover, .nav__cta:hover { transform: none; }
+}
+
 @media print {
   html,
   body {
@@ -663,14 +692,14 @@ h3 {
 <body>
 <header class="nav" aria-label="Site navigation">
   <a class="nav__mark" href="index.html">Lucas <span>&amp;</span> Liam<span>.</span></a>
-  <nav class="nav__links" aria-label="Page navigation">
-    <a href="index.html">Home</a>
+  <nav class="nav__links" aria-label="Site navigation">
+    <a href="index.html#work">Work</a>
     <a href="#packages">Packages</a>
-    <a href="#proof">Proof</a>
     <a href="#process">Process</a>
-    <a href="#scope">Scope</a>
+    <a href="index.html#press">Press</a>
+    <a href="index.html#studio">Studio</a>
   </nav>
-  <a class="nav__cta" href="https://cal.com/lucasliamlegacy/discovery-call" target="_blank" rel="noopener noreferrer">Book a Discovery Call</a>
+  <a class="nav__cta" href="https://cal.com/lucasliamlegacy/discovery-call" target="_blank" rel="noopener noreferrer">Start a Project</a>
 </header>
 
 <main>
@@ -739,7 +768,10 @@ h3 {
     <div class="wrap">
       <p class="eyebrow">Package comparison</p>
       <h2 id="packages-title">Choose the level of story asset the project actually needs.</h2>
-      <p class="lede">All prices are starting points. Final scope is confirmed after the discovery call.</p>
+      <!-- [MISSING: verified per-package turnaround figures] Specific timelines ("2–3 weeks",
+           "3–5 weeks") removed; reinstate concrete figures only once confirmed. Site-wide public
+           wording: "Project schedules are confirmed after the discovery call." -->
+      <p class="lede">All prices are starting points. Project schedules are confirmed after the discovery call.</p>
 
       <div class="comparison-wrap" role="region" aria-label="Package comparison table" tabindex="0">
         <table class="comparison">
@@ -759,7 +791,7 @@ h3 {
               <td>Starting at $1,800</td>
               <td>One clear cinematic piece to introduce the story</td>
               <td>60&ndash;90 second cinematic short</td>
-              <td>Approximately 2&ndash;3 weeks after filming</td>
+              <td>Confirmed after the discovery call</td>
               <td>One round</td>
             </tr>
             <tr>
@@ -767,7 +799,7 @@ h3 {
               <td>Starting at $3,500</td>
               <td>Businesses or organizations that need a flagship story film</td>
               <td>2&ndash;3 minute cinematic brand film</td>
-              <td>Approximately 3&ndash;5 weeks depending on scope</td>
+              <td>Confirmed after the discovery call</td>
               <td>Two rounds</td>
             </tr>
             <tr>
@@ -775,7 +807,7 @@ h3 {
               <td>Starting at $6,500</td>
               <td>Operators who need both a film and stronger web presence</td>
               <td>Film + 5-page website</td>
-              <td>Quoted after discovery call</td>
+              <td>Confirmed after the discovery call</td>
               <td>Two rounds</td>
             </tr>
             <tr>
@@ -783,7 +815,15 @@ h3 {
               <td>Starting at $10,000</td>
               <td>Heritage, conservation, public-interest, and community projects</td>
               <td>10&ndash;20 minute documentary short</td>
-              <td>Quoted after discovery call</td>
+              <td>Confirmed after the discovery call</td>
+              <td>Scoped in quote</td>
+            </tr>
+            <tr>
+              <td><strong>Live Event Production</strong></td>
+              <td>Custom &middot; quoted per event</td>
+              <td>Events that need multi-camera live-stream coverage of the day itself</td>
+              <td>Multi-camera live-stream + full replay, scoped per event</td>
+              <td>Confirmed after the discovery call</td>
               <td>Scoped in quote</td>
             </tr>
           </tbody>
@@ -804,7 +844,7 @@ h3 {
             <li>One revision round</li>
             <li>Promotional usage rights for client-owned web, social, email, and presentation use</li>
           </ul>
-          <p class="muted"><strong>Timeline:</strong> approximately 2&ndash;3 weeks after filming.</p>
+          <p class="muted"><strong>Timeline:</strong> confirmed after the discovery call.</p>
         </article>
 
         <article class="package">
@@ -820,7 +860,7 @@ h3 {
             <li>Two revision rounds</li>
             <li>Promotional usage rights for client-owned web, social, email, and presentation use</li>
           </ul>
-          <p class="muted"><strong>Timeline:</strong> approximately 3&ndash;5 weeks depending on scope.</p>
+          <p class="muted"><strong>Timeline:</strong> confirmed after the discovery call.</p>
         </article>
 
         <article class="package">
@@ -838,7 +878,7 @@ h3 {
             <li>SEO foundation</li>
             <li>Two revision rounds</li>
           </ul>
-          <p class="muted"><strong>Timeline:</strong> quoted after discovery call.</p>
+          <p class="muted"><strong>Timeline:</strong> confirmed after the discovery call.</p>
         </article>
 
         <article class="package">
@@ -856,7 +896,28 @@ h3 {
             <li>Digital archive companion page</li>
             <li>Grant-aligned project materials can be scoped where useful</li>
           </ul>
-          <p class="muted"><strong>Timeline:</strong> quoted after discovery call.</p>
+          <p class="muted"><strong>Timeline:</strong> confirmed after the discovery call.</p>
+        </article>
+
+        <!-- Live Event Production: offered capability, custom quoted. Capability framing only —
+             never name a specific past or upcoming event, and no results/attendance/client names. -->
+        <article class="package">
+          <div class="package__num">Package 05</div>
+          <h3>Live Event Production</h3>
+          <div class="package__price">Custom</div>
+          <p class="muted">Quoted per event</p>
+          <p><strong>Best for:</strong> events that need multi-camera live-stream coverage of the day itself.</p>
+          <p><strong>Main deliverable:</strong> multi-camera live-stream coverage for community events, fundraisers, ceremonies, and performances &mdash; planned with you, filmed on site, delivered as a replayable record.</p>
+          <ul>
+            <li>Multi-camera coverage &mdash; hardwired + roaming (scope depends on the event)</li>
+            <li>Live switching</li>
+            <li>Professional event audio &mdash; announcer + ambient</li>
+            <li>Stream graphics package</li>
+            <li>Full replay delivery</li>
+            <li>Optional highlight edits</li>
+          </ul>
+          <p class="muted"><strong>Timeline:</strong> confirmed after the discovery call.</p>
+          <a class="link-card" href="#live-events">Full live production detail</a>
         </article>
       </div>
 
@@ -879,6 +940,42 @@ h3 {
     </div>
   </section>
 
+  <!-- Live Event Production: offered capability only. Never name a specific past or upcoming
+       event here; no results, attendance figures, or client names. "Live-stream," not
+       "broadcast" — the delivery spec is a multi-camera livestream. -->
+  <section class="section" id="live-events" aria-labelledby="live-events-title">
+    <div class="wrap">
+      <p class="eyebrow">Live Event Production</p>
+      <h2 id="live-events-title">Multi-camera live-stream coverage, planned around your event.</h2>
+      <p class="lede">For community events, fundraisers, ceremonies, and performances &mdash; planned with you, filmed on site, and delivered as a replayable record. Custom pricing, quoted per event.</p>
+
+      <h3 class="subsection-heading">What a production can include</h3>
+      <p class="muted">Scope depends on the event.</p>
+      <div class="grid">
+        <article class="card"><h3>Multi-camera coverage</h3><p>Hardwired and roaming cameras placed around the venue.</p></article>
+        <article class="card"><h3>Live switching</h3><p>Camera feeds cut live as the event unfolds.</p></article>
+        <article class="card"><h3>Professional event audio</h3><p>Announcer and ambient sound, mixed for the stream.</p></article>
+        <article class="card"><h3>Stream graphics package</h3><p>Starting-soon, sponsor, thank-you, and outro cards.</p></article>
+        <article class="card"><h3>Full replay delivery</h3><p>The complete event delivered as a watchable replay.</p></article>
+        <article class="card"><h3>Optional highlight edits</h3><p>Short cuts from the day, ready for later use.</p></article>
+      </div>
+
+      <h3 class="subsection-heading">What that does for the event</h3>
+      <ul class="statement-list">
+        <li>Remote audiences can watch from anywhere.</li>
+        <li>The event is preserved as a replayable asset.</li>
+        <li>Sponsors and stakeholders get visibility on stream.</li>
+        <li>Organizers keep a public-facing media asset afterward.</li>
+      </ul>
+
+      <p class="note">Final scope depends on venue, event length, camera count, audio needs, internet availability, and distribution platform. Pricing is custom and quoted per event.</p>
+
+      <div class="cta-row">
+        <a class="btn btn--primary" href="https://cal.com/lucasliamlegacy/discovery-call" target="_blank" rel="noopener noreferrer">Plan a Live Production <span aria-hidden="true">&rarr;</span></a>
+      </div>
+    </div>
+  </section>
+
   <section class="section section--dark" id="proof" aria-labelledby="proof-title">
     <div class="wrap">
       <p class="eyebrow">Selected proof signals</p>
@@ -890,7 +987,9 @@ h3 {
         <span class="signal">101.5 The Hawk &mdash; East Coast Rising</span>
         <span class="signal">Port Hawkesbury Reporter coverage</span>
         <span class="signal">Atlantic Cinematic Universe / Cod B&rsquo;y / Puffy / Rogue Tide</span>
-        <span class="signal">The Land Yacht and FlowEdge as active/in-production tourism work</span>
+        <span class="signal">The Land Yacht &mdash; completed tourism campaign</span>
+        <span class="signal">FlowEdge &mdash; in-production tourism work</span>
+        <span class="signal">Multi-camera live-event production</span>
       </div>
 
       <h3>Selected samples</h3>
