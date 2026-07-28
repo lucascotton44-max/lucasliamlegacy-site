@@ -1,0 +1,1714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#000000">
+<title>One Sky — a shared shooting star tracker for the Maritimes</title>
+<meta name="description" content="When someone in the Maritimes sees a shooting star and taps the button, it flies for everyone watching. A live shared night sky over Cape Breton.">
+<meta property="og:title" content="One Sky — a shared shooting star tracker">
+<meta property="og:description" content="Report a shooting star and it flies for everyone watching. One sky, the whole Maritimes under it.">
+<meta property="og:type" content="website"><meta property="og:url" content="https://lucasliamlegacy.com/sky/">
+<meta property="og:site_name" content="Lucas & Liam Legacy Studios">
+<meta property="og:image" content="https://lucasliamlegacy.com/sky/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A Cape Breton night sky over the Atlantic, a shooting star crossing above the spruce treeline.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://lucasliamlegacy.com/sky/og.png">
+<meta name="author" content="Lucas &amp; Liam Legacy Studios">
+<style>
+  :root { color-scheme: dark; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: #000; overflow: hidden;
+    overscroll-behavior: none; touch-action: none;
+  }
+  #sky { display: block; width: 100vw; height: 100vh; height: 100dvh; }
+  #curtain {
+    position: fixed; inset: 0; background: #000;
+    pointer-events: none; opacity: 1;
+    transition: opacity 2400ms ease-out;
+  }
+  #curtain.lift { opacity: 0; }
+  /* Report UI. The sky is the product; everything here stays dark and small. */
+  #reportBar {
+    position: fixed; left: 50%;
+    bottom: calc(18px + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    z-index: 5;
+  }
+  #community {
+    appearance: none; -webkit-appearance: none;
+    padding: 7px 28px 7px 13px; border-radius: 999px;
+    background: rgba(8, 12, 22, 0.45)
+      url("data:image/svg+xml;utf8,<svg%20xmlns='http://www.w3.org/2000/svg'%20width='10'%20height='6'><path%20d='M1%201l4%204%204-4'%20stroke='%238d97ad'%20stroke-width='1.5'%20fill='none'/></svg>")
+      no-repeat right 11px center;
+    border: 1px solid rgba(130, 150, 190, 0.20);
+    color: #8d97ad;
+    font: 400 12.5px/1 ui-sans-serif, -apple-system, system-ui, sans-serif;
+    max-width: 250px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #community:focus-visible { outline: 2px solid rgba(150, 170, 210, 0.55); outline-offset: 2px; }
+  #report {
+    padding: 15px 32px; border-radius: 999px;
+    background: rgba(10, 15, 26, 0.62);
+    border: 1px solid rgba(140, 160, 200, 0.35);
+    color: #d8dfec;
+    font: 600 16.5px/1 ui-sans-serif, -apple-system, system-ui, sans-serif;
+    letter-spacing: 0.01em;
+    cursor: pointer; user-select: none; -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px);
+    transition: transform 120ms ease, background 120ms ease, opacity 200ms ease;
+    touch-action: manipulation;
+  }
+  #report:active { transform: scale(0.95); background: rgba(14, 20, 34, 0.72); }
+  #report:disabled { opacity: 0.55; cursor: default; }
+  #report:focus-visible { outline: 2px solid rgba(150, 170, 210, 0.6); outline-offset: 3px; }
+  #countChip {
+    position: fixed; top: calc(12px + env(safe-area-inset-top)); right: 12px;
+    padding: 8px 14px; border-radius: 999px;
+    background: rgba(8, 12, 22, 0.5);
+    border: 1px solid rgba(130, 150, 190, 0.22);
+    color: #a9b3c8;
+    font: 500 13px/1 ui-sans-serif, -apple-system, system-ui, sans-serif;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    z-index: 5; touch-action: manipulation;
+  }
+  #countChip b { color: #dbe2f0; font-weight: 600; }
+  #countChip:focus-visible { outline: 2px solid rgba(150, 170, 210, 0.55); outline-offset: 2px; }
+  #feed {
+    position: fixed; top: calc(52px + env(safe-area-inset-top)); right: 12px;
+    width: min(78vw, 252px); max-height: 46vh; overflow-y: auto;
+    background: rgba(6, 10, 18, 0.74);
+    border: 1px solid rgba(130, 150, 190, 0.20);
+    border-radius: 14px; padding: 11px 13px;
+    color: #97a1b6;
+    font: 400 12.5px/1.5 ui-sans-serif, -apple-system, system-ui, sans-serif;
+    opacity: 0; pointer-events: none; transform: translateY(-6px);
+    transition: opacity 180ms ease, transform 180ms ease;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    z-index: 5;
+  }
+  #feed.open { opacity: 1; pointer-events: auto; transform: none; }
+  #feed .head { font-weight: 600; font-size: 12px; color: #b7c1d6; letter-spacing: 0.03em; padding-bottom: 5px; }
+  #feed .row { display: flex; justify-content: space-between; gap: 10px; padding: 5px 0; border-top: 1px solid rgba(130, 150, 190, 0.10); }
+  #feed .note { padding-top: 8px; color: #6d7890; font-size: 11.5px; }
+  #toast {
+    position: fixed; top: calc(14px + env(safe-area-inset-top)); left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    padding: 9px 17px; border-radius: 999px;
+    background: rgba(8, 12, 22, 0.68);
+    border: 1px solid rgba(130, 150, 190, 0.24);
+    color: #c4cde0;
+    font: 500 13px/1 ui-sans-serif, -apple-system, system-ui, sans-serif;
+    white-space: nowrap; opacity: 0; pointer-events: none;
+    transition: opacity 350ms ease, transform 350ms ease;
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    z-index: 6;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%); }
+  #showerNote {
+    font: 400 12px/1.4 ui-sans-serif, -apple-system, system-ui, sans-serif;
+    color: #8f99ae; text-align: center;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    padding: 0 10px; max-width: 300px;
+  }
+  #showerNote:empty { display: none; }
+  @keyframes reportPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(150, 170, 220, 0); border-color: rgba(140, 160, 200, 0.35); }
+    50% { box-shadow: 0 0 18px 2px rgba(150, 170, 220, 0.28); border-color: rgba(172, 190, 228, 0.62); }
+  }
+  #report.pulse { animation: reportPulse 3s ease-in-out infinite; }
+  @media (prefers-reduced-motion: reduce) { #report.pulse { animation: none; } }
+  #soundBtn {
+    position: fixed; left: 14px;
+    bottom: calc(20px + env(safe-area-inset-bottom));
+    width: 42px; height: 42px; border-radius: 50%;
+    background: rgba(8, 12, 22, 0.5);
+    border: 1px solid rgba(130, 150, 190, 0.22);
+    color: #6f7a90; font-size: 16px; line-height: 40px; text-align: center;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    transition: color 200ms ease, border-color 200ms ease;
+    z-index: 5; touch-action: manipulation; padding: 0;
+  }
+  #soundBtn.on { color: #d8dfec; border-color: rgba(160, 180, 220, 0.5); }
+  #soundBtn:focus-visible { outline: 2px solid rgba(150, 170, 210, 0.55); outline-offset: 2px; }
+  #intro {
+    position: fixed; inset: 0; z-index: 8;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0, 0, 0, 0.44);
+    opacity: 0; pointer-events: none;
+    transition: opacity 700ms ease;
+  }
+  #intro.show { opacity: 1; pointer-events: auto; }
+  #intro .box {
+    max-width: min(84vw, 330px); text-align: center;
+    padding: 26px 26px 22px;
+    background: rgba(8, 11, 18, 0.74);
+    border: 1px solid rgba(130, 150, 190, 0.22);
+    border-radius: 18px;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  }
+  /* Studio credit. Top-left is the one corner nothing else occupies, and a
+     watermark is the right weight for this — the sky is still the product. */
+  #credit {
+    position: fixed;
+    top: calc(13px + env(safe-area-inset-top)); left: 14px;
+    z-index: 5; text-decoration: none;
+    opacity: 0; transition: opacity 1200ms ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #credit.show { opacity: 0.40; }
+  #credit:hover, #credit:focus-visible { opacity: 0.85; }
+  #credit span { display: block; text-shadow: 0 1px 5px rgba(0, 0, 0, 0.9); }
+  #credit .studio {
+    font: 400 12.5px/1.35 "Fraunces", Georgia, "Times New Roman", serif;
+    color: #ddd3c3; letter-spacing: 0.03em;
+  }
+  #credit .place {
+    font: 400 9.5px/1.35 ui-sans-serif, -apple-system, system-ui, sans-serif;
+    color: #8b93a6; letter-spacing: 0.11em; text-transform: uppercase;
+  }
+  #intro p {
+    margin: 0 0 18px;
+    font: 400 15px/1.6 ui-sans-serif, -apple-system, system-ui, sans-serif;
+    color: #c3cbdc;
+  }
+  #introGo {
+    padding: 12px 26px; border-radius: 999px;
+    background: rgba(16, 22, 36, 0.8);
+    border: 1px solid rgba(150, 170, 210, 0.4);
+    color: #dde3f0;
+    font: 600 15px/1 ui-sans-serif, -apple-system, system-ui, sans-serif;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  #fallback {
+    position: fixed; inset: 0; display: none;
+    align-items: center; justify-content: center;
+    padding: 2rem; text-align: center;
+    font: 400 15px/1.6 ui-sans-serif, -apple-system, system-ui, sans-serif;
+    color: #7b8497; background: #05070f;
+  }
+</style>
+</head>
+<body>
+<canvas id="sky"></canvas>
+<div id="curtain"></div>
+<div id="reportBar">
+  <div id="showerNote"></div>
+  <select id="community" aria-label="Where are you watching from?">
+    <option value="">Where are you watching from?</option>
+  </select>
+  <button id="report" type="button">I saw one ⭐</button>
+</div>
+<button id="countChip" type="button" aria-expanded="false" aria-controls="feed">✦ <b id="countN">0</b> tonight</button>
+<div id="feed" role="log" aria-label="Recent sightings"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<a id="credit" href="https://lucasliamlegacy.com" target="_blank" rel="noopener noreferrer">
+  <span class="studio">Lucas &amp; Liam Legacy Studios</span>
+  <span class="place">St. Peter&rsquo;s, Cape Breton</span>
+</a>
+<button id="soundBtn" type="button" aria-pressed="false" aria-label="Turn on shore sound">&#9834;</button>
+<div id="intro" role="dialog" aria-label="About this sky">
+  <div class="box">
+    <p>When someone under this sky sees a shooting star and taps the button, it flies for everyone watching. One sky, the whole Maritimes under it.</p>
+    <button id="introGo" type="button">Look up &#11088;</button>
+  </div>
+</div>
+<div id="fallback">This scene needs WebGL. Try a different browser, or turn on hardware acceleration.</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  /* ----------------------------------------------------------------------
+     CONFIGURATION — paste the two values from your Supabase project here.
+     Dashboard → Project Settings → API Keys → "Publishable key".
+     (Supabase renamed this: it used to be called the anon key. Same thing,
+     same permissions, same RLS role. The legacy anon key still works but
+     is being retired at the end of 2026.)
+
+     A publishable key is MEANT to sit in public HTML — the row-level
+     security policies are what protect the data, not the key. Never paste
+     a secret or service_role key into this file; those bypass every policy.
+
+     Until these are filled in, the sky runs in solo mode.
+     ---------------------------------------------------------------------- */
+ var SUPABASE_URL = 'https://qcwaldfxpuzburhoyayh.supabase.co';
+var SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_ZiEldowy-aBZsdTM_OO2Fg_PtddStwI';
+</script>
+<script>
+(function () {
+  'use strict';
+
+  // ==========================================================================
+  //  ATLANTIC NIGHT SKY — SCENE FOUNDATION (rev 2)
+  //
+  //  Vantage: a Cape Breton shoreline, looking southeast over the Atlantic.
+  //  Scale is honest: 1 unit = 1 metre, eye height 2 m, so the water plane
+  //  ends at the true 5 km sea horizon for that eye height.
+  //
+  //  Three things carry the realism, in order of how much they matter:
+  //   1. The Milky Way is STAR DENSITY, not a painted texture. A dim, narrow
+  //      glow shell sits under ~16,000 tiny points clustered on the galactic
+  //      plane. Painting it as a texture is what makes CG skies look overcast.
+  //   2. Atmospheric extinction — stars dim and redden into the horizon haze.
+  //   3. A steep magnitude hierarchy. Most stars are barely there; a few
+  //      dozen carry the whole sky. Uniform dots read as a sprinkle.
+  //
+  //  Extension point for Prompt 2: `window.Scene` at the bottom.
+  // ==========================================================================
+
+  var canvas = document.getElementById('sky');
+  var curtain = document.getElementById('curtain');
+  if (!window.THREE) { document.getElementById('fallback').style.display = 'flex'; return; }
+
+  var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // --- Site constants ------------------------------------------------------
+  var EYE_HEIGHT   = 2.0;
+  var HORIZON_DIST = 5000;
+  var DOME_R       = 12000;
+  var STAR_R       = 9000;
+  var MW_R         = 8500;
+  var LATITUDE     = 45.65 * Math.PI / 180;   // St. Peter's, Cape Breton
+
+  // Facing southeast: north is 135 deg to the left, celestial pole at latitude.
+  var VIEW_AZIMUTH = -135 * Math.PI / 180;
+  var POLE = new THREE.Vector3(
+    Math.sin(VIEW_AZIMUTH) * Math.cos(LATITUDE),
+    Math.sin(LATITUDE),
+    -Math.cos(VIEW_AZIMUTH) * Math.cos(LATITUDE)
+  ).normalize();
+
+  // Thin crescent moon, low and left. Faint enough not to kill the Milky Way.
+  // The moon sits in the open-water notch between the treeline and the
+  // headland (az -3 deg), so its halo and glitter path land in the one part
+  // of the frame with visible sea. At -36 deg both were hidden behind trees.
+  var MOON_AZIMUTH = -3 * Math.PI / 180;
+  var MOON_DIR = new THREE.Vector3(
+    Math.sin(MOON_AZIMUTH) * Math.cos(0.175),
+    Math.sin(0.175),
+    -Math.cos(MOON_AZIMUTH) * Math.cos(0.175)
+  ).normalize();
+  var GLITTER_AXIS = new THREE.Vector2(MOON_DIR.x, MOON_DIR.z).normalize();
+
+  var SKY_RATE = (REDUCED ? 0 : 4) * (2 * Math.PI) / 86164;   // ~4x sidereal
+
+  // --- Deterministic RNG: the same sky every visit -------------------------
+  var seed = 20260812;
+  function rnd() {
+    seed = (seed * 1664525 + 1013904223) % 4294967296;
+    return seed / 4294967296;
+  }
+  function gauss() {
+    var u = 1 - rnd(), v = rnd();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+  }
+
+  // --- Renderer ------------------------------------------------------------
+  var renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({
+      canvas: canvas, antialias: window.devicePixelRatio < 2,
+      alpha: false, powerPreference: 'high-performance', stencil: false
+    });
+  } catch (e) {
+    document.getElementById('fallback').style.display = 'flex';
+    return;
+  }
+  var DPR = Math.min(window.devicePixelRatio || 1, 2);
+  renderer.setPixelRatio(DPR);
+  renderer.setClearColor(0x000000, 1);
+
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(70, 1, 1, 20000);
+  camera.position.set(0, EYE_HEIGHT, 0);
+  camera.rotation.order = 'YXZ';
+  var BASE_PITCH = 22 * Math.PI / 180;   // set properly in resize()
+  var BASE_YAW = 0;
+
+  var skyBox   = new THREE.Group(); skyBox.position.y   = EYE_HEIGHT; scene.add(skyBox);
+  var skyGroup = new THREE.Group(); skyGroup.position.y = EYE_HEIGHT; scene.add(skyGroup);
+
+  // ==========================================================================
+  //  1. SKY DOME
+  //  Much darker than instinct suggests. A real dark-sky night is nearly
+  //  black — every bit of lift here costs star contrast directly.
+  // ==========================================================================
+  var HORIZON_RGB = new THREE.Vector3(0.0215, 0.0285, 0.0545);
+
+  var domeMat = new THREE.ShaderMaterial({
+    side: THREE.BackSide, depthWrite: false, fog: false,
+    uniforms: {
+      uMoonDir: { value: MOON_DIR.clone() },
+      uTownDir: { value: new THREE.Vector3(Math.sin(0.70), 0, -Math.cos(0.70)).normalize() },
+      uMoonGlow: { value: 1.0 }
+    },
+    vertexShader: [
+      'varying vec3 vDir;',
+      'void main(){ vDir = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }'
+    ].join('\n'),
+    fragmentShader: [
+      'varying vec3 vDir;',
+      'uniform vec3 uMoonDir; uniform vec3 uTownDir; uniform float uMoonGlow;',
+      'float hash21(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453); }',
+      'void main(){',
+      '  vec3 d = normalize(vDir);',
+      '  float h = d.y;',
+      '  vec3 zenith  = vec3(0.0052, 0.0072, 0.0190);',
+      '  vec3 horizon = vec3(0.0215, 0.0285, 0.0545);',
+      '  vec3 col = mix(horizon, zenith, smoothstep(-0.04, 0.66, h));',
+      // Airglow: a thin band lifted just above the sea horizon.
+      '  col += vec3(0.0125, 0.0165, 0.0215) * exp(-pow((h - 0.028) / 0.095, 2.0));',
+      // Low crescent moon: halo only, no disc until Prompt 4.
+      '  float md = max(dot(d, normalize(uMoonDir)), 0.0);',
+      '  col += vec3(0.080, 0.086, 0.104) * pow(md, 48.0) * 0.60 * uMoonGlow;',
+      '  col += vec3(0.021, 0.025, 0.037) * pow(md,  7.0) * 0.36 * uMoonGlow;',
+      // Sodium wash from a town behind the headland. Tight to the horizon.
+      '  float tz = max(dot(normalize(vec3(d.x, 0.0, d.z)), uTownDir), 0.0);',
+      '  col += vec3(0.105, 0.058, 0.022) * pow(tz, 12.0)',
+      '       * exp(-pow(max(h, 0.0) / 0.048, 2.0)) * 0.40;',
+      // Dither. Dark gradients band badly on 8-bit mobile panels.
+      '  col += (hash21(gl_FragCoord.xy) - 0.5) * 0.0035;',
+      '  gl_FragColor = vec4(col, 1.0);',
+      '}'
+    ].join('\n')
+  });
+  var dome = new THREE.Mesh(new THREE.SphereGeometry(DOME_R, 48, 32), domeMat);
+  dome.renderOrder = -10;
+  skyBox.add(dome);
+
+  // ==========================================================================
+  //  2. MILKY WAY GLOW SHELL
+  //  Deliberately faint and narrow. It only has to hint that something is
+  //  behind the star haze; the haze itself does the visible work.
+  // ==========================================================================
+  var BAND_NORMAL = new THREE.Vector3(0.80, 0.30, 0.52).normalize();
+  var BAND_SIGMA = 0.15;   // in normalized texture-v units (~13 deg half-width)
+
+  function makeMilkyWayTexture() {
+    var W = 1024, H = 512;
+    var c = document.createElement('canvas'); c.width = W; c.height = H;
+    var ctx = c.getContext('2d');
+    var img = ctx.createImageData(W, H);
+    var px = img.data;
+
+    // Integer hash, not Math.sin — this runs ~20M times and sin is the
+    // difference between a 200 ms build and a 2 s freeze on a phone.
+    function h2(x, y, period) {
+      x = ((x % period) + period) % period;
+      var n = (x * 374761393 + y * 668265263) | 0;
+      n = Math.imul(n ^ (n >>> 13), 1274126177) | 0;
+      return ((n ^ (n >>> 16)) >>> 0) / 4294967296;
+    }
+    function vnoise(x, y, period) {
+      var xi = Math.floor(x), yi = Math.floor(y);
+      var xf = x - xi, yf = y - yi;
+      var u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
+      var a = h2(xi, yi, period),      b = h2(xi + 1, yi, period);
+      var cc = h2(xi, yi + 1, period), d = h2(xi + 1, yi + 1, period);
+      return a * (1 - u) * (1 - v) + b * u * (1 - v) + cc * (1 - u) * v + d * u * v;
+    }
+    // `span` = how far the x argument travels across the texture. It must
+    // scale with each octave or the sphere shows a vertical seam.
+    function fbm(x, y, oct, span) {
+      var s = 0, amp = 0.5, f = 1;
+      for (var i = 0; i < oct; i++) { s += amp * vnoise(x * f, y * f, span * f); f *= 2; amp *= 0.5; }
+      return s;
+    }
+
+    // The band's centreline wanders. Precomputed per column — it has no y term.
+    var wob = new Float32Array(W);
+    for (var wx = 0; wx < W; wx++) wob[wx] = (fbm((wx / W) * 16, 3.7, 3, 16) - 0.5) * 0.26;
+
+    for (var y = 0; y < H; y++) {
+      var ny = (y / H) * 2 - 1;
+      for (var x = 0; x < W; x++) {
+        var u0 = x / W;
+        var t = (ny - wob[x]) / BAND_SIGMA;
+        var core = Math.exp(-t * t);
+
+        var clump = fbm(u0 * 96, ny * 9.0 + 11.0, 5, 96);
+        var rift  = fbm(u0 * 40, ny * 4.5 + 41.0, 4, 40);
+
+        // The Great Rift — dark dust cutting the band lengthwise. Without
+        // this the band reads as cloud rather than galaxy.
+        var lane = Math.exp(-Math.pow((t + 0.35) / 0.55, 2.0));
+        var dust = 1.0 - lane * (0.45 + rift * 0.50);
+
+        var v = core * (0.20 + clump * 1.15) * dust;
+        v = Math.max(0, Math.min(1, v)) * 0.30;
+
+        var i4 = (y * W + x) * 4;
+        px[i4]     = (v * 200) | 0;
+        px[i4 + 1] = (v * 194) | 0;
+        px[i4 + 2] = (v * 210) | 0;
+        px[i4 + 3] = 255;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+
+    var tex = new THREE.CanvasTexture(c);
+    tex.wrapS = THREE.RepeatWrapping;
+    tex.wrapT = THREE.ClampToEdgeWrapping;
+    tex.minFilter = THREE.LinearFilter;
+    tex.magFilter = THREE.LinearFilter;
+    tex.generateMipmaps = false;
+    return tex;
+  }
+
+  var mw = new THREE.Mesh(
+    new THREE.SphereGeometry(MW_R, 64, 40),
+    new THREE.ShaderMaterial({
+      // depthTest stays ON: transparent objects always render after opaque
+      // ones in three.js regardless of renderOrder, so without it the sky
+      // paints straight over the treeline.
+      side: THREE.BackSide, transparent: true, depthWrite: false, depthTest: true,
+      blending: THREE.AdditiveBlending,
+      uniforms: { uMap: { value: makeMilkyWayTexture() } },
+      vertexShader: [
+        'varying vec2 vUv; varying vec3 vWorld;',
+        'void main(){ vUv = uv; vWorld = (modelMatrix * vec4(position,1.0)).xyz;',
+        '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }'
+      ].join('\n'),
+      fragmentShader: [
+        'varying vec2 vUv; varying vec3 vWorld;',
+        'uniform sampler2D uMap;',
+        'void main(){',
+        '  vec3 t = texture2D(uMap, vUv).rgb;',
+        '  float alt = normalize(vWorld).y;',
+        '  float ext = smoothstep(-0.01, 0.40, alt);',
+        '  gl_FragColor = vec4(t * ext * 0.38, 1.0);',
+        '}'
+      ].join('\n')
+    })
+  );
+  mw.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), BAND_NORMAL);
+  mw.renderOrder = -6;
+  skyGroup.add(mw);
+
+  // ==========================================================================
+  //  3. STARFIELDS
+  //  Two point systems sharing one shader: the resolved stars, and a dense
+  //  faint haze concentrated on the galactic plane.
+  // ==========================================================================
+  function starMaterial(bright) {
+    return new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, depthTest: true,
+      blending: THREE.AdditiveBlending,
+      uniforms: {
+        uTime:    { value: 0 },
+        uDpr:     { value: DPR },
+        uTwinkle: { value: REDUCED ? 0.0 : 1.0 },
+        uBright:  { value: bright }
+      },
+      vertexShader: [
+        'attribute vec3 aColor; attribute float aSize; attribute float aPhase; attribute float aSpeed;',
+        'uniform float uTime; uniform float uDpr; uniform float uTwinkle; uniform float uBright;',
+        'varying vec3 vColor; varying float vAlpha;',
+        'void main(){',
+        '  vec4 world = modelMatrix * vec4(position, 1.0);',
+        '  float alt = normalize(world.xyz).y;',
+        // Extinction: hard cut in the last degrees, then a gentler ramp.
+        '  float ext = smoothstep(-0.012, 0.055, alt);',
+        '  ext *= 0.50 + 0.50 * smoothstep(0.02, 0.55, alt);',
+        // Reddening is only strong below ~10 deg, not halfway up the sky.
+        '  vColor = mix(vec3(1.0, 0.66, 0.40), aColor, clamp(alt * 6.5, 0.0, 1.0));',
+        '  float tw = 1.0 - uTwinkle * 0.34 * (0.5 + 0.5 * sin(uTime * aSpeed + aPhase));',
+        '  vAlpha = ext * tw * uBright;',
+        '  gl_PointSize = aSize * uDpr * (0.84 + 0.16 * tw);',
+        '  gl_Position = projectionMatrix * viewMatrix * world;',
+        '}'
+      ].join('\n'),
+      fragmentShader: [
+        'varying vec3 vColor; varying float vAlpha;',
+        'void main(){',
+        '  vec2 uv = gl_PointCoord - 0.5;',
+        '  float d = dot(uv, uv);',
+        // A small saturated core with a wide soft glare. The core has to stay
+        // tight — widen it and the bright stars render as visible discs.
+        '  float core = smoothstep(0.05, 0.0, d);',
+        '  float glare = exp(-d * 9.0);',
+        '  float a = (core * 0.95 + glare * 0.40) * vAlpha;',
+        '  if (a < 0.004) discard;',
+        '  gl_FragColor = vec4(vColor, a);',
+        '}'
+      ].join('\n')
+    });
+  }
+
+  // Orthonormal frame on the galactic plane, for biased sampling.
+  var bU = new THREE.Vector3(1, 0, 0);
+  if (Math.abs(BAND_NORMAL.dot(bU)) > 0.9) bU.set(0, 0, 1);
+  bU.crossVectors(BAND_NORMAL, bU).normalize();
+  var bV = new THREE.Vector3().crossVectors(BAND_NORMAL, bU).normalize();
+  var tmp = new THREE.Vector3();
+
+  function sampleDir(bandChance, sigma) {
+    for (var guard = 0; guard < 200; guard++) {
+      if (rnd() < bandChance) {
+        var a = rnd() * Math.PI * 2;
+        var off = gauss() * sigma;
+        var co = Math.cos(off), so = Math.sin(off);
+        tmp.set(0, 0, 0)
+          .addScaledVector(bU, Math.cos(a) * co)
+          .addScaledVector(bV, Math.sin(a) * co)
+          .addScaledVector(BAND_NORMAL, so).normalize();
+      } else {
+        var z = rnd() * 2 - 1, th = rnd() * Math.PI * 2, r = Math.sqrt(1 - z * z);
+        tmp.set(r * Math.cos(th), z, r * Math.sin(th));
+      }
+      if (tmp.y >= -0.20) return true;   // below this it's never seen
+    }
+    return false;
+  }
+
+  function buildPoints(count, bandChance, sigma, sizeFn, colorFn, bright, radius) {
+    var pos = [], col = [], siz = [], pha = [], spd = [];
+    for (var i = 0; i < count; i++) {
+      if (!sampleDir(bandChance, sigma)) continue;
+      pos.push(tmp.x * radius, tmp.y * radius, tmp.z * radius);
+      var m = rnd();
+      var c = colorFn(m);
+      col.push(c[0], c[1], c[2]);
+      siz.push(sizeFn(m));
+      pha.push(rnd() * Math.PI * 2);
+      spd.push(0.5 + rnd() * 1.9 + (1 - m) * 1.4);
+    }
+    var g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    g.setAttribute('aColor',   new THREE.Float32BufferAttribute(col, 3));
+    g.setAttribute('aSize',    new THREE.Float32BufferAttribute(siz, 1));
+    g.setAttribute('aPhase',   new THREE.Float32BufferAttribute(pha, 1));
+    g.setAttribute('aSpeed',   new THREE.Float32BufferAttribute(spd, 1));
+    var p = new THREE.Points(g, starMaterial(bright));
+    p.frustumCulled = false;
+    return p;
+  }
+
+  // Stellar colour by rough spectral class. Mostly white; blue and amber rare.
+  function starColor(u) {
+    if (u < 0.09) return [0.72, 0.81, 1.00];   // hot blue
+    if (u < 0.42) return [0.89, 0.93, 1.00];   // blue-white
+    if (u < 0.80) return [1.00, 0.99, 0.96];   // white
+    if (u < 0.93) return [1.00, 0.91, 0.75];   // yellow
+    return                [1.00, 0.76, 0.55];  // amber giant
+  }
+
+  // (a) The faint haze that IS the Milky Way. Tiny, dim, tightly clustered.
+  var haze = buildPoints(
+    21000, 0.93, 0.105,
+    function () { return 0.55 + rnd() * 0.85; },
+    function () { var w = 0.94 + rnd() * 0.06; return [w, w * 0.985, w * 0.95]; },
+    0.50, MW_R - 200
+  );
+  haze.renderOrder = -5;
+  skyGroup.add(haze);
+
+  // (b) Resolved stars. pow(u, 6) keeps the bright ones genuinely rare —
+  // this steep magnitude hierarchy is what stops a starfield reading as a
+  // uniform sprinkle of identical dots.
+  var stars = buildPoints(
+    5800, 0.24, 0.16,
+    function (u) { return 0.85 + Math.pow(u, 6.0) * 5.4; },
+    starColor, 1.0, STAR_R
+  );
+  stars.renderOrder = -4;
+  skyGroup.add(stars);
+
+  // (c) First-magnitude anchors. Every real sky has a handful you navigate by.
+  var anchors = buildPoints(
+    64, 0.28, 0.20,
+    function () { return 6.4 + rnd() * 3.6; },
+    starColor, 1.0, STAR_R - 100
+  );
+  anchors.renderOrder = -3;
+  skyGroup.add(anchors);
+
+  // ==========================================================================
+  //  4. OCEAN
+  //  Nearly black water, one moonlight glitter path, blending into the sky
+  //  colour over the last kilometre so the plane edge doesn't read as card.
+  // ==========================================================================
+  var oceanMat = new THREE.ShaderMaterial({
+    side: THREE.DoubleSide, depthWrite: true, transparent: false,
+    uniforms: {
+      uTime:    { value: 0 },
+      uEye:     { value: new THREE.Vector3(0, EYE_HEIGHT, 0) },
+      uAxis:    { value: GLITTER_AXIS.clone() },
+      uHorizon: { value: HORIZON_RGB.clone() },
+      uMotion:  { value: REDUCED ? 0.15 : 1.0 },
+      uFlash:   { value: 0 }
+    },
+    vertexShader: [
+      'varying vec3 vWorld;',
+      'void main(){ vWorld = (modelMatrix * vec4(position,1.0)).xyz;',
+      '  gl_Position = projectionMatrix * viewMatrix * vec4(vWorld,1.0); }'
+    ].join('\n'),
+    fragmentShader: [
+      'varying vec3 vWorld;',
+      'uniform float uTime; uniform vec3 uEye; uniform vec2 uAxis;',
+      'uniform vec3 uHorizon; uniform float uMotion; uniform float uFlash;',
+      'void main(){',
+      '  vec2 rel = vWorld.xz - uEye.xz;',
+      '  float dist = length(rel);',
+      '  vec2 dir = rel / max(dist, 0.001);',
+      '  vec3 base = mix(vec3(0.0040,0.0053,0.0105), uHorizon * 0.62, smoothstep(50.0, 4000.0, dist));',
+      // Long swell — broad, slow, nearly subliminal.
+      '  float swell = sin(rel.x * 0.021 + uTime * 0.20 * uMotion)',
+      '              * sin(rel.y * 0.017 - uTime * 0.14 * uMotion);',
+      '  base += vec3(0.0016, 0.0021, 0.0032) * swell;',
+      // Glitter path: a narrow cone toward the moon azimuth.
+      '  float band = pow(max(dot(dir, uAxis), 0.0), 22.0);',
+      '  float t = uTime * uMotion;',
+      // Two rotated coordinate frames so the sparkle grid never lines up
+      // with the screen axes — axis-aligned sin products read as rows of
+      // dashes in the near field.
+      '  vec2 ra = mat2(0.866, -0.5, 0.5, 0.866) * rel;',
+      '  vec2 rb = mat2(0.940, 0.342, -0.342, 0.940) * rel;',
+      '  float s1 = pow(max(0.0, sin(ra.x * 0.85 + t * 0.9) * sin(ra.y * 1.23 - t * 0.7)), 34.0);',
+      '  float s2 = pow(max(0.0, sin(rb.x * 1.61 - t * 1.1) * sin(rb.y * 0.71 + t * 0.8)), 52.0);',
+      '  float s3 = pow(max(0.0, sin(ra.x * 0.33 + t * 0.5) * sin(rb.y * 2.10 + t * 1.3)), 22.0);',
+      // Sparkle fades only in the immediate foreground (first ~50 m) and is
+      // dampened, not deleted, in the near field. From 2 m eye height nearly
+      // ALL visible water is inside 200 m — a 200 m cutoff erased the whole
+      // moonglade, which the previous revision proved the hard way.
+      '  float near = smoothstep(2400.0, 260.0, dist) * smoothstep(12.0, 58.0, dist);',
+      '  near *= mix(0.42, 1.0, smoothstep(90.0, 500.0, dist));',
+      '  base += vec3(0.185, 0.192, 0.212) * band * (s1*0.9 + s2 + s3*0.45) * near * (1.0 + uFlash * 2.2);',
+      // A bright fireball genuinely lights the water. Kept very low.
+      '  base += vec3(0.009, 0.010, 0.013) * uFlash;',
+      '  base = mix(base, uHorizon * 0.88, smoothstep(3500.0, 4980.0, dist));',
+      '  gl_FragColor = vec4(base, 1.0);',
+      '}'
+    ].join('\n')
+  });
+  var ocean = new THREE.Mesh(new THREE.CircleGeometry(HORIZON_DIST, 96), oceanMat);
+  ocean.rotation.x = -Math.PI / 2;
+  scene.add(ocean);
+
+  // ==========================================================================
+  //  5. LAND — silhouette only
+  //
+  //  Spruce are built from a trunk plus overlapping drooping branch triangles,
+  //  not from one zigzag outline. A modulated outline gives you flame shapes;
+  //  a real conifer silhouette comes from branch whorls that get shorter and
+  //  steeper toward the leader. Black spruce here are spindly — roughly 6:1
+  //  height to width, with a distinct club-shaped crown.
+  // ==========================================================================
+  function tri(a, ax, ay, bx, by, cx, cy) {
+    a.push(ax, ay, 0, bx, by, 0, cx, cy, 0);
+  }
+
+  function spruce(out, cx, baseY, h, R, lean) {
+    var tipX = cx + lean * h * 0.08;
+    var tw = Math.max(0.05, R * 0.06);
+    // Trunk, tapering.
+    tri(out, cx - tw, baseY, cx + tw, baseY, tipX + tw * 0.3, baseY + h);
+    tri(out, cx - tw, baseY, tipX + tw * 0.3, baseY + h, tipX - tw * 0.3, baseY + h);
+
+    var whorls = 17 + ((rnd() * 8) | 0);
+    for (var i = 0; i < whorls; i++) {
+      var t = 0.05 + (i / whorls) * 0.86 + (rnd() - 0.5) * 0.018;
+      var y = baseY + h * t;
+      var ax = cx + lean * h * 0.08 * t * t;
+      var thick = h * 0.020 * (1.0 - t * 0.40);
+      for (var s = -1; s <= 1; s += 2) {
+        var len = R * Math.pow(1.0 - t, 1.15) * (0.88 + rnd() * 0.72);
+        var droop = len * (0.22 + rnd() * 0.28);   // branches sweep downward
+        tri(out, ax, y + thick, ax, y - thick * 0.55, ax + s * len, y - droop);
+      }
+    }
+    // Club-shaped crown, then the bare leader spire.
+    for (var j = 0; j < 4; j++) {
+      var cy2 = baseY + h * (0.88 + j * 0.030);
+      var cl = R * 0.20 * (1 - j * 0.19);
+      tri(out, tipX, cy2 + h * 0.020, tipX, cy2 - h * 0.008, tipX - cl, cy2 - cl * 0.35);
+      tri(out, tipX, cy2 + h * 0.020, tipX, cy2 - h * 0.008, tipX + cl * 0.92, cy2 - cl * 0.35);
+    }
+    tri(out, tipX - tw * 0.8, baseY + h * 0.96, tipX + tw * 0.8, baseY + h * 0.96, tipX, baseY + h * 1.09);
+  }
+
+  // A dead standing spruce — bare trunk, a few broken stubs. One in eight or
+  // so along this shore; it breaks up the rhythm more than any noise value.
+  function snag(out, cx, baseY, h, R, lean) {
+    var tipX = cx + lean * h * 0.09;
+    var tw = Math.max(0.05, R * 0.055);
+    tri(out, cx - tw, baseY, cx + tw, baseY, tipX + tw * 0.2, baseY + h);
+    tri(out, cx - tw, baseY, tipX + tw * 0.2, baseY + h, tipX - tw * 0.2, baseY + h);
+    var stubs = 4 + ((rnd() * 4) | 0);
+    for (var i = 0; i < stubs; i++) {
+      var t = 0.35 + rnd() * 0.6;
+      var y = baseY + h * t;
+      var ax = cx + lean * h * 0.09 * t * t;
+      var len = R * (0.25 + rnd() * 0.45);
+      var s = rnd() < 0.5 ? -1 : 1;
+      tri(out, ax, y + h * 0.012, ax, y - h * 0.008, ax + s * len, y - len * 0.45);
+    }
+  }
+
+  function buildTreeline(x0, x1, z, baseY, hex, hMin, hMax) {
+    var out = [];
+    var X0 = x0 - 25, X1 = x1 + 25;
+    function bank(t) {
+      return baseY + Math.sin(t * 11.0) * 0.8 + Math.sin(t * 27.0 + 2.1) * 0.4 + Math.sin(t * 4.0) * 0.5;
+    }
+    // The stand ends by tapering to the bank over ~16 m, never a hard cut.
+    function taper(x) { return Math.min(1, Math.max(0, (x1 - x) / 16)); }
+
+    // Closed canopy. A spruce stand is a solid dark MASS with leaders poking
+    // out the top, not a row of separate trees — separate trees with sky
+    // between their trunks is what made the last version read as a fence of
+    // spindles. The mass runs to the ground, so it doubles as the bank.
+    var NB = 320, prevX = X0, prevY = bank(0);
+    var mid = (hMin + hMax) * 0.5;
+    for (var k = 1; k <= NB; k++) {
+      var t = k / NB;
+      var xx = X0 + (X1 - X0) * t;
+      var u = (xx - x0) / (x1 - x0);
+      // Low-frequency mass, kept LOW — at 0.60 it buried half the trees and
+      // read as a bald hill...
+      var und = 0.40 + 0.13 * Math.sin(u * 21.0 + 0.7) + 0.09 * Math.sin(u * 8.3 + 2.9);
+      // ...plus crown serration: pointed tips every ~2.4 m with jittered
+      // phase. Inverting pow(abs(cos)) gives cusped peaks over rounded
+      // valleys — tree tips up, crown shoulders meeting below. This texture
+      // on the canopy edge is what a spruce stand actually looks like at
+      // this distance.
+      var crown = 1.0 - Math.pow(Math.abs(Math.cos(u * 184.0 + Math.sin(u * 9.0) * 3.0)), 0.7);
+      var yy = bank(t) + (mid * Math.max(0, und) + mid * 0.22 * crown) * taper(xx);
+      tri(out, prevX, prevY, xx, yy, xx, baseY - 70);
+      tri(out, prevX, prevY, xx, baseY - 70, prevX, baseY - 70);
+      prevX = xx; prevY = yy;
+    }
+
+    // Individual trees, dense enough that crowns overlap. Trees shrink into
+    // the taper so the stand thins out toward the open water.
+    var x = x0 + 1;
+    while (x < x1) {
+      var tp = taper(x);
+      var h = (hMin + rnd() * (hMax - hMin)) * (0.55 + 0.45 * tp);
+      if (rnd() < 0.16) h *= 0.55;                 // wind-burned runts
+      var R = h * (0.155 + rnd() * 0.055);         // ~6:1 height to width
+      var lean = (rnd() - 0.5) * 1.5;
+      var by = bank((x - X0) / (X1 - X0)) - 0.4;
+      if (rnd() < 0.09 && tp > 0.5) snag(out, x, by, h * 0.92, R, lean);
+      else spruce(out, x, by, h, R, lean);
+      x += R * 0.75 + rnd() * (R * 0.95);
+    }
+    var g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(out, 3));
+    var m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color: hex, fog: false, side: THREE.DoubleSide }));
+    m.position.z = z;
+    return m;
+  }
+
+  function buildHeadland(x0, x1, z, baseY, height, hex, fringe) {
+    var out = [];
+    var N = 260, prevX = x0, prevY;
+    // Ridge wavelength stays constant in metres, not in span fraction —
+    // otherwise a wide ridge comes out unnaturally smooth and planar.
+    var fscale = (x1 - x0) / 1500;
+    function crest(t) {
+      // Rises steeply from the water, shoulders over, falls away inland.
+      var mass = Math.pow(Math.sin(Math.PI * Math.pow(t, 0.66)), 0.50);
+      var ridge = Math.sin(t * 7.3 * fscale + 1.7) * 0.060 + Math.sin(t * 17.9 * fscale) * 0.024
+                + Math.sin(t * 3.1 * fscale + 0.4) * 0.045;
+      var cove = -0.22 * Math.exp(-Math.pow((t - 0.62) / 0.055, 2.0));  // a notch
+      return baseY + height * Math.max(0, mass + ridge + cove);
+    }
+    prevY = crest(0);
+    for (var i = 1; i <= N; i++) {
+      var t = i / N;
+      var xx = x0 + (x1 - x0) * t;
+      var yy = crest(t);
+      tri(out, prevX, prevY, xx, yy, xx, baseY - 500);
+      tri(out, prevX, prevY, xx, baseY - 500, prevX, baseY - 500);
+      prevX = xx; prevY = yy;
+    }
+    // A sparse fringe of spruce along the crest. At 1.4 km a 12 m tree is
+    // still ~10 px tall — it's the detail that gives the headland its scale.
+    if (fringe) {
+      var fx = x0;
+      while (fx < x1) {
+        var fh = fringe * (0.65 + rnd() * 0.8);
+        spruce(out, fx, crest((fx - x0) / (x1 - x0)) - fh * 0.05, fh, fh * 0.17, (rnd() - 0.5) * 1.2);
+        fx += fringe * (0.5 + rnd() * 2.6);
+      }
+    }
+    var g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(out, 3));
+    var m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color: hex, fog: false, side: THREE.DoubleSide }));
+    m.position.z = z;
+    return m;
+  }
+
+  var land = new THREE.Group();
+  // Back row first — very slightly lighter. At night distant land reads
+  // lighter than near land, because it has more skyglow in front of it.
+  land.add(buildTreeline(-165, -4, -168, 3, 0x01040c, 11, 22));
+  land.add(buildTreeline(-150, -9,  -95, 3, 0x000205, 10, 21));
+  // Headland, camera-right, 1.4 km out, 95 m high — about 4 deg elevation.
+  land.add(buildHeadland(18, 1500, -1400, 0, 95, 0x000308, 11));
+  // A fainter ridge further back so the right side has depth, not one mass.
+  land.add(buildHeadland(700, 4600, -3800, 0, 230, 0x01050c, 0));
+  scene.add(land);
+
+  // A light on the headland tip — Fl R 4s, like a channel marker. One red
+  // point, the only man-made light in the scene. This coast is never
+  // entirely without one, and it gives the far shore its sense of scale.
+  var markerGeo = new THREE.BufferGeometry();
+  markerGeo.setAttribute('position', new THREE.Float32BufferAttribute([48, 56, -1398], 3));
+  // A raw WebGL point is a SQUARE — on a high-DPR phone the marker rendered
+  // as a little red brick. A light is a glow: gaussian falloff, soft edge.
+  var markerMat = new THREE.ShaderMaterial({
+    transparent: true, depthWrite: false, depthTest: true,
+    blending: THREE.AdditiveBlending,
+    uniforms: { uDpr: { value: DPR }, uOp: { value: 0 } },
+    vertexShader: [
+      'uniform float uDpr;',
+      'void main(){',
+      '  gl_PointSize = 6.0 * uDpr;',
+      '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
+      '}'
+    ].join('\n'),
+    fragmentShader: [
+      'uniform float uOp;',
+      'void main(){',
+      '  vec2 uv = gl_PointCoord - 0.5;',
+      '  float d = dot(uv, uv);',
+      '  float a = (exp(-d * 26.0) * 0.9 + exp(-d * 7.0) * 0.25) * uOp;',
+      '  if (a < 0.01) discard;',
+      '  gl_FragColor = vec4(1.0, 0.26, 0.16, a);',
+      '}'
+    ].join('\n')
+  });
+  var marker = new THREE.Points(markerGeo, markerMat);
+  marker.frustumCulled = false;
+  scene.add(marker);
+
+  // ==========================================================================
+  //  6. SHOOTING STARS
+  //
+  //  Anatomy of one meteor, tuned to how they actually look:
+  //   - A bright head moving on a straight alt/az track, 20-60 deg descent,
+  //     crossing 13-45 deg of sky in 0.5-1.3 s. Fast and brief.
+  //   - A brightness ENVELOPE: it fades in over the first ~15%, peaks past
+  //     the middle, and extinguishes. Meteors never pop in at full blaze.
+  //   - Per-meteor flicker on the head — combustion is not steady.
+  //   - A warm wake of short-lived particles dropped along the track.
+  //   - ~1 in 8 is a fireball: bigger, brighter, greenish head, longer
+  //     track, a persistent drifting train that outlives the head by
+  //     seconds, a likely terminal burst — and a faint flash on the water.
+  //
+  //  All wake/train/burst particles share ONE ring buffer and one draw
+  //  call; heads share another. Twelve concurrent meteors max, and a launch
+  //  queue that staggers activations 90 ms apart, so a burst of community
+  //  reports (Prompt 3) cascades across the sky instead of clumping.
+  //
+  //  Meteors use Math.random, not the seeded rnd() — no two ever identical.
+  // ==========================================================================
+  var DEG = Math.PI / 180;
+  var METEOR_R = 7800;
+  var MAX_METEORS = 12;
+  var MAX_P = 1600;
+  var rrnd = Math.random;
+
+  var meteorGroup = new THREE.Group();
+  meteorGroup.position.y = EYE_HEIGHT;
+  scene.add(meteorGroup);
+
+  var meteorVS = [
+    'attribute vec3 aColor; attribute float aSize; attribute float aAlpha;',
+    'uniform float uDpr;',
+    'varying vec3 vColor; varying float vAlpha;',
+    'void main(){',
+    '  vColor = aColor; vAlpha = aAlpha;',
+    '  gl_PointSize = aSize * uDpr;',
+    '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
+    '}'
+  ].join('\n');
+  var meteorFS = [
+    'varying vec3 vColor; varying float vAlpha;',
+    'void main(){',
+    '  vec2 uv = gl_PointCoord - 0.5;',
+    '  float d = dot(uv, uv);',
+    '  float core = smoothstep(0.06, 0.0, d);',
+    '  float glare = exp(-d * 10.0);',
+    '  float a = (core * 0.9 + glare * 0.45) * vAlpha;',
+    '  if (a < 0.004) discard;',
+    '  gl_FragColor = vec4(vColor, a);',
+    '}'
+  ].join('\n');
+
+  function meteorMaterial() {
+    return new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, depthTest: true,
+      blending: THREE.AdditiveBlending,
+      uniforms: { uDpr: { value: DPR } },
+      vertexShader: meteorVS, fragmentShader: meteorFS
+    });
+  }
+  function dynAttr(arr, n) {
+    var a = new THREE.BufferAttribute(arr, n);
+    a.setUsage(THREE.DynamicDrawUsage);
+    return a;
+  }
+
+  // Particle ring buffer (wake + trains + bursts).
+  var pPos = new Float32Array(MAX_P * 3), pCol = new Float32Array(MAX_P * 3);
+  var pSize = new Float32Array(MAX_P), pAlpha = new Float32Array(MAX_P);
+  var pVel = new Float32Array(MAX_P * 3);
+  var pBirth = new Float32Array(MAX_P), pLife = new Float32Array(MAX_P);
+  var pBright = new Float32Array(MAX_P);
+  var pNext = 0;
+  var pGeo = new THREE.BufferGeometry();
+  pGeo.setAttribute('position', dynAttr(pPos, 3));
+  pGeo.setAttribute('aColor',   dynAttr(pCol, 3));
+  pGeo.setAttribute('aSize',    dynAttr(pSize, 1));
+  pGeo.setAttribute('aAlpha',   dynAttr(pAlpha, 1));
+  var pPoints = new THREE.Points(pGeo, meteorMaterial());
+  pPoints.frustumCulled = false;
+  meteorGroup.add(pPoints);
+
+  // Heads.
+  var hPos = new Float32Array(MAX_METEORS * 3), hCol = new Float32Array(MAX_METEORS * 3);
+  var hSize = new Float32Array(MAX_METEORS), hAlpha = new Float32Array(MAX_METEORS);
+  var hGeo = new THREE.BufferGeometry();
+  hGeo.setAttribute('position', dynAttr(hPos, 3));
+  hGeo.setAttribute('aColor',   dynAttr(hCol, 3));
+  hGeo.setAttribute('aSize',    dynAttr(hSize, 1));
+  hGeo.setAttribute('aAlpha',   dynAttr(hAlpha, 1));
+  var hPoints = new THREE.Points(hGeo, meteorMaterial());
+  hPoints.frustumCulled = false;
+  meteorGroup.add(hPoints);
+
+  // The STREAK itself is a ribbon, not particles. Discrete points can't make
+  // a continuous needle of light — at 1-2 px each they render as beads on a
+  // string, which the first cut of this engine proved. The ribbon is a
+  // camera-facing triangle strip sampled analytically along the track:
+  // width tapers to nothing at the tail, alpha decays exponentially, colour
+  // runs cool at the head to warm at the tail. Particles are kept only for
+  // what discreteness is GOOD at: shed sparks, drifting trains, bursts.
+  var TRAIL_K = 14;
+  var rVerts = MAX_METEORS * TRAIL_K * 2;
+  var rPos = new Float32Array(rVerts * 3);
+  var rCol = new Float32Array(rVerts * 3);
+  var rAlpha = new Float32Array(rVerts);
+  var rU = new Float32Array(rVerts);
+  var rIdx = [];
+  for (var rm = 0; rm < MAX_METEORS; rm++) {
+    var off = rm * TRAIL_K * 2;
+    for (var rk = 0; rk < TRAIL_K; rk++) {
+      rU[off + rk * 2] = 0; rU[off + rk * 2 + 1] = 1;
+      if (rk < TRAIL_K - 1) {
+        var a0 = off + rk * 2;
+        rIdx.push(a0, a0 + 1, a0 + 2, a0 + 1, a0 + 3, a0 + 2);
+      }
+    }
+  }
+  var rGeo = new THREE.BufferGeometry();
+  rGeo.setIndex(new THREE.BufferAttribute(new Uint16Array(rIdx), 1));
+  rGeo.setAttribute('position', dynAttr(rPos, 3));
+  rGeo.setAttribute('aColor',   dynAttr(rCol, 3));
+  rGeo.setAttribute('aAlpha',   dynAttr(rAlpha, 1));
+  rGeo.setAttribute('aU',       dynAttr(rU, 1));
+  var ribbon = new THREE.Mesh(rGeo, new THREE.ShaderMaterial({
+    transparent: true, depthWrite: false, depthTest: true,
+    blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
+    vertexShader: [
+      'attribute vec3 aColor; attribute float aAlpha; attribute float aU;',
+      'varying vec3 vColor; varying float vAlpha; varying float vU;',
+      'void main(){',
+      '  vColor = aColor; vAlpha = aAlpha; vU = aU;',
+      '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
+      '}'
+    ].join('\n'),
+    fragmentShader: [
+      'varying vec3 vColor; varying float vAlpha; varying float vU;',
+      'void main(){',
+      '  float edge = pow(max(0.0, sin(3.14159 * vU)), 1.5);',
+      '  float a = vAlpha * edge;',
+      '  if (a < 0.004) discard;',
+      '  gl_FragColor = vec4(vColor, a);',
+      '}'
+    ].join('\n')
+  }));
+  ribbon.frustumCulled = false;
+  meteorGroup.add(ribbon);
+
+  var trailP = new Float32Array(TRAIL_K * 3);
+  function zeroRibbon(i) {
+    var o = i * TRAIL_K * 2;
+    for (var z = 0; z < TRAIL_K * 2; z++) rAlpha[o + z] = 0;
+  }
+
+  function spawnParticle(x, y, z, vx, vy, vz, r, g, b, size, life, bright) {
+    var i = pNext; pNext = (pNext + 1) % MAX_P;
+    pPos[i*3] = x; pPos[i*3+1] = y; pPos[i*3+2] = z;
+    pVel[i*3] = vx; pVel[i*3+1] = vy; pVel[i*3+2] = vz;
+    pCol[i*3] = r; pCol[i*3+1] = g; pCol[i*3+2] = b;
+    pSize[i] = size; pLife[i] = life; pBirth[i] = elapsed; pBright[i] = bright;
+  }
+
+  var mv = new THREE.Vector3(), mv2 = new THREE.Vector3();
+  function altAz(altDeg, azDeg, out) {
+    var alt = altDeg * DEG, az = azDeg * DEG;
+    return out.set(
+      Math.sin(az) * Math.cos(alt),
+      Math.sin(alt),
+      -Math.cos(az) * Math.cos(alt)
+    ).multiplyScalar(METEOR_R);
+  }
+
+  var meteors = [];
+  for (var mi = 0; mi < MAX_METEORS; mi++) meteors.push({ active: false });
+  var pending = [];
+  var nextLaunch = 0;
+
+  function fireStar(opts) {
+    if (pending.length < 40) pending.push(opts || {});
+  }
+
+  function activate(m, opts) {
+    var fireball = opts.fireball !== undefined ? !!opts.fireball : (rrnd() < 0.125);
+    var az0 = -50 + rrnd() * 100;
+    var alt0 = 26 + rrnd() * 38;
+    var desc = (20 + rrnd() * 40) * (fireball ? 0.85 : 1.0);
+    var dir = rrnd() < 0.5 ? -1 : 1;
+    if (az0 > 28) dir = -1; else if (az0 < -28) dir = 1;   // arc back into frame
+    var L = fireball ? 26 + rrnd() * 19 : 13 + rrnd() * 17;
+    var maxDrop = alt0 + 6;                                // never dive far below horizon
+    if (Math.sin(desc * DEG) * L > maxDrop) L = maxDrop / Math.sin(desc * DEG);
+    var speed = fireball ? 26 + rrnd() * 14 : 23 + rrnd() * 15;   // deg/s
+
+    m.active = true; m.fireball = fireball;
+    m.t0 = elapsed; m.dur = L / speed;
+    m.az0 = az0; m.alt0 = alt0;
+    m.dAz = dir * Math.cos(desc * DEG) * L;
+    m.dAlt = -Math.sin(desc * DEG) * L;
+    m.burst = rrnd() < (fireball ? 0.6 : 0.12);
+    m.bursted = false;
+    m.flickPh = rrnd() * 6.283;
+    m.flickSp = 17 + rrnd() * 14;
+    m.headSize = (fireball ? 5.2 : 2.9) + rrnd() * 1.2;
+    m.lastSpawnS = 0;
+    m.spawnStep = (fireball ? 0.22 : 0.55) / L;   // sparse: sparks, not trail
+  }
+
+  function terminalBurst(c, fireball) {
+    var n = fireball ? 14 : 9;
+    for (var i = 0; i < n; i++) {
+      var vx = rrnd() - 0.5, vy = rrnd() - 0.5, vz = rrnd() - 0.5;
+      var vl = Math.sqrt(vx*vx + vy*vy + vz*vz) || 1;
+      var sp = 90 + rrnd() * 240;
+      spawnParticle(c.x, c.y, c.z, vx/vl*sp, vy/vl*sp, vz/vl*sp,
+        1.0, 0.93, 0.80, 1.4 + rrnd() * 1.3, 0.45 + rrnd() * 0.6, 1.1);
+    }
+  }
+
+  function updateMeteors(dt) {
+    // Staggered launches from the queue.
+    if (pending.length && elapsed >= nextLaunch) {
+      var slot = -1;
+      for (var q = 0; q < MAX_METEORS; q++) if (!meteors[q].active) { slot = q; break; }
+      if (slot >= 0) { activate(meteors[slot], pending.shift()); nextLaunch = elapsed + 0.09; }
+      else nextLaunch = elapsed + 0.15;
+    }
+
+    var flashTarget = 0;
+
+    for (var i = 0; i < MAX_METEORS; i++) {
+      var m = meteors[i], hi = i * 3;
+      if (!m.active) { hAlpha[i] = 0; zeroRibbon(i); continue; }
+      var s = (elapsed - m.t0) / m.dur;
+      if (s >= 1) { m.active = false; hAlpha[i] = 0; zeroRibbon(i); continue; }
+
+      altAz(m.alt0 + m.dAlt * s, m.az0 + m.dAz * s, mv);
+      hPos[hi] = mv.x; hPos[hi+1] = mv.y; hPos[hi+2] = mv.z;
+
+      var env = Math.pow(Math.sin(Math.PI * Math.pow(s, 0.85)), 0.8);
+      var fl = 0.80 + 0.20 * Math.sin(elapsed * m.flickSp + m.flickPh)
+                     * Math.sin(elapsed * m.flickSp * 2.63);
+      var b = env * fl * (m.fireball ? 1.9 : 1.25);
+      if (m.burst && s > 0.87) {
+        b *= 2.2;
+        if (!m.bursted) { m.bursted = true; terminalBurst(mv, m.fireball); }
+      }
+      hAlpha[i] = Math.min(1.7, b);
+      hSize[i] = m.headSize * (0.9 + 0.2 * fl) * (m.burst && s > 0.87 ? 1.5 : 1.0);
+      if (m.fireball) {
+        hCol[hi] = 0.86; hCol[hi+1] = 1.0; hCol[hi+2] = 0.93;
+        flashTarget = Math.max(flashTarget, env * 0.30 + (m.burst && s > 0.87 ? 0.35 : 0));
+      } else {
+        hCol[hi] = 0.93; hCol[hi+1] = 0.96; hCol[hi+2] = 1.0;
+      }
+
+      // Ribbon: sample the track analytically from the head back through
+      // the tail window, orient each row perpendicular to travel and view.
+      var trailTime = m.fireball ? 0.30 : 0.17;
+      var tailS = Math.min(s, trailTime / m.dur);
+      var rOff = i * TRAIL_K * 2;
+      for (var k = 0; k < TRAIL_K; k++) {
+        var fr = k / (TRAIL_K - 1);
+        var sk = s - tailS * fr;
+        altAz(m.alt0 + m.dAlt * sk, m.az0 + m.dAz * sk, mv2);
+        trailP[k * 3] = mv2.x; trailP[k * 3 + 1] = mv2.y; trailP[k * 3 + 2] = mv2.z;
+      }
+      for (k = 0; k < TRAIL_K; k++) {
+        var fr2 = k / (TRAIL_K - 1);
+        var iA = k === 0 ? 0 : k - 1, iB = k === TRAIL_K - 1 ? TRAIL_K - 1 : k + 1;
+        var tx = trailP[iA * 3] - trailP[iB * 3];
+        var ty = trailP[iA * 3 + 1] - trailP[iB * 3 + 1];
+        var tz = trailP[iA * 3 + 2] - trailP[iB * 3 + 2];
+        var px2 = trailP[k * 3], py2 = trailP[k * 3 + 1], pz2 = trailP[k * 3 + 2];
+        // side = normalize(cross(tangent, radial)); radial ~ view direction
+        var sx = ty * pz2 - tz * py2, sy = tz * px2 - tx * pz2, sz = tx * py2 - ty * px2;
+        var sl = Math.sqrt(sx * sx + sy * sy + sz * sz) || 1;
+        var hw = (m.fireball ? 10.5 : 6.0) * (1 - fr2 * 0.9) * (0.88 + 0.12 * fl);
+        sx = sx / sl * hw; sy = sy / sl * hw; sz = sz / sl * hw;
+        var v0 = (rOff + k * 2) * 3, v1 = v0 + 3;
+        rPos[v0] = px2 + sx; rPos[v0 + 1] = py2 + sy; rPos[v0 + 2] = pz2 + sz;
+        rPos[v1] = px2 - sx; rPos[v1 + 1] = py2 - sy; rPos[v1 + 2] = pz2 - sz;
+        var sk2 = Math.max(s - tailS * fr2, 0.0001);
+        var envK = Math.pow(Math.sin(Math.PI * Math.pow(sk2, 0.85)), 0.8);
+        var aK = envK * Math.exp(-2.4 * fr2) * fl * (m.fireball ? 1.35 : 0.95);
+        if (m.burst && s > 0.87) aK *= 1.6;
+        rAlpha[rOff + k * 2] = aK; rAlpha[rOff + k * 2 + 1] = aK;
+        var cr, cg, cb;
+        if (m.fireball) { cr = 0.88 - 0.28 * fr2; cg = 1.0 - 0.05 * fr2; cb = 0.94 - 0.19 * fr2; }
+        else            { cr = 0.95 + 0.05 * fr2; cg = 0.97 - 0.23 * fr2; cb = 1.0 - 0.52 * fr2; }
+        rCol[v0] = cr; rCol[v0 + 1] = cg; rCol[v0 + 2] = cb;
+        rCol[v1] = cr; rCol[v1 + 1] = cg; rCol[v1 + 2] = cb;
+      }
+
+      // Drop wake particles along the segment travelled this frame.
+      while (m.lastSpawnS + m.spawnStep <= s) {
+        m.lastSpawnS += m.spawnStep;
+        var ss = m.lastSpawnS;
+        altAz(m.alt0 + m.dAlt * ss + (rrnd() - 0.5) * 0.10,
+              m.az0 + m.dAz * ss + (rrnd() - 0.5) * 0.10, mv2);
+        var envW = Math.pow(Math.sin(Math.PI * Math.pow(ss, 0.85)), 0.8);
+        spawnParticle(mv2.x, mv2.y, mv2.z,
+          (rrnd() - 0.5) * 18, (rrnd() - 0.5) * 18, (rrnd() - 0.5) * 18,
+          1.0, 0.88, 0.70,
+          (m.fireball ? 3.2 : 2.4) * (0.7 + rrnd() * 0.6),
+          (m.fireball ? 0.50 : 0.32) * (0.7 + rrnd() * 0.7),
+          envW * (m.fireball ? 0.9 : 0.6));
+        // Persistent drifting train — the fireball's signature.
+        if (m.fireball && rrnd() < 0.8) {
+          spawnParticle(mv2.x, mv2.y, mv2.z,
+            (rrnd() - 0.5) * 34, 8 + rrnd() * 16, (rrnd() - 0.5) * 34,
+            0.55, 0.95, 0.75,
+            1.8 + rrnd() * 1.4, 1.7 + rrnd() * 1.9, 0.30);
+        }
+      }
+    }
+
+    hGeo.attributes.position.needsUpdate = true;
+    hGeo.attributes.aColor.needsUpdate = true;
+    hGeo.attributes.aSize.needsUpdate = true;
+    hGeo.attributes.aAlpha.needsUpdate = true;
+    rGeo.attributes.position.needsUpdate = true;
+    rGeo.attributes.aColor.needsUpdate = true;
+    rGeo.attributes.aAlpha.needsUpdate = true;
+
+    for (var pI = 0; pI < MAX_P; pI++) {
+      if (pLife[pI] <= 0) { pAlpha[pI] = 0; continue; }
+      var age = elapsed - pBirth[pI];
+      if (age >= pLife[pI]) { pLife[pI] = 0; pAlpha[pI] = 0; continue; }
+      var k = 1 - age / pLife[pI];
+      pAlpha[pI] = pBright[pI] * k * k;
+      var p3 = pI * 3;
+      pPos[p3]   += pVel[p3]   * dt;
+      pPos[p3+1] += pVel[p3+1] * dt;
+      pPos[p3+2] += pVel[p3+2] * dt;
+    }
+    pGeo.attributes.position.needsUpdate = true;
+    pGeo.attributes.aColor.needsUpdate = true;
+    pGeo.attributes.aSize.needsUpdate = true;
+    pGeo.attributes.aAlpha.needsUpdate = true;
+
+    var f = oceanMat.uniforms.uFlash.value;
+    oceanMat.uniforms.uFlash.value = f + (flashTarget - f) * Math.min(1, dt * 9);
+  }
+
+  // ==========================================================================
+  //  6b. COMMUNITY REPORTING — Supabase backend
+  //
+  //  Two changes of substance from the artifact build:
+  //
+  //  1. REALTIME, not polling. Sightings arrive over a websocket in about a
+  //     second instead of up to ten. On a shower night that is the whole
+  //     difference between a feed and a shared sky.
+  //  2. Real localStorage. On a proper domain the cooldown and the chosen
+  //     community survive a reload, which the artifact sandbox could not do.
+  //
+  //  If Supabase is not configured yet, everything below degrades to solo
+  //  mode and the sky still works — so this file is safe to deploy before
+  //  the database exists.
+  // ==========================================================================
+  var COMMUNITIES = ["St. Peter's", "Isle Madame", "Sydney", "Glace Bay",
+    "Baddeck", "Chéticamp", "Mabou", "Louisbourg", "Ingonish",
+    "Elsewhere in the Maritimes"];
+  var COOLDOWN = 15;
+
+  var reportBtn = document.getElementById('report');
+  var communitySel = document.getElementById('community');
+  var chip = document.getElementById('countChip');
+  var countEl = document.getElementById('countN');
+  var feedEl = document.getElementById('feed');
+  var toastEl = document.getElementById('toast');
+
+  var CONFIGURED = !!(window.supabase && SUPABASE_URL.indexOf('YOUR-PROJECT') < 0);
+  var sb = CONFIGURED ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY) : null;
+
+  // A random per-device string. Not a name, not a location, not an account —
+  // it exists so the rate limit has something to count against and so your
+  // own sighting doesn't fly at you twice.
+  function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+  var CLIENT_ID = (function () {
+    var v = store('onesky:client');
+    if (!v) {
+      v = (window.crypto && crypto.randomUUID) ? crypto.randomUUID()
+        : 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+      store('onesky:client', v);
+    }
+    return v;
+  })();
+
+  (function () {
+    for (var i = 0; i < COMMUNITIES.length; i++) {
+      var o = document.createElement('option');
+      o.value = String(i); o.textContent = COMMUNITIES[i];
+      communitySel.appendChild(o);
+    }
+    var saved = store('onesky:community');
+    if (saved !== null && saved !== '' && COMMUNITIES[parseInt(saved, 10)]) communitySel.value = saved;
+  })();
+  communitySel.addEventListener('change', function () { store('onesky:community', communitySel.value); });
+
+  var lastReport = parseInt(store('onesky:last') || '0', 10) || -1e9;
+  var tonightCount = 0;
+  var soloLog = [];
+  var toastTimer = null;
+  var recentRows = [];
+  var liveOk = false;
+
+  function fmtTime(ts) {
+    var d = new Date(ts), h = d.getHours(), m = d.getMinutes();
+    var ap = h < 12 ? 'a.m.' : 'p.m.'; h = h % 12; if (h === 0) h = 12;
+    return h + ':' + (m < 10 ? '0' : '') + m + ' ' + ap;
+  }
+  // "Tonight" runs noon to noon, so 1 a.m. still belongs to the evening.
+  function tonightStart() {
+    var d = new Date();
+    var n = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12, 0, 0);
+    if (d.getTime() < n.getTime()) n.setDate(n.getDate() - 1);
+    return n.getTime();
+  }
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 3600);
+  }
+  function bumpCount(n) { countEl.textContent = String(n); }
+  function communityName(c) {
+    return (c !== null && c >= 0 && c < COMMUNITIES.length) ? COMMUNITIES[c] : null;
+  }
+
+  function renderFeed(entries, solo) {
+    var html = '<div class="head">Sightings tonight' + (solo ? ' · solo sky' : '') + '</div>';
+    if (!entries.length) {
+      html += '<div class="row"><span>None yet</span><span>be the first</span></div>';
+    }
+    for (var i = 0; i < Math.min(entries.length, 14); i++) {
+      var e = entries[i];
+      html += '<div class="row"><span>' + fmtTime(e.ts) + '</span><span>' +
+        (communityName(e.c) || '—') + '</span></div>';
+    }
+    if (solo) html += '<div class="note">This sky is running without its shared connection — your sightings stay on this device.</div>';
+    feedEl.innerHTML = html;
+  }
+
+  chip.addEventListener('click', function () {
+    var open = feedEl.classList.toggle('open');
+    chip.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+
+  function setCooldown() {
+    lastReport = Date.now();
+    store('onesky:last', String(lastReport));
+    reportBtn.disabled = true;
+    (function step() {
+      var left = Math.ceil((lastReport + COOLDOWN * 1000 - Date.now()) / 1000);
+      if (left <= 0) {
+        reportBtn.disabled = false;
+        reportBtn.textContent = 'I saw one ⭐';
+        return;
+      }
+      reportBtn.textContent = 'Logged ✦ ' + left;
+      setTimeout(step, 250);
+    })();
+  }
+  if (Date.now() - lastReport < COOLDOWN * 1000) setCooldown();
+
+  function report() {
+    if (Date.now() - lastReport < COOLDOWN * 1000) return;
+    fireStar();                                   // the star flies immediately
+    setCooldown();
+    var ci = communitySel.value === '' ? null : parseInt(communitySel.value, 10);
+    var ts = Date.now();
+    tonightCount++; bumpCount(tonightCount);
+    recentRows.unshift({ ts: ts, c: ci });
+    if (!CONFIGURED) {
+      soloLog.unshift({ ts: ts, c: ci });
+      renderFeed(soloLog, true);
+      return;
+    }
+    renderFeed(recentRows, false);
+    sb.from('sightings').insert({ community: ci, client_id: CLIENT_ID })
+      .then(function (res) {
+        if (res && res.error) {
+          var msg = String(res.error.message || '');
+          // The server enforces the same cooldown the button does; if it
+          // fires, the clocks simply disagree — no need to alarm anyone.
+          if (msg.indexOf('rate_limited') >= 0) return;
+          toast("Couldn't share that one — it still flew for you");
+          tonightCount = Math.max(0, tonightCount - 1); bumpCount(tonightCount);
+        }
+      });
+  }
+  reportBtn.addEventListener('click', report);
+  document.addEventListener('keydown', function (e) {
+    if (e.code === 'Space' && !e.repeat && document.activeElement !== communitySel) {
+      e.preventDefault(); report();
+    }
+  });
+
+  // --- Arrivals from everyone else -----------------------------------------
+  function arrive(rows) {
+    if (!rows.length) return;
+    var toFire = Math.min(rows.length, 6);        // a flurry, never a barrage
+    for (var i = 0; i < toFire; i++) fireStar();
+    if (rows.length === 1) {
+      var n = communityName(rows[0].c);
+      toast(n && n !== COMMUNITIES[COMMUNITIES.length - 1]
+        ? 'Someone in ' + n + ' just saw one ⭐'
+        : 'Someone out there just saw one ⭐');
+    } else {
+      toast(rows.length + ' sightings just came in ✨');
+    }
+  }
+
+  function refresh(fireNew) {
+    return sb.from('sightings')
+      .select('id, created_at, community, client_id')
+      .gte('created_at', new Date(tonightStart()).toISOString())
+      .order('created_at', { ascending: false })
+      .limit(200)
+      .then(function (res) {
+        if (!res || res.error) throw (res && res.error) || new Error('no response');
+        var rows = (res.data || []).map(function (r) {
+          return { id: r.id, ts: new Date(r.created_at).getTime(), c: r.community, cid: r.client_id };
+        });
+        // Anything newer than what we already knew, from someone else.
+        var known = {};
+        for (var i = 0; i < recentRows.length; i++) if (recentRows[i].id) known[recentRows[i].id] = 1;
+        var fresh = rows.filter(function (r) {
+          return !known[r.id] && r.cid !== CLIENT_ID && r.ts > Date.now() - 90000;
+        });
+        recentRows = rows;
+        tonightCount = rows.length;
+        bumpCount(tonightCount);
+        renderFeed(rows, false);
+        if (fireNew && fresh.length) arrive(fresh);
+      });
+  }
+
+  if (!CONFIGURED) {
+    renderFeed([], true);
+  } else {
+    refresh(false).catch(function () {
+      renderFeed([], true);
+      toast('Shared sky unreachable right now — your stars still fly');
+    });
+
+    sb.channel('sightings-live')
+      .on('postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'sightings' },
+        function (payload) {
+          var r = payload && payload.new;
+          if (!r || r.client_id === CLIENT_ID) return;   // already flew for us
+          var row = { id: r.id, ts: new Date(r.created_at).getTime(), c: r.community, cid: r.client_id };
+          recentRows.unshift(row);
+          tonightCount++; bumpCount(tonightCount);
+          renderFeed(recentRows, false);
+          arrive([row]);
+        })
+      .subscribe(function (status) { liveOk = (status === 'SUBSCRIBED'); });
+
+    // Reconciliation. Websockets drop — on a phone, every time the screen
+    // sleeps. This catches anything the socket missed without ever being
+    // the primary path.
+    setInterval(function () { if (!document.hidden) refresh(!liveOk).catch(function () {}); }, 45000);
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) refresh(true).catch(function () {});
+    });
+  }
+  window.fireStar = fireStar;
+
+  // ==========================================================================
+  //  6c. ATMOSPHERE — moon, showers, sound, welcome
+  // ==========================================================================
+
+  // --- The moon, at its true phase tonight ---------------------------------
+  // Standard synodic approximation from the 2000-01-06 new moon; good to a
+  // few hours, which is far finer than the eye can judge a phase.
+  var SYNODIC = 29.53058867;
+  var moonPhase = (((Date.now() / 86400000 + 2440587.5) - 2451550.26) / SYNODIC) % 1;
+  if (moonPhase < 0) moonPhase += 1;
+  var moonIllum = (1 - Math.cos(2 * Math.PI * moonPhase)) / 2;
+
+  // Halo brightness follows the real phase — a crescent no longer casts a
+  // full moon's glow, and vice versa.
+  domeMat.uniforms.uMoonGlow.value = 0.35 + 0.75 * moonIllum;
+
+  var moonMat = null;
+  if (moonIllum > 0.02) {
+    moonMat = new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, depthTest: true,
+      uniforms: {
+        uPx:     { value: 16 },
+        uCos:    { value: Math.cos(2 * Math.PI * moonPhase) },
+        uWaning: { value: moonPhase > 0.5 ? 1.0 : 0.0 },
+        uTint:   { value: new THREE.Vector3(1.0, 0.94, 0.84) }
+      },
+      vertexShader: [
+        'uniform float uPx;',
+        'void main(){',
+        '  gl_PointSize = uPx;',
+        '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
+        '}'
+      ].join('\n'),
+      fragmentShader: [
+        'uniform float uCos; uniform float uWaning; uniform vec3 uTint;',
+        'void main(){',
+        '  vec2 uv = gl_PointCoord - 0.5;',
+        '  float r = length(uv);',
+        '  float disc = smoothstep(0.5, 0.455, r);',
+        '  if (disc < 0.01) discard;',
+        // Terminator: a half-ellipse whose width runs with cos(2*pi*phase).
+        // Waxing lights the right limb, waning the left.
+        '  float E = sqrt(max(0.0001, 0.25 - uv.y * uv.y));',
+        '  float x = mix(uv.x, -uv.x, uWaning);',
+        '  float lit = smoothstep(uCos * E - 0.03, uCos * E + 0.03, x);',
+        '  float lum = mix(0.055, 1.0, lit);',       // earthshine on the dark limb
+        '  float a = disc * (0.55 + 0.45 * lit);',
+        '  gl_FragColor = vec4(uTint * lum * 0.85, a);',
+        '}'
+      ].join('\n')
+    });
+    var moonGeo = new THREE.BufferGeometry();
+    var mp = MOON_DIR.clone().multiplyScalar(7000);
+    moonGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([mp.x, mp.y, mp.z]), 3));
+    var moon = new THREE.Points(moonGeo, moonMat);
+    moon.frustumCulled = false;
+    moon.renderOrder = 0;      // after the stars, so its dark limb covers them
+    var moonHolder = new THREE.Group();
+    moonHolder.position.y = EYE_HEIGHT;
+    moonHolder.add(moon);
+    scene.add(moonHolder);
+  }
+
+  // --- Meteor shower calendar ----------------------------------------------
+  var SHOWERS = [
+    { m: 1,  d: 3,  name: 'Quadrantids',   dir: 'northeast' },
+    { m: 4,  d: 22, name: 'Lyrids',        dir: 'northeast' },
+    { m: 5,  d: 5,  name: 'Eta Aquariids', dir: 'east before dawn' },
+    { m: 8,  d: 12, name: 'Perseids',      dir: 'northeast' },
+    { m: 10, d: 21, name: 'Orionids',      dir: 'east after midnight' },
+    { m: 11, d: 17, name: 'Leonids',       dir: 'east after midnight' },
+    { m: 12, d: 13, name: 'Geminids',      dir: 'east' },
+    { m: 12, d: 22, name: 'Ursids',        dir: 'north' }
+  ];
+  (function () {
+    var note = document.getElementById('showerNote');
+    var now = new Date();
+    for (var i = 0; i < SHOWERS.length; i++) {
+      var s = SHOWERS[i];
+      var peak = new Date(now.getFullYear(), s.m - 1, s.d);
+      var dDays = (now - peak) / 86400000;
+      if (dDays > -1.2 && dDays < 2.2) {
+        note.textContent = s.name + ' peak tonight \u2014 look ' + s.dir;
+        reportBtn.classList.add('pulse');
+        return;
+      }
+    }
+    // The Perseids run long; between peaks, say so quietly.
+    var yr = now.getFullYear();
+    if (now >= new Date(yr, 6, 17) && now <= new Date(yr, 7, 24)) {
+      note.textContent = 'The Perseids are active \u2014 look northeast after dark';
+    }
+  })();
+
+  // --- Shore sound: synthesized waves and wind, muted by default -----------
+  // No audio files: two loops of filtered noise. Waves are low-passed noise
+  // swelling on two slow, incommensurate LFOs; wind is a band-passed sigh.
+  var sound = (function () {
+    var ctx = null, master = null, on = false;
+    var btn = document.getElementById('soundBtn');
+    function noiseSource(c) {
+      var len = 2 * c.sampleRate;
+      var buf = c.createBuffer(1, len, c.sampleRate);
+      var d = buf.getChannelData(0);
+      for (var i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+      var src = c.createBufferSource();
+      src.buffer = buf; src.loop = true;
+      return src;
+    }
+    function build() {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      master = ctx.createGain(); master.gain.value = 0;
+      master.connect(ctx.destination);
+      // Waves
+      var n1 = noiseSource(ctx);
+      var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 420; lp.Q.value = 0.6;
+      var g1 = ctx.createGain(); g1.gain.value = 0.26;
+      var l1 = ctx.createOscillator(); l1.frequency.value = 0.071;
+      var l1g = ctx.createGain(); l1g.gain.value = 0.13;
+      var l2 = ctx.createOscillator(); l2.frequency.value = 0.043;
+      var l2g = ctx.createGain(); l2g.gain.value = 0.09;
+      l1.connect(l1g); l1g.connect(g1.gain);
+      l2.connect(l2g); l2g.connect(g1.gain);
+      n1.connect(lp); lp.connect(g1); g1.connect(master);
+      // Wind
+      var n2 = noiseSource(ctx);
+      var bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 330; bp.Q.value = 0.9;
+      var g2 = ctx.createGain(); g2.gain.value = 0.05;
+      var l3 = ctx.createOscillator(); l3.frequency.value = 0.021;
+      var l3g = ctx.createGain(); l3g.gain.value = 0.032;
+      l3.connect(l3g); l3g.connect(g2.gain);
+      n2.connect(bp); bp.connect(g2); g2.connect(master);
+      n1.start(); n2.start(); l1.start(); l2.start(); l3.start();
+    }
+    function set(state) {
+      on = state;
+      btn.classList.toggle('on', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      btn.setAttribute('aria-label', on ? 'Turn off shore sound' : 'Turn on shore sound');
+      if (on) {
+        if (!ctx) build();
+        if (ctx.state === 'suspended') ctx.resume();
+        master.gain.cancelScheduledValues(ctx.currentTime);
+        master.gain.linearRampToValueAtTime(0.10, ctx.currentTime + 1.8);
+      } else if (ctx) {
+        master.gain.cancelScheduledValues(ctx.currentTime);
+        master.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.6);
+      }
+    }
+    btn.addEventListener('click', function () { set(!on); });
+    document.addEventListener('visibilitychange', function () {
+      if (!ctx) return;
+      if (document.hidden) ctx.suspend();
+      else if (on) ctx.resume();
+    });
+    return { isOn: function () { return on; } };
+  })();
+
+  // --- Welcome overlay ------------------------------------------------------
+  var introEl = document.getElementById('intro');
+  function dismissIntro() { introEl.classList.remove('show'); }
+  document.getElementById('introGo').addEventListener('click', dismissIntro);
+  introEl.addEventListener('click', function (e) { if (e.target === introEl) dismissIntro(); });
+
+  // ==========================================================================
+  //  7. LOOP
+  // ==========================================================================
+  var clock = new THREE.Clock();
+  var elapsed = 0, running = true;
+  var poleQ = new THREE.Quaternion();
+
+  function resize() {
+    var w = window.innerWidth, h = window.innerHeight;
+    camera.aspect = w / h;
+    // Pitch and field of view move together so the horizon lands around a
+    // fifth of the way up the frame on any shape of screen.
+    if (camera.aspect < 0.85)      { camera.fov = 74; BASE_PITCH = 24 * Math.PI / 180; }
+    else if (camera.aspect < 1.5)  { camera.fov = 62; BASE_PITCH = 20 * Math.PI / 180; }
+    else                           { camera.fov = 52; BASE_PITCH = 15 * Math.PI / 180; }
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h, false);
+    // Deliberately ~4.5x the true 0.52 deg disc. Honest scale renders about
+    // seven CSS pixels on a phone — you cannot see a phase in seven pixels,
+    // so accuracy there would cost the feature its meaning. Film does the
+    // same thing for the same reason.
+    if (moonMat) moonMat.uniforms.uPx.value = Math.min(64, 2.4 / camera.fov * (h * DPR));
+  }
+  window.addEventListener('resize', resize, { passive: true });
+  window.addEventListener('orientationchange', function () { setTimeout(resize, 120); }, { passive: true });
+  resize();
+
+  document.addEventListener('visibilitychange', function () {
+    running = !document.hidden;
+    if (running) { clock.getDelta(); tick(); }
+  });
+
+  var mats = [stars.material, haze.material, anchors.material];
+
+  function tick() {
+    if (!running) return;
+    requestAnimationFrame(tick);
+    var dt = Math.min(clock.getDelta(), 0.1);
+    elapsed += dt;
+
+    // Sidereal rotation, negative so stars rise east and set west.
+    poleQ.setFromAxisAngle(POLE, -SKY_RATE * elapsed);
+    skyGroup.quaternion.copy(poleQ);
+
+    // Ambient drift: two slow incommensurate sines, under a degree of travel.
+    // It should feel like standing still, not like a camera move.
+    var m = REDUCED ? 0.25 : 1.0;
+    camera.rotation.y = BASE_YAW
+      + (Math.sin(elapsed * 0.037) * 0.0130 + Math.sin(elapsed * 0.0131) * 0.0062) * m;
+    camera.rotation.x = BASE_PITCH
+      + (Math.sin(elapsed * 0.0214) * 0.0068 + Math.sin(elapsed * 0.0091) * 0.0031) * m;
+
+    for (var i = 0; i < mats.length; i++) mats[i].uniforms.uTime.value = elapsed;
+    oceanMat.uniforms.uTime.value = elapsed;
+
+    // Channel marker: flash 0.7 s, dark 3.3 s.
+    var mph = elapsed % 4.0;
+    markerMat.uniforms.uOp.value = mph < 0.7 ? Math.sin(Math.PI * mph / 0.7) * 0.9 : 0.0;
+
+    updateMeteors(dt);
+
+    renderer.render(scene, camera);
+  }
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(function () {
+    curtain.classList.add('lift');
+    tick();
+    setTimeout(function () { introEl.classList.add('show'); }, 1500);
+    setTimeout(function () { document.getElementById('credit').classList.add('show'); }, 3200);
+  });
+
+  // --- Extension point for Prompt 2 (shooting star engine) -----------------
+  window.Scene = {
+    THREE: THREE, scene: scene, skyGroup: skyGroup, camera: camera, renderer: renderer,
+    constants: { STAR_R: STAR_R, DOME_R: DOME_R, EYE_HEIGHT: EYE_HEIGHT, POLE: POLE },
+    fireStar: fireStar,
+    now: function () { return elapsed; }
+  };
+})();
+</script>
+</body>
+</html>
