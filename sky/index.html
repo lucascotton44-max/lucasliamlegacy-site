@@ -152,6 +152,22 @@
     z-index: 5; touch-action: manipulation; padding: 0;
   }
   #soundBtn.on { color: #d8dfec; border-color: rgba(160, 180, 220, 0.5); }
+  #shareBtn {
+    position: fixed; right: 14px;
+    bottom: calc(20px + env(safe-area-inset-bottom));
+    width: 42px; height: 42px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(8, 12, 22, 0.5);
+    border: 1px solid rgba(130, 150, 190, 0.22);
+    color: #6f7a90;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    transition: color 200ms ease, border-color 200ms ease, transform 120ms ease;
+    z-index: 5; touch-action: manipulation; padding: 0;
+  }
+  #shareBtn:hover { color: #d8dfec; border-color: rgba(160, 180, 220, 0.5); }
+  #shareBtn:active { transform: scale(0.93); }
+  #shareBtn:focus-visible { outline: 2px solid rgba(150, 170, 210, 0.55); outline-offset: 2px; }
   #soundBtn:focus-visible { outline: 2px solid rgba(150, 170, 210, 0.55); outline-offset: 2px; }
   #intro {
     position: fixed; inset: 0; z-index: 8;
@@ -229,6 +245,11 @@
   <span class="place">St. Peter&rsquo;s, Cape Breton</span>
 </a>
 <button id="soundBtn" type="button" aria-pressed="false" aria-label="Turn on shore sound">&#9834;</button>
+<button id="shareBtn" type="button" aria-label="Share this sky">
+  <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M12 3.5v12"/><path d="M7.6 7.9 12 3.5l4.4 4.4"/><path d="M5 14.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4.5"/>
+  </svg>
+</button>
 <div id="intro" role="dialog" aria-label="About this sky">
   <div class="box">
     <p>When someone under this sky sees a shooting star and taps the button, it flies for everyone watching. One sky, the whole Maritimes under it.</p>
@@ -1683,6 +1704,45 @@
       else if (on) ctx.resume();
     });
     return { isOn: function () { return on; } };
+  })();
+
+  // --- Sharing --------------------------------------------------------------
+  // The native share sheet, not a Facebook button. One tap reaches Facebook,
+  // Messenger, texts, WhatsApp, email — whatever the person actually uses —
+  // and it asks nobody to log into anything. Desktop browsers without the
+  // share sheet fall back to copying the link.
+  (function () {
+    var btn = document.getElementById('shareBtn');
+    var TEXT = 'Tap when you see a shooting star and it flies for everyone ' +
+               'watching. One sky, the whole Maritimes under it.';
+
+    function legacyCopy(url) {
+      var i = document.createElement('input');
+      i.value = url;
+      i.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
+      document.body.appendChild(i);
+      i.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(i);
+      toast(ok ? 'Link copied — paste it anywhere' : url);
+    }
+
+    btn.addEventListener('click', function () {
+      var url = location.origin + location.pathname;
+      if (navigator.share) {
+        navigator.share({ title: 'One Sky', text: TEXT, url: url })
+          .catch(function () { /* dismissed — say nothing */ });
+        return;
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(function () {
+          toast('Link copied — paste it anywhere');
+        }).catch(function () { legacyCopy(url); });
+        return;
+      }
+      legacyCopy(url);
+    });
   })();
 
   // --- Welcome overlay ------------------------------------------------------
