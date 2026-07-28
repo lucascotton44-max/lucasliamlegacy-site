@@ -604,7 +604,7 @@
         // Brighter stars get proportionally more halo, the way a real
         // exposure blooms hardest around the strongest sources.
         '  vMag = clamp((aSize - 1.0) / 5.0, 0.0, 1.0);',
-        '  gl_PointSize = aSize * uDpr * (0.84 + 0.16 * tw) * (1.0 + uGlow * (0.45 + 0.95 * vMag));',
+        '  gl_PointSize = aSize * uDpr * (0.84 + 0.16 * tw) * (1.0 + uGlow * (0.30 + 0.60 * vMag));',
         '  gl_Position = projectionMatrix * viewMatrix * world;',
         '}'
       ].join('\n'),
@@ -617,16 +617,22 @@
         // Three falloffs stacked: a tight saturated core, a mid glare, and a
         // wide gentle halo. The halo is the whole trick — it is what light
         // scattering through an atmosphere and a lens actually looks like.
-        '  float k = 1.0 + uGlow * (0.45 + 0.95 * vMag);',
+        // EVERY term must reach exactly zero by the inscribed circle
+        // (d = 0.25). An exponential falloff still has real value at the
+        // corner of the quad, which paints the square sprite itself — the
+        // bug that turned every bright star into a visible box.
+        '  float sprEdge = clamp(1.0 - d * 4.0, 0.0, 1.0);',
+        '  float k = 1.0 + uGlow * (0.30 + 0.60 * vMag);',
         '  float core  = smoothstep(0.05 / (k*k), 0.0, d);',
-        '  float glare = exp(-d * 9.0 * k * k);',
-        '  float halo  = exp(-d * 2.4) * uGlow * (0.10 + 0.22 * vMag);',
-        // Diffraction cross, brightest stars only, kept faint.
+        '  float glare = exp(-d * 9.0 * k * k) * sprEdge;',
+        '  float halo  = pow(sprEdge, 2.4) * uGlow * (0.09 + 0.20 * vMag);',
+        // Diffraction cross, brightest stars only, faded out at the edge too.
         '  float sp = 0.0;',
         '  if (uSpike > 0.0) {',
         '    vec2 a2 = abs(uv);',
-        '    sp = (exp(-a2.x * 150.0) * exp(-a2.y * 5.0)',
-        '        + exp(-a2.y * 150.0) * exp(-a2.x * 5.0)) * uSpike * vMag * 0.5;',
+        '    sp = (exp(-a2.x * 150.0) * exp(-a2.y * 6.0)',
+        '        + exp(-a2.y * 150.0) * exp(-a2.x * 6.0))',
+        '       * uSpike * vMag * 0.45 * pow(sprEdge, 1.3);',
         '  }',
         '  float a = (core * 0.95 + glare * 0.40 + halo + sp) * vAlpha;',
         '  if (a < 0.003) discard;',
