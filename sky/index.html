@@ -1356,6 +1356,14 @@
   var toastTimer = null;
   var recentRows = [];
   var liveOk = false;
+  // Live diagnostics. Generic error text has sent us down two wrong paths
+  // today; these report exactly which operation failed and why, visible in
+  // the ✦ panel on whatever device is misbehaving.
+  var diag = { select: 'not run', insert: 'not tried', live: 'connecting' };
+  function shortErr(e) {
+    return String((e && (e.message || e.msg)) || e || 'no detail').replace(/[<>&]/g, '').slice(0, 80);
+  }
+  function redraw() { renderFeed(recentRows, !CONFIGURED); }
 
   function fmtTime(ts) {
     var d = new Date(ts), h = d.getHours(), m = d.getMinutes();
@@ -1418,6 +1426,8 @@
         (communityName(e.c) || '—') + '</span></div>';
     }
     if (solo) html += '<div class="note">This sky is running without its shared connection — your sightings stay on this device.</div>';
+    html += '<div class="note">read: ' + diag.select + ' · write: ' + diag.insert +
+            ' · live: ' + diag.live + '</div>';
     feedEl.innerHTML = html;
   }
 
@@ -1457,16 +1467,38 @@
       return;
     }
     renderFeed(recentRows, false);
+
+    // The count above is optimistic — shown before the server has agreed.
+    // Any failure must resync against the database rather than guess, or the
+    // screen keeps showing a sighting that was never stored and only tells
+    // the truth on the next reload.
+    function reconcile(quiet) {
+      if (!quiet) toast("Couldn't share that one — it still flew for you");
+      refresh(false).catch(function () {
+        tonightCount = Math.max(0, tonightCount - 1); bumpCount(tonightCount);
+      });
+    }
+
     sb.from('sightings').insert({ community: ci, client_id: CLIENT_ID })
       .then(function (res) {
         if (res && res.error) {
-          var msg = String(res.error.message || '');
-          // The server enforces the same cooldown the button does; if it
-          // fires, the clocks simply disagree — no need to alarm anyone.
-          if (msg.indexOf('rate_limited') >= 0) return;
-          toast("Couldn't share that one — it still flew for you");
-          tonightCount = Math.max(0, tonightCount - 1); bumpCount(tonightCount);
+          var msg = shortErr(res.error);
+          diag.insert = 'FAIL(' + msg + ')';
+          if (msg.indexOf('rate_limited') >= 0) {
+            reconcile(true);                       // genuinely refused; stay quiet
+          } else {
+            toast("Couldn't share — " + msg);      // say what actually broke
+            reconcile(true);
+          }
+        } else {
+          diag.insert = 'ok';
+          redraw();
         }
+      })
+      .catch(function (e) {
+        diag.insert = 'THREW(' + shortErr(e) + ')';
+        toast("Couldn't share — " + shortErr(e));
+        reconcile(true);
       });
   }
   reportBtn.addEventListener('click', report);
@@ -1511,6 +1543,7 @@
         recentRows = rows;
         tonightCount = rows.length;
         bumpCount(tonightCount);
+        diag.select = 'ok (' + rows.length + ' since noon)';
         renderFeed(rows, false);
         if (fireNew && fresh.length) arrive(fresh);
       });
@@ -1519,9 +1552,10 @@
   if (!CONFIGURED) {
     renderFeed([], true);
   } else {
-    refresh(false).catch(function () {
+    refresh(false).catch(function (e) {
+      diag.select = 'FAIL(' + shortErr(e) + ')';
       renderFeed([], true);
-      toast('Shared sky unreachable right now — your stars still fly');
+      toast('Shared sky unreachable — ' + shortErr(e));
     });
 
     sb.channel('sightings-live')
@@ -1536,7 +1570,11 @@
           renderFeed(recentRows, false);
           arrive([row]);
         })
-      .subscribe(function (status) { liveOk = (status === 'SUBSCRIBED'); });
+      .subscribe(function (status, err) {
+        liveOk = (status === 'SUBSCRIBED');
+        diag.live = liveOk ? 'ok' : (String(status) + (err ? ' ' + shortErr(err) : ''));
+        redraw();
+      });
 
     // Reconciliation. Websockets drop — on a phone, every time the screen
     // sleeps. This catches anything the socket missed without ever being
