@@ -418,15 +418,19 @@
       'void main(){',
       '  vec3 d = normalize(vDir);',
       '  float h = d.y;',
-      '  vec3 zenith  = vec3(0.0052, 0.0072, 0.0190);',
-      '  vec3 horizon = vec3(0.0215, 0.0285, 0.0545);',
-      '  vec3 col = mix(horizon, zenith, smoothstep(-0.04, 0.66, h));',
+      '  vec3 zenith  = vec3(0.0040, 0.0062, 0.0215);',
+      '  vec3 horizon = vec3(0.0180, 0.0300, 0.0720);',
+      '  vec3 col = mix(horizon, zenith, smoothstep(-0.04, 0.72, h));',
+      // A distinct band of deeper blue sitting off the horizon — the colour
+      // a long exposure picks up from air itself, not from any light source.
+      '  col += vec3(0.004, 0.011, 0.030) * exp(-pow((h - 0.10) / 0.16, 2.0));',
       // Airglow: a thin band lifted just above the sea horizon.
-      '  col += vec3(0.0125, 0.0165, 0.0215) * exp(-pow((h - 0.028) / 0.095, 2.0));',
+      '  col += vec3(0.0100, 0.0175, 0.0195) * exp(-pow((h - 0.028) / 0.095, 2.0));',
       // Low crescent moon: halo only, no disc until Prompt 4.
       '  float md = max(dot(d, normalize(uMoonDir)), 0.0);',
-      '  col += vec3(0.080, 0.086, 0.104) * pow(md, 48.0) * 0.60 * uMoonGlow;',
-      '  col += vec3(0.021, 0.025, 0.037) * pow(md,  7.0) * 0.36 * uMoonGlow;',
+      '  col += vec3(0.115, 0.122, 0.140) * pow(md, 90.0) * 0.85 * uMoonGlow;',
+      '  col += vec3(0.062, 0.068, 0.086) * pow(md, 26.0) * 0.55 * uMoonGlow;',
+      '  col += vec3(0.020, 0.024, 0.036) * pow(md,  5.0) * 0.40 * uMoonGlow;',
       // Sodium wash from a town behind the headland. Tight to the horizon.
       '  float tz = max(dot(normalize(vec3(d.x, 0.0, d.z)), uTownDir), 0.0);',
       '  col += vec3(0.105, 0.058, 0.022) * pow(tz, 12.0)',
@@ -491,21 +495,25 @@
         var t = (ny - wob[x]) / BAND_SIGMA;
         var core = Math.exp(-t * t);
 
-        var clump = fbm(u0 * 96, ny * 9.0 + 11.0, 5, 96);
-        var rift  = fbm(u0 * 40, ny * 4.5 + 41.0, 4, 40);
+        var clump = fbm(u0 * 96, ny * 9.0 + 11.0, 6, 96);
+        var rift  = fbm(u0 * 40, ny * 4.5 + 41.0, 5, 40);
+        var fine  = fbm(u0 * 192, ny * 18.0 + 77.0, 4, 192);
 
         // The Great Rift — dark dust cutting the band lengthwise. Without
         // this the band reads as cloud rather than galaxy.
         var lane = Math.exp(-Math.pow((t + 0.35) / 0.55, 2.0));
         var dust = 1.0 - lane * (0.45 + rift * 0.50);
 
-        var v = core * (0.20 + clump * 1.15) * dust;
-        v = Math.max(0, Math.min(1, v)) * 0.30;
+        var v = core * (0.16 + clump * 1.05 + fine * 0.45) * dust;
+        v = Math.max(0, Math.min(1, v)) * 0.34;
 
+        // Warm through the dense core, cooler at the edges — the real band
+        // reddens where its own dust lies thickest.
+        var warm = Math.max(0, 1 - Math.abs(t) * 0.85);
         var i4 = (y * W + x) * 4;
-        px[i4]     = (v * 200) | 0;
-        px[i4 + 1] = (v * 194) | 0;
-        px[i4 + 2] = (v * 210) | 0;
+        px[i4]     = (v * (188 + warm * 46)) | 0;
+        px[i4 + 1] = (v * (186 + warm * 14)) | 0;
+        px[i4 + 2] = (v * (214 - warm * 34)) | 0;
         px[i4 + 3] = 255;
       }
     }
@@ -541,7 +549,7 @@
         '  vec3 t = texture2D(uMap, vUv).rgb;',
         '  float alt = normalize(vWorld).y;',
         '  float ext = smoothstep(-0.01, 0.40, alt);',
-        '  gl_FragColor = vec4(t * ext * 0.38, 1.0);',
+        '  gl_FragColor = vec4(t * ext * 0.52, 1.0);',
         '}'
       ].join('\n')
     })
@@ -555,7 +563,12 @@
   //  Two point systems sharing one shader: the resolved stars, and a dense
   //  faint haze concentrated on the galactic plane.
   // ==========================================================================
-  function starMaterial(bright) {
+  // uGlow widens the sprite and adds the soft outer halo that makes a point
+  // of light read as photographed rather than drawn. uSpike adds the faint
+  // cross a camera puts on the very brightest stars. Doing it per-sprite
+  // costs a few extra fragments; doing it as a real post-process bloom pass
+  // costs two full-screen render targets, which a phone cannot spare.
+  function starMaterial(bright, glow, spike) {
     return new THREE.ShaderMaterial({
       transparent: true, depthWrite: false, depthTest: true,
       blending: THREE.AdditiveBlending,
@@ -563,12 +576,15 @@
         uTime:    { value: 0 },
         uDpr:     { value: DPR },
         uTwinkle: { value: REDUCED ? 0.0 : 1.0 },
-        uBright:  { value: bright }
+        uBright:  { value: bright },
+        uGlow:    { value: glow || 0.0 },
+        uSpike:   { value: spike || 0.0 }
       },
       vertexShader: [
         'attribute vec3 aColor; attribute float aSize; attribute float aPhase; attribute float aSpeed;',
         'uniform float uTime; uniform float uDpr; uniform float uTwinkle; uniform float uBright;',
-        'varying vec3 vColor; varying float vAlpha;',
+        'uniform float uGlow; uniform float uSpike;',
+        'varying vec3 vColor; varying float vAlpha; varying float vMag;',
         'void main(){',
         '  vec4 world = modelMatrix * vec4(position, 1.0);',
         '  float alt = normalize(world.xyz).y;',
@@ -576,24 +592,44 @@
         '  float ext = smoothstep(-0.012, 0.055, alt);',
         '  ext *= 0.50 + 0.50 * smoothstep(0.02, 0.55, alt);',
         // Reddening is only strong below ~10 deg, not halfway up the sky.
-        '  vColor = mix(vec3(1.0, 0.66, 0.40), aColor, clamp(alt * 6.5, 0.0, 1.0));',
+        // Saturate the colour a touch. Real astrophotography shows far more
+        // blue and amber than the eye reports; flat white stars are the
+        // giveaway that a sky was drawn rather than captured.
+        '  vec3 col = aColor;',
+        '  float lum = dot(col, vec3(0.299, 0.587, 0.114));',
+        '  col = clamp(mix(vec3(lum), col, 1.55), 0.0, 1.0);',
+        '  vColor = mix(vec3(1.0, 0.63, 0.36), col, clamp(alt * 6.5, 0.0, 1.0));',
         '  float tw = 1.0 - uTwinkle * 0.34 * (0.5 + 0.5 * sin(uTime * aSpeed + aPhase));',
         '  vAlpha = ext * tw * uBright;',
-        '  gl_PointSize = aSize * uDpr * (0.84 + 0.16 * tw);',
+        // Brighter stars get proportionally more halo, the way a real
+        // exposure blooms hardest around the strongest sources.
+        '  vMag = clamp((aSize - 1.0) / 5.0, 0.0, 1.0);',
+        '  gl_PointSize = aSize * uDpr * (0.84 + 0.16 * tw) * (1.0 + uGlow * (0.45 + 0.95 * vMag));',
         '  gl_Position = projectionMatrix * viewMatrix * world;',
         '}'
       ].join('\n'),
       fragmentShader: [
-        'varying vec3 vColor; varying float vAlpha;',
+        'uniform float uGlow; uniform float uSpike;',
+        'varying vec3 vColor; varying float vAlpha; varying float vMag;',
         'void main(){',
         '  vec2 uv = gl_PointCoord - 0.5;',
         '  float d = dot(uv, uv);',
-        // A small saturated core with a wide soft glare. The core has to stay
-        // tight — widen it and the bright stars render as visible discs.
-        '  float core = smoothstep(0.05, 0.0, d);',
-        '  float glare = exp(-d * 9.0);',
-        '  float a = (core * 0.95 + glare * 0.40) * vAlpha;',
-        '  if (a < 0.004) discard;',
+        // Three falloffs stacked: a tight saturated core, a mid glare, and a
+        // wide gentle halo. The halo is the whole trick — it is what light
+        // scattering through an atmosphere and a lens actually looks like.
+        '  float k = 1.0 + uGlow * (0.45 + 0.95 * vMag);',
+        '  float core  = smoothstep(0.05 / (k*k), 0.0, d);',
+        '  float glare = exp(-d * 9.0 * k * k);',
+        '  float halo  = exp(-d * 2.4) * uGlow * (0.10 + 0.22 * vMag);',
+        // Diffraction cross, brightest stars only, kept faint.
+        '  float sp = 0.0;',
+        '  if (uSpike > 0.0) {',
+        '    vec2 a2 = abs(uv);',
+        '    sp = (exp(-a2.x * 150.0) * exp(-a2.y * 5.0)',
+        '        + exp(-a2.y * 150.0) * exp(-a2.x * 5.0)) * uSpike * vMag * 0.5;',
+        '  }',
+        '  float a = (core * 0.95 + glare * 0.40 + halo + sp) * vAlpha;',
+        '  if (a < 0.003) discard;',
         '  gl_FragColor = vec4(vColor, a);',
         '}'
       ].join('\n')
@@ -626,7 +662,7 @@
     return false;
   }
 
-  function buildPoints(count, bandChance, sigma, sizeFn, colorFn, bright, radius) {
+  function buildPoints(count, bandChance, sigma, sizeFn, colorFn, bright, radius, glow, spike) {
     var pos = [], col = [], siz = [], pha = [], spd = [];
     for (var i = 0; i < count; i++) {
       if (!sampleDir(bandChance, sigma)) continue;
@@ -644,7 +680,7 @@
     g.setAttribute('aSize',    new THREE.Float32BufferAttribute(siz, 1));
     g.setAttribute('aPhase',   new THREE.Float32BufferAttribute(pha, 1));
     g.setAttribute('aSpeed',   new THREE.Float32BufferAttribute(spd, 1));
-    var p = new THREE.Points(g, starMaterial(bright));
+    var p = new THREE.Points(g, starMaterial(bright, glow, spike));
     p.frustumCulled = false;
     return p;
   }
@@ -663,7 +699,7 @@
     21000, 0.93, 0.105,
     function () { return 0.55 + rnd() * 0.85; },
     function () { var w = 0.94 + rnd() * 0.06; return [w, w * 0.985, w * 0.95]; },
-    0.50, MW_R - 200
+    0.50, MW_R - 200, 0.0, 0.0
   );
   haze.renderOrder = -5;
   skyGroup.add(haze);
@@ -674,7 +710,7 @@
   var stars = buildPoints(
     5800, 0.24, 0.16,
     function (u) { return 0.85 + Math.pow(u, 6.0) * 5.4; },
-    starColor, 1.0, STAR_R
+    starColor, 1.0, STAR_R, 1.0, 0.0
   );
   stars.renderOrder = -4;
   skyGroup.add(stars);
@@ -683,7 +719,7 @@
   var anchors = buildPoints(
     64, 0.28, 0.20,
     function () { return 6.4 + rnd() * 3.6; },
-    starColor, 1.0, STAR_R - 100
+    starColor, 1.15, STAR_R - 100, 1.6, 1.0
   );
   anchors.renderOrder = -3;
   skyGroup.add(anchors);
@@ -723,6 +759,10 @@
       '  base += vec3(0.0016, 0.0021, 0.0032) * swell;',
       // Glitter path: a narrow cone toward the moon azimuth.
       '  float band = pow(max(dot(dir, uAxis), 0.0), 22.0);',
+      // Broad column of reflected moonlight beneath the sparkle, so the
+      // glade reads as lit water rather than glints scattered on black.
+      '  float glade = pow(max(dot(dir, uAxis), 0.0), 7.0);',
+      '  base += vec3(0.021, 0.024, 0.032) * glade * smoothstep(4200.0, 300.0, dist);',
       '  float t = uTime * uMotion;',
       // Two rotated coordinate frames so the sparkle grid never lines up
       // with the screen axes — axis-aligned sin products read as rows of
@@ -738,7 +778,7 @@
       // moonglade, which the previous revision proved the hard way.
       '  float near = smoothstep(2400.0, 260.0, dist) * smoothstep(12.0, 58.0, dist);',
       '  near *= mix(0.42, 1.0, smoothstep(90.0, 500.0, dist));',
-      '  base += vec3(0.185, 0.192, 0.212) * band * (s1*0.9 + s2 + s3*0.45) * near * (1.0 + uFlash * 2.2);',
+      '  base += vec3(0.230, 0.238, 0.262) * band * (s1*0.9 + s2 + s3*0.45) * near * (1.0 + uFlash * 2.2);',
       // A bright fireball genuinely lights the water. Kept very low.
       '  base += vec3(0.009, 0.010, 0.013) * uFlash;',
       '  base = mix(base, uHorizon * 0.88, smoothstep(3500.0, 4980.0, dist));',
@@ -1322,7 +1362,7 @@
   var feedEl = document.getElementById('feed');
   var toastEl = document.getElementById('toast');
 
-  var CONFIGURED = !!(window.supabase && SUPABASE_URL.indexOf('YOUR-PROJECT') < 0);
+  var CONFIGURED = !!(window.supabase && SUPABASE_URL.indexOf('supabase.co') > 0);
   var sb = CONFIGURED ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY) : null;
 
   // A random per-device string. Not a name, not a location, not an account —
@@ -1624,16 +1664,19 @@
         'void main(){',
         '  vec2 uv = gl_PointCoord - 0.5;',
         '  float r = length(uv);',
-        '  float disc = smoothstep(0.5, 0.455, r);',
-        '  if (disc < 0.01) discard;',
+        '  float disc = smoothstep(0.36, 0.325, r);',
+        // Bloom ring around the limb — the disc no longer fills the sprite,
+        // so there is room for the light to spill the way it does on film.
+        '  float bloom = exp(-pow(max(0.0, r - 0.30) * 7.0, 2.0)) * 0.42;',
+        '  if (disc < 0.01 && bloom < 0.012) discard;',
         // Terminator: a half-ellipse whose width runs with cos(2*pi*phase).
         // Waxing lights the right limb, waning the left.
         '  float E = sqrt(max(0.0001, 0.25 - uv.y * uv.y));',
         '  float x = mix(uv.x, -uv.x, uWaning);',
         '  float lit = smoothstep(uCos * E - 0.03, uCos * E + 0.03, x);',
         '  float lum = mix(0.055, 1.0, lit);',       // earthshine on the dark limb
-        '  float a = disc * (0.55 + 0.45 * lit);',
-        '  gl_FragColor = vec4(uTint * lum * 0.85, a);',
+        '  float a = disc * (0.55 + 0.45 * lit) + bloom;',
+        '  gl_FragColor = vec4(uTint * (lum * 0.85 + bloom * 0.9), min(a, 1.0));',
         '}'
       ].join('\n')
     });
@@ -1810,7 +1853,7 @@
     // seven CSS pixels on a phone — you cannot see a phase in seven pixels,
     // so accuracy there would cost the feature its meaning. Film does the
     // same thing for the same reason.
-    if (moonMat) moonMat.uniforms.uPx.value = Math.min(64, 2.4 / camera.fov * (h * DPR));
+    if (moonMat) moonMat.uniforms.uPx.value = Math.min(64, 3.3 / camera.fov * (h * DPR));
   }
   window.addEventListener('resize', resize, { passive: true });
   window.addEventListener('orientationchange', function () { setTimeout(resize, 120); }, { passive: true });
