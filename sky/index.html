@@ -1,1055 +1,1714 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lucas & Liam Legacy Studios | Cape Breton Cinematic Storytelling</title>
-<meta name="description" content="Original films. Professional craft. Built for Atlantic Canada. Cape Breton-based cinematic brand films, heritage documentaries, and digital identities.">
-
-<!-- Favicon -->
-<link rel="icon" type="image/png" href="favicon.png">
-<link rel="apple-touch-icon" href="favicon.png">
-
-<!-- Open Graph — controls how the site looks when shared on social/iMessage -->
-<meta property="og:title" content="Lucas & Liam Legacy Studios">
-<meta property="og:description" content="Cape Breton cinematic brand films, heritage documentaries, and digital identities. Original films. Professional craft. Built for Atlantic Canada.">
-<meta property="og:image" content="https://lucasliamlegacy.ca/lucas_liam_photo.jpg">
-<meta property="og:url" content="https://lucasliamlegacy.ca">
-<meta property="og:type" content="website">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#000000">
+<title>One Sky — a shared shooting star tracker for the Maritimes</title>
+<meta name="description" content="When someone in the Maritimes sees a shooting star and taps the button, it flies for everyone watching. A live shared night sky over Cape Breton.">
+<meta property="og:title" content="One Sky — a shared shooting star tracker">
+<meta property="og:description" content="Report a shooting star and it flies for everyone watching. One sky, the whole Maritimes under it.">
+<meta property="og:type" content="website"><meta property="og:url" content="https://lucasliamlegacy.com/sky/">
 <meta property="og:site_name" content="Lucas & Liam Legacy Studios">
+<meta property="og:image" content="https://lucasliamlegacy.com/sky/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A Cape Breton night sky over the Atlantic, a shooting star crossing above the spruce treeline.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Lucas & Liam Legacy Studios">
-<meta name="twitter:description" content="Cape Breton cinematic brand films, heritage documentaries, and digital identities.">
-<meta name="twitter:image" content="https://lucasliamlegacy.ca/lucas_liam_photo.jpg">
-
-<!-- Google Analytics — replace G-XXXXXXXXXX with your actual GA4 ID -->
-<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script> -->
-
+<meta name="twitter:image" content="https://lucasliamlegacy.com/sky/og.png">
+<meta name="author" content="Lucas &amp; Liam Legacy Studios">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Barlow+Condensed:wght@300;400;600;700;800&family=Barlow:wght@300;400;500&display=swap');
-*{margin:0;padding:0;box-sizing:border-box;}
-:root{
-  --black:#05060a;--dark:#0c0e14;--iron:#12151d;--plate:#181b24;
-  --salt:#f2ede4;--salt2:#c4bcac;--salt3:#7a7268;
-  --ember:#c8441a;--ember2:#a03210;
-  --tide:#1e7a6a;--tide2:#155a4c;
-  --gold:#b87e20;
-  --wire:rgba(242,237,228,0.07);--wire2:rgba(242,237,228,0.12);
-}
-html{scroll-behavior:smooth;}
-body{background:var(--black);color:var(--salt);font-family:'Barlow',sans-serif;font-weight:300;overflow-x:hidden;cursor:default;}
-body.has-cursor *{cursor:none!important;}
-body.has-cursor .cursor,body.has-cursor .cursor-ring{opacity:1;}
-.cursor{position:fixed;width:8px;height:8px;background:var(--salt);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s;opacity:0;}
-.cursor-ring{position:fixed;width:32px;height:32px;border:1px solid rgba(242,237,228,0.35);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s;opacity:0;}
-
-/* ── NAV ── */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 52px;display:flex;justify-content:space-between;align-items:center;background:rgba(5,6,10,0.95);border-bottom:1px solid var(--wire);}
-.nav-mark{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:5px;color:var(--salt);text-decoration:none;}
-.nav-mark em{color:var(--ember);font-style:normal;}
-.nav-links{display:flex;gap:40px;align-items:center;}
-.nav-links a{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--salt3);text-decoration:none;transition:color .2s;}
-.nav-links a:hover{color:var(--salt);}
-.nav-cta{color:var(--ember)!important;border:1px solid rgba(200,68,26,0.5)!important;padding:7px 20px;transition:all .2s!important;}
-.nav-cta:hover{background:var(--ember)!important;color:var(--black)!important;border-color:var(--ember)!important;}
-
-/* ── HERO ── */
-.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:120px 52px 80px;overflow:hidden;}
-.hero-bg::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(242,237,228,0.008) 3px,rgba(242,237,228,0.008) 4px);pointer-events:none;}
-.hero-glow-ember{position:absolute;bottom:-100px;left:-100px;width:500px;height:500px;background:radial-gradient(circle,rgba(200,68,26,0.08) 0%,transparent 70%);z-index:0;}
-.hero-glow-tide{position:absolute;top:-80px;right:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(30,122,106,0.07) 0%,transparent 70%);z-index:0;}
-.hero-vline{position:absolute;left:52px;top:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent 10%,var(--ember) 40%,var(--ember) 60%,transparent 90%);opacity:0.2;z-index:1;}
-.hero-content{position:relative;z-index:6;max-width:1100px;}
-.hero-pre{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--ember);margin-bottom:20px;display:flex;align-items:center;gap:14px;animation:fu .8s ease both;}
-.hero-pre-line{width:36px;height:2px;background:var(--ember);}
-.hero-wordmark{font-family:'Bebas Neue',sans-serif;font-size:clamp(68px,12vw,148px);line-height:.88;letter-spacing:3px;color:var(--salt);animation:fu .8s .1s ease both;}
-.hero-wordmark .dot{color:var(--ember);}
-.hero-rule{width:100%;height:1px;background:linear-gradient(90deg,var(--ember),var(--tide),transparent);margin:32px 0;animation:fu .8s .2s ease both;}
-.hero-lower{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:end;animation:fu .8s .3s ease both;}
-.hero-tagline{font-family:'Cormorant Garamond',serif;font-size:clamp(19px,2.5vw,27px);font-weight:300;font-style:italic;color:var(--salt2);line-height:1.45;}
-.hero-tagline strong{font-style:normal;font-weight:400;color:var(--salt);}
-.hero-right{display:flex;flex-direction:column;align-items:flex-end;gap:20px;}
-.hero-actions{display:flex;gap:14px;align-items:center;}
-.btn-ember{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:4px;text-transform:uppercase;background:var(--ember);color:var(--salt);border:none;padding:14px 32px;text-decoration:none;display:inline-block;transition:background .2s,transform .15s;}
-.btn-ember:hover{background:var(--ember2);transform:translateY(-2px);}
-.btn-outline{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--salt2);border:1px solid var(--wire2);padding:13px 24px;text-decoration:none;transition:color .2s,border-color .2s;}
-.btn-outline:hover{color:var(--salt);border-color:var(--salt2);}
-.hero-scroll{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--salt3);display:flex;align-items:center;gap:10px;}
-.hero-scroll-line{width:1px;height:28px;background:var(--salt3);}
-@keyframes fu{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-
-/* ── CREDENTIALS STRIP ── */
-.creds{padding:0 52px;border-top:1px solid var(--wire);border-bottom:1px solid var(--wire);background:var(--dark);display:flex;overflow-x:auto;}
-.cred{padding:22px 40px;border-right:1px solid var(--wire);flex-shrink:0;}
-.cred:first-child{padding-left:0;}
-.cred:last-child{border-right:none;}
-.cred-val{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--salt);line-height:1;}
-.cred-lbl{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--salt3);margin-top:4px;}
-
-/* ── SECTION UTILS ── */
-section{padding:100px 52px;}
-.sec-tag{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--ember);margin-bottom:12px;display:flex;align-items:center;gap:12px;}
-.sec-tag::before{content:'';display:inline-block;width:20px;height:2px;background:var(--ember);}
-.sec-title-serif{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4.5vw,56px);font-weight:300;line-height:1.05;margin-bottom:48px;}
-.sec-title-serif em{font-style:italic;color:var(--tide);}
-.sec-title-bebas{font-family:'Bebas Neue',sans-serif;font-size:clamp(38px,5.5vw,68px);letter-spacing:2px;line-height:.95;margin-bottom:48px;}
-.sec-title-bebas em{color:var(--ember);font-style:normal;}
-
-/* ── WHO WE ARE ── */
-.who{background:var(--black);}
-.who-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;}
-.who-quote{font-family:'Cormorant Garamond',serif;font-size:clamp(20px,2.8vw,32px);font-weight:300;font-style:italic;color:var(--salt);line-height:1.3;border-left:2px solid var(--ember);padding-left:28px;margin-bottom:32px;}
-.who-body p{font-size:15px;color:var(--salt2);line-height:1.85;margin-bottom:16px;}
-.who-stats{display:flex;flex-direction:column;}
-.who-stat{padding:20px 0;border-bottom:1px solid var(--wire);display:flex;justify-content:space-between;align-items:center;}
-.who-stat:first-child{border-top:1px solid var(--wire);}
-.ws-lbl{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--salt3);}
-.ws-val{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;color:var(--salt);}
-.ws-val em{color:var(--ember);font-style:normal;}
-
-/* ── FILMS / WORK ── */
-.work{background:var(--iron);padding:100px 0;}
-.work-hdr{padding:0 52px 52px;}
-.work-grid{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:360px 260px;gap:2px;background:var(--wire);}
-.film{position:relative;overflow:hidden;background:var(--dark);display:block;text-decoration:none;}
-.film.feat{grid-row:span 2;}
-.film-thumb{position:absolute;inset:0;}
-/* thumbnail image fills card */
-.film-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .7s ease;display:block;}
-.film:hover .film-img{transform:scale(1.04);}
-/* fallback bg for cards without images */
-.film-fallback{position:absolute;inset:0;background:var(--dark);}
-/* play button — always visible on video cards, stronger on hover */
-.film-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:3;transition:opacity .3s;}
-.film-play-btn{width:56px;height:56px;background:rgba(200,68,26,0.85);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .2s,transform .2s;box-shadow:0 0 0 8px rgba(200,68,26,0.15);}
-.film:hover .film-play-btn{background:var(--ember);transform:scale(1.1);}
-.play-tri{width:0;height:0;border-top:10px solid transparent;border-bottom:10px solid transparent;border-left:20px solid white;margin-left:5px;}
-/* in-production badge — no play button */
-.film-badge{position:absolute;top:16px;left:16px;z-index:4;font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;background:rgba(5,6,10,0.8);color:var(--salt3);padding:5px 10px;border:1px solid var(--wire2);}
-.film-ov{position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(5,6,10,0.97) 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:24px;pointer-events:none;}
-.film-cat{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--ember);margin-bottom:8px;}
-.film-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(16px,2.2vw,24px);letter-spacing:1px;color:var(--salt);line-height:1.1;}
-.film-meta{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:2px;color:var(--salt3);margin-top:6px;}
-
-/* ── OFFERS ── */
-.offers{background:var(--dark);}
-.offers-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--wire);}
-.offer{background:var(--iron);padding:44px 36px;position:relative;overflow:hidden;transition:background .3s;}
-.offer::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--wire2);transition:background .4s;}
-.offer:hover{background:var(--plate);}
-.offer:hover::after,.offer.feat::after{background:var(--ember);}
-.offer.feat{background:var(--plate);}
-.offer-pop{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:800;letter-spacing:3px;text-transform:uppercase;background:var(--ember);color:var(--black);padding:3px 10px;margin-bottom:22px;}
-.offer-id{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--salt3);margin-bottom:12px;display:block;}
-.offer-name{font-family:'Cormorant Garamond',serif;font-size:clamp(20px,2.2vw,28px);font-weight:300;color:var(--salt);line-height:1.1;margin-bottom:10px;}
-.offer-price{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--ember);line-height:1;margin-bottom:2px;}
-.offer-note{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--salt3);margin-bottom:18px;display:block;}
-.offer-divider{width:28px;height:1px;background:var(--ember);margin-bottom:20px;}
-.offer-desc{font-size:14px;color:var(--salt2);line-height:1.65;margin-bottom:20px;}
-.offer-list{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:28px;}
-.offer-list li{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--salt2);line-height:1.4;}
-.offer-dash{color:var(--ember);flex-shrink:0;font-weight:700;}
-.offer-link{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--ember);text-decoration:none;display:flex;align-items:center;gap:10px;transition:gap .25s;}
-.offer-link:hover{gap:16px;}
-.offer-link-line{display:inline-block;width:18px;height:1px;background:var(--ember);transition:width .25s;}
-.offer-link:hover .offer-link-line{width:28px;}
-
-/* ── PROCESS ── */
-.process{background:var(--black);}
-.process-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--wire);margin-top:48px;}
-.ps{background:var(--dark);padding:44px 40px;border-left:2px solid transparent;transition:border-color .3s,background .3s;}
-.ps:hover{border-left-color:var(--ember);background:var(--iron);}
-.ps-n{font-family:'Bebas Neue',sans-serif;font-size:64px;color:rgba(242,237,228,0.04);line-height:1;margin-bottom:6px;}
-.ps-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--salt);margin-bottom:10px;}
-.ps-desc{font-size:14px;color:var(--salt2);line-height:1.7;}
-.ps-time{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--ember);margin-top:14px;}
-
-/* ── CLIENTS ── */
-.clients{background:var(--iron);}
-.clients-intro{display:grid;grid-template-columns:1fr 2fr;gap:80px;margin-bottom:56px;align-items:start;}
-.clients-intro p{font-size:15px;color:var(--salt2);line-height:1.8;padding-top:8px;}
-.clients-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--wire);}
-.client{background:var(--dark);padding:32px 28px;transition:background .3s;}
-.client:hover{background:var(--plate);}
-.client-tag{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--ember);margin-bottom:10px;display:block;}
-.client-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:var(--salt);margin-bottom:7px;}
-.client-desc{font-size:13px;color:var(--salt3);line-height:1.5;}
-
-/* ── MUSIC / SOLIDARITY ── */
-.music-sec{background:var(--black);padding:100px 52px;border-top:1px solid var(--wire);}
-.music-inner{max-width:900px;margin:0 auto;}
-.music-player-wrap{margin-top:36px;border:1px solid var(--wire2);background:var(--iron);}
-.music-player-wrap iframe{display:block;border-radius:0;}
-.music-attr{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--salt3);padding:10px 16px;border-top:1px solid var(--wire);display:flex;gap:8px;}
-.music-attr a{color:var(--salt3);text-decoration:none;transition:color .2s;}
-.music-attr a:hover{color:var(--salt);}
-.music-context{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;margin-top:40px;}
-.music-context-left p{font-size:14px;color:var(--salt2);line-height:1.85;}
-.music-context-right{border-left:1px solid var(--wire);padding-left:40px;}
-.music-action-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin-top:6px;}
-.music-action-list li{display:flex;align-items:flex-start;gap:10px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--salt2);}
-.music-action-dash{color:var(--ember);flex-shrink:0;}
-.music-stream-link{display:inline-flex;align-items:center;gap:10px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--ember);text-decoration:none;margin-top:24px;transition:gap .25s;}
-.music-stream-link:hover{gap:16px;}
-.music-stream-line{display:inline-block;width:18px;height:1px;background:var(--ember);transition:width .25s;}
-.music-stream-link:hover .music-stream-line{width:28px;}
-
-/* ── PRESS KIT ── */
-.press{background:var(--iron);padding:100px 52px;}
-.press-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;margin-top:0;}
-.press-bio{font-size:15px;color:var(--salt2);line-height:1.85;}
-.press-bio p{margin-bottom:16px;}
-.press-coverage{display:flex;flex-direction:column;gap:2px;margin-top:48px;}
-.press-coverage-hdr{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--ember);margin-bottom:16px;display:flex;align-items:center;gap:12px;}
-.press-coverage-hdr::after{content:'';flex:1;height:1px;background:rgba(200,68,26,0.2);}
-.press-hit{background:var(--dark);padding:22px 24px;border-left:2px solid transparent;transition:border-color .3s;}
-.press-hit:hover{border-left-color:var(--ember);}
-.press-hit[href]:hover .press-hit-title{color:var(--ember);}
-.press-hit-title{transition:color .2s;}
-.press-hit-outlet{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--ember);margin-bottom:6px;}
-.press-hit-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;color:var(--salt);line-height:1.2;margin-bottom:4px;}
-.press-hit-meta{font-size:12px;color:var(--salt3);}
-.press-right{display:flex;flex-direction:column;gap:32px;}
-.press-assets{background:var(--dark);padding:32px;border:1px solid var(--wire2);}
-.press-assets-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--salt);margin-bottom:4px;}
-.press-assets-sub{font-size:13px;color:var(--salt3);margin-bottom:20px;line-height:1.6;}
-.press-asset-list{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:24px;}
-.press-asset-list li{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--salt2);}
-.press-asset-dash{color:var(--gold);flex-shrink:0;font-weight:700;}
-.press-contact{background:var(--plate);padding:32px;border-top:2px solid var(--ember);}
-.press-contact-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--ember);margin-bottom:12px;}
-.press-contact-name{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--salt);line-height:1;margin-bottom:4px;}
-.press-contact-role{font-size:13px;color:var(--salt3);margin-bottom:16px;}
-.press-contact-email{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;color:var(--ember);text-decoration:none;display:flex;align-items:center;gap:8px;transition:gap .2s;}
-.press-contact-email:hover{gap:14px;}
-.press-stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--wire);margin-top:48px;}
-.press-stat{background:var(--dark);padding:24px 20px;}
-.press-stat-val{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;color:var(--salt);line-height:1;}
-.press-stat-val em{color:var(--ember);font-style:normal;}
-.press-stat-lbl{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--salt3);margin-top:4px;}
-
-/* ── FUNNEL ── */
-.funnel-sec{background:var(--dark);padding:100px 0 0;}
-.funnel-intro{padding:0 52px 52px;}
-.funnel-intro p{font-size:15px;color:var(--salt2);line-height:1.8;max-width:520px;margin-top:14px;}
-.funnel-frame{background:var(--black);border-top:1px solid var(--wire);}
-.funnel-iframe{width:100%;border:none;min-height:860px;display:block;}
-
-/* ── CONTACT ── */
-.contact{background:var(--black);display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:start;}
-.contact-l h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,6vw,80px);letter-spacing:2px;line-height:.92;color:var(--salt);margin-bottom:22px;}
-.contact-l h2 em{color:var(--ember);font-style:normal;}
-.contact-l p{font-size:15px;color:var(--salt2);line-height:1.8;margin-bottom:32px;}
-.contact-email{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;color:var(--ember);text-decoration:none;display:inline-flex;align-items:center;gap:12px;border-bottom:1px solid rgba(200,68,26,0.3);padding-bottom:6px;transition:gap .2s,border-color .2s;}
-.contact-email:hover{gap:18px;border-color:var(--ember);}
-.contact-email-arr{display:inline-block;width:20px;height:1px;background:var(--ember);}
-.contact-r{display:flex;flex-direction:column;}
-.cd{padding:20px 0;border-bottom:1px solid var(--wire);}
-.cd:first-child{border-top:1px solid var(--wire);}
-.cd-lbl{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--salt3);margin-bottom:7px;}
-.cd-val{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:300;color:var(--salt);}
-.cd-val a{color:inherit;text-decoration:none;}
-
-/* ── FOOTER ── */
-footer{background:var(--dark);padding:28px 52px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--wire);}
-.ft-mark{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:4px;color:var(--salt3);}
-.ft-mark em{color:var(--ember);font-style:normal;}
-.ft-copy{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--salt3);}
-.ft-tag{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:var(--salt3);}
-
-/* ── HAMBURGER BUTTON ── */
-.nav-ham{display:none;flex-direction:column;justify-content:center;gap:5px;cursor:pointer;background:none;border:none;padding:6px;z-index:200;flex-shrink:0;}
-.nav-ham span{display:block;width:22px;height:1.5px;background:var(--salt);transition:transform .35s ease,opacity .35s ease,width .35s ease;}
-.nav-ham.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
-.nav-ham.open span:nth-child(2){opacity:0;width:0;}
-.nav-ham.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
-
-/* ── MOBILE NAV OVERLAY ── */
-.mob-nav{position:fixed;inset:0;background:rgba(5,6,10,0.98);z-index:150;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px;opacity:0;pointer-events:none;transition:opacity .35s ease;backdrop-filter:blur(8px);}
-.mob-nav.open{opacity:1;pointer-events:all;}
-.mob-nav a{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,10vw,56px);letter-spacing:4px;color:var(--salt3);text-decoration:none;transition:color .2s;line-height:1.2;}
-.mob-nav a:hover{color:var(--salt);}
-.mob-nav .mob-cta{color:var(--ember)!important;margin-top:16px;font-size:clamp(28px,7vw,40px);}
-.mob-nav-sub{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--salt3);margin-bottom:24px;}
-.mob-nav-divider{width:40px;height:1px;background:var(--wire2);margin:16px auto;}
-
-/* ── SOCIAL LINKS ── */
-.social-links{display:flex;gap:10px;align-items:center;}
-.soc{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border:1px solid var(--wire2);color:var(--salt3);text-decoration:none;transition:color .2s,border-color .2s;font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;flex-shrink:0;}
-.soc:hover{color:var(--ember);border-color:var(--ember);}
-
-/* ── NAV SCROLL STATE ── */
-nav{transition:background .3s,border-color .3s;}
-nav.scrolled{background:rgba(5,6,10,0.99)!important;border-bottom-color:rgba(242,237,228,0.1)!important;}
-
-/* ── MOBILE HERO FALLBACK ── */
-.hero-mob-bg{display:none;position:absolute;inset:0;z-index:1;background-image:url('lucas_liam_photo.jpg');background-size:cover;background-position:center 25%;opacity:0.28;}
-
-/* ── BACK TO TOP ── */
-.btt{position:fixed;bottom:28px;right:28px;z-index:90;width:40px;height:40px;background:var(--iron);border:1px solid var(--wire2);color:var(--salt3);display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s,color .2s,border-color .2s;font-size:16px;text-decoration:none;line-height:1;}
-.btt.visible{opacity:1;pointer-events:all;}
-.btt:hover{color:var(--ember);border-color:var(--ember);}
-
-/* ── FOOTER ENHANCED ── */
-footer{background:var(--dark);padding:52px 52px 28px;border-top:1px solid var(--wire);}
-.ft-top{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:52px;padding-bottom:36px;border-bottom:1px solid var(--wire);margin-bottom:28px;}
-.ft-brand{}
-.ft-brand-mark{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:4px;color:var(--salt);line-height:1;margin-bottom:8px;}
-.ft-brand-mark em{color:var(--ember);font-style:normal;}
-.ft-brand-tag{font-family:'Cormorant Garamond',serif;font-size:14px;font-style:italic;color:var(--salt3);line-height:1.5;margin-bottom:20px;}
-.ft-col-lbl{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--salt3);margin-bottom:14px;}
-.ft-nav-list{list-style:none;display:flex;flex-direction:column;gap:8px;}
-.ft-nav-list a{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--salt3);text-decoration:none;transition:color .2s;}
-.ft-nav-list a:hover{color:var(--salt);}
-.ft-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
-.ft-copy{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--salt3);}
-.ft-legal{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--salt3);}
-
-/* ── MOBILE ── */
-@media(max-width:768px){
-  body.has-cursor *{cursor:auto!important;}
-  .cursor,.cursor-ring{display:none!important;}
-  nav{padding:14px 20px;}
-  .nav-links{display:none;}
-  .nav-ham{display:flex;}
-  .hero{padding:100px 20px 60px;}
-  .hero-wordmark{font-size:clamp(52px,16vw,80px);}
-  .hero-lower{grid-template-columns:1fr;gap:24px;}
-  .hero-right{align-items:flex-start;}
-  .hero-vline{display:none;}
-  .hero-video-wrap{display:block;}
-  .creds{padding:0 20px;}
-  .cred{padding:16px 24px;}
-  section{padding:60px 20px;}
-  .who-grid{grid-template-columns:1fr;}
-  .work{padding:60px 0;}
-  .work-hdr{padding:0 20px 36px;}
-  .work-grid{grid-template-columns:1fr;grid-template-rows:260px 200px 200px 200px 200px;}
-  .film.feat{grid-row:span 1;}
-  .offers-grid{grid-template-columns:1fr;}
-  .process-grid{grid-template-columns:1fr;}
-  .clients-intro{grid-template-columns:1fr;gap:20px;margin-bottom:36px;}
-  .clients-grid{grid-template-columns:1fr;}
-  .press{padding:60px 20px;}
-  .press-grid{grid-template-columns:1fr;gap:48px;}
-  .press-stat-row{grid-template-columns:repeat(3,1fr);}
-  .music-sec{padding:60px 20px;}
-  .music-context{grid-template-columns:1fr;gap:32px;}
-  .music-context-right{border-left:none;padding-left:0;border-top:1px solid var(--wire);padding-top:32px;}
-  .funnel-sec{padding:60px 0 0;}
-  .funnel-intro{padding:0 20px 40px;}
-  .funnel-iframe{min-height:1000px;}
-  .contact{grid-template-columns:1fr;gap:48px;}
-  footer{padding:40px 20px 24px;}
-  .ft-top{grid-template-columns:1fr;gap:32px;}
-  .ft-bottom{flex-direction:column;align-items:flex-start;gap:8px;}
-  .btt{bottom:16px;right:16px;}
-}
+  :root { color-scheme: dark; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: #000; overflow: hidden;
+    overscroll-behavior: none; touch-action: none;
+  }
+  #sky { display: block; width: 100vw; height: 100vh; height: 100dvh; }
+  #curtain {
+    position: fixed; inset: 0; background: #000;
+    pointer-events: none; opacity: 1;
+    transition: opacity 2400ms ease-out;
+  }
+  #curtain.lift { opacity: 0; }
+  /* Report UI. The sky is the product; everything here stays dark and small. */
+  #reportBar {
+    position: fixed; left: 50%;
+    bottom: calc(18px + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    z-index: 5;
+  }
+  #community {
+    appearance: none; -webkit-appearance: none;
+    padding: 7px 28px 7px 13px; border-radius: 999px;
+    background: rgba(8, 12, 22, 0.45)
+      url("data:image/svg+xml;utf8,<svg%20xmlns='http://www.w3.org/2000/svg'%20width='10'%20height='6'><path%20d='M1%201l4%204%204-4'%20stroke='%238d97ad'%20stroke-width='1.5'%20fill='none'/></svg>")
+      no-repeat right 11px center;
+    border: 1px solid rgba(130, 150, 190, 0.20);
+    color: #8d97ad;
+    font: 400 12.5px/1 ui-sans-serif, -apple-system, system-ui, sans-serif;
+    max-width: 250px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #community:focus-visible { outline: 2px solid rgba(150, 170, 210, 0.55); outline-offset: 2px; }
+  #report {
+    padding: 15px 32px; border-radius: 999px;
+    background: rgba(10, 15, 26, 0.62);
+    border: 1px solid rgba(140, 160, 200, 0.35);
+    color: #d8dfec;
+    font: 600 16.5px/1 ui-sans-serif, -apple-system, system-ui, sans-serif;
+    letter-spacing: 0.01em;
+    cursor: pointer; user-select: none; -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px);
+    transition: transform 120ms ease, background 120ms ease, opacity 200ms ease;
+    touch-action: manipulation;
+  }
+  #report:active { transform: scale(0.95); background: rgba(14, 20, 34, 0.72); }
+  #report:disabled { opacity: 0.55; cursor: default; }
+  #report:focus-visible { outline: 2px solid rgba(150, 170, 210, 0.6); outline-offset: 3px; }
+  #countChip {
+    position: fixed; top: calc(12px + env(safe-area-inset-top)); right: 12px;
+    padding: 8px 14px; border-radius: 999px;
+    background: rgba(8, 12, 22, 0.5);
+    border: 1px solid rgba(130, 150, 190, 0.22);
+    color: #a9b3c8;
+    font: 500 13px/1 ui-sans-serif, -apple-system, system-ui, sans-serif;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    z-index: 5; touch-action: manipulation;
+  }
+  #countChip b { color: #dbe2f0; font-weight: 600; }
+  #countChip:focus-visible { outline: 2px solid rgba(150, 170, 210, 0.55); outline-offset: 2px; }
+  #feed {
+    position: fixed; top: calc(52px + env(safe-area-inset-top)); right: 12px;
+    width: min(78vw, 252px); max-height: 46vh; overflow-y: auto;
+    background: rgba(6, 10, 18, 0.74);
+    border: 1px solid rgba(130, 150, 190, 0.20);
+    border-radius: 14px; padding: 11px 13px;
+    color: #97a1b6;
+    font: 400 12.5px/1.5 ui-sans-serif, -apple-system, system-ui, sans-serif;
+    opacity: 0; pointer-events: none; transform: translateY(-6px);
+    transition: opacity 180ms ease, transform 180ms ease;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    z-index: 5;
+  }
+  #feed.open { opacity: 1; pointer-events: auto; transform: none; }
+  #feed .head { font-weight: 600; font-size: 12px; color: #b7c1d6; letter-spacing: 0.03em; padding-bottom: 5px; }
+  #feed .row { display: flex; justify-content: space-between; gap: 10px; padding: 5px 0; border-top: 1px solid rgba(130, 150, 190, 0.10); }
+  #feed .note { padding-top: 8px; color: #6d7890; font-size: 11.5px; }
+  #toast {
+    position: fixed; top: calc(14px + env(safe-area-inset-top)); left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    padding: 9px 17px; border-radius: 999px;
+    background: rgba(8, 12, 22, 0.68);
+    border: 1px solid rgba(130, 150, 190, 0.24);
+    color: #c4cde0;
+    font: 500 13px/1 ui-sans-serif, -apple-system, system-ui, sans-serif;
+    white-space: nowrap; opacity: 0; pointer-events: none;
+    transition: opacity 350ms ease, transform 350ms ease;
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    z-index: 6;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%); }
+  #showerNote {
+    font: 400 12px/1.4 ui-sans-serif, -apple-system, system-ui, sans-serif;
+    color: #8f99ae; text-align: center;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    padding: 0 10px; max-width: 300px;
+  }
+  #showerNote:empty { display: none; }
+  @keyframes reportPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(150, 170, 220, 0); border-color: rgba(140, 160, 200, 0.35); }
+    50% { box-shadow: 0 0 18px 2px rgba(150, 170, 220, 0.28); border-color: rgba(172, 190, 228, 0.62); }
+  }
+  #report.pulse { animation: reportPulse 3s ease-in-out infinite; }
+  @media (prefers-reduced-motion: reduce) { #report.pulse { animation: none; } }
+  #soundBtn {
+    position: fixed; left: 14px;
+    bottom: calc(20px + env(safe-area-inset-bottom));
+    width: 42px; height: 42px; border-radius: 50%;
+    background: rgba(8, 12, 22, 0.5);
+    border: 1px solid rgba(130, 150, 190, 0.22);
+    color: #6f7a90; font-size: 16px; line-height: 40px; text-align: center;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    transition: color 200ms ease, border-color 200ms ease;
+    z-index: 5; touch-action: manipulation; padding: 0;
+  }
+  #soundBtn.on { color: #d8dfec; border-color: rgba(160, 180, 220, 0.5); }
+  #soundBtn:focus-visible { outline: 2px solid rgba(150, 170, 210, 0.55); outline-offset: 2px; }
+  #intro {
+    position: fixed; inset: 0; z-index: 8;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0, 0, 0, 0.44);
+    opacity: 0; pointer-events: none;
+    transition: opacity 700ms ease;
+  }
+  #intro.show { opacity: 1; pointer-events: auto; }
+  #intro .box {
+    max-width: min(84vw, 330px); text-align: center;
+    padding: 26px 26px 22px;
+    background: rgba(8, 11, 18, 0.74);
+    border: 1px solid rgba(130, 150, 190, 0.22);
+    border-radius: 18px;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  }
+  /* Studio credit. Top-left is the one corner nothing else occupies, and a
+     watermark is the right weight for this — the sky is still the product. */
+  #credit {
+    position: fixed;
+    top: calc(13px + env(safe-area-inset-top)); left: 14px;
+    z-index: 5; text-decoration: none;
+    opacity: 0; transition: opacity 1200ms ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #credit.show { opacity: 0.40; }
+  #credit:hover, #credit:focus-visible { opacity: 0.85; }
+  #credit span { display: block; text-shadow: 0 1px 5px rgba(0, 0, 0, 0.9); }
+  #credit .studio {
+    font: 400 12.5px/1.35 "Fraunces", Georgia, "Times New Roman", serif;
+    color: #ddd3c3; letter-spacing: 0.03em;
+  }
+  #credit .place {
+    font: 400 9.5px/1.35 ui-sans-serif, -apple-system, system-ui, sans-serif;
+    color: #8b93a6; letter-spacing: 0.11em; text-transform: uppercase;
+  }
+  #intro p {
+    margin: 0 0 18px;
+    font: 400 15px/1.6 ui-sans-serif, -apple-system, system-ui, sans-serif;
+    color: #c3cbdc;
+  }
+  #introGo {
+    padding: 12px 26px; border-radius: 999px;
+    background: rgba(16, 22, 36, 0.8);
+    border: 1px solid rgba(150, 170, 210, 0.4);
+    color: #dde3f0;
+    font: 600 15px/1 ui-sans-serif, -apple-system, system-ui, sans-serif;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  #fallback {
+    position: fixed; inset: 0; display: none;
+    align-items: center; justify-content: center;
+    padding: 2rem; text-align: center;
+    font: 400 15px/1.6 ui-sans-serif, -apple-system, system-ui, sans-serif;
+    color: #7b8497; background: #05070f;
+  }
 </style>
 </head>
 <body>
-
-<div class="cursor" id="cur"></div>
-<div class="cursor-ring" id="curRing"></div>
-
-<!-- NAV — Simulation Studios inspired: minimal, 4 links, wordmark left -->
-<nav>
-  <a href="#" class="nav-mark">LUCAS<em>&</em>LIAM<em>.</em></a>
-  <div class="nav-links">
-    <a href="#work">Work</a>
-    <a href="#offers">Packages</a>
-    <a href="#music">Music</a>
-    <a href="#press">Press</a>
-    <a href="#who">Studio</a>
-    <a href="#contact" class="nav-cta">Start a Project</a>
-  </div>
-  <button class="nav-ham" id="navHam" aria-label="Open navigation">
-    <span></span><span></span><span></span>
-  </button>
-</nav>
-
-<!-- MOBILE NAV OVERLAY -->
-<div class="mob-nav" id="mobNav">
-  <div class="mob-nav-sub">Lucas &amp; Liam Legacy Studios</div>
-  <a href="#work" class="mob-link">Work</a>
-  <a href="#offers" class="mob-link">Packages</a>
-  <a href="#music" class="mob-link">Music</a>
-  <a href="#press" class="mob-link">Press</a>
-  <a href="#who" class="mob-link">Studio</a>
-  <div class="mob-nav-divider"></div>
-  <a href="#contact" class="mob-link mob-cta">Start a Project</a>
+<canvas id="sky"></canvas>
+<div id="curtain"></div>
+<div id="reportBar">
+  <div id="showerNote"></div>
+  <select id="community" aria-label="Where are you watching from?">
+    <option value="">Where are you watching from?</option>
+  </select>
+  <button id="report" type="button">I saw one ⭐</button>
 </div>
-<section class="hero" id="hero">
-  <div class="hero-bg"></div>
-
-  <!-- BACKDROP VIDEO — Canal footage, muted autoplay loop -->
-  <div class="hero-video-wrap" style="position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none;">
-    <iframe
-      src="https://www.youtube.com/embed/vFJU9NN8CIw?autoplay=1&mute=1&loop=1&playlist=vFJU9NN8CIw&controls=0&showinfo=0&rel=0&modestbranding=1&start=5&iv_load_policy=3&disablekb=1"
-      style="position:absolute;top:50%;left:50%;width:177.78vh;height:100vh;min-width:100%;min-height:56.25vw;transform:translate(-50%,-50%);border:none;opacity:0.52;filter:blur(0.5px) saturate(0.85);"
-      allow="autoplay; encrypted-media"
-      frameborder="0">
-    </iframe>
-    <!-- Dark overlay to keep text readable -->
-    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,6,10,0.15) 0%,rgba(5,6,10,0.35) 60%,rgba(5,6,10,0.82) 100%);"></div>
-  </div>
-
-  <div class="hero-glow-ember"></div>
-  <div class="hero-glow-tide"></div>
-  <div class="hero-vline"></div>
-  <div class="hero-content">
-    <div class="hero-pre"><span class="hero-pre-line"></span>Cape Breton · Atlantic Cinematic Universe</div>
-    <!-- Giant wordmark like SIMULATION. -->
-    <div class="hero-wordmark">LUCAS<br><span class="dot">&</span> LIAM<br>LEGACY<span class="dot">.</span></div>
-    <div class="hero-rule"></div>
-    <div class="hero-lower">
-      <div class="hero-tagline">
-        Original films. Professional craft.<br>
-        <strong>Built for Atlantic Canada.</strong>
-      </div>
-      <div class="hero-right">
-        <div class="hero-actions">
-          <a href="#offers" class="btn-ember">Find Your Package</a>
-          <a href="#work" class="btn-outline">View Work</a>
-        </div>
-        <div class="hero-scroll"><span class="hero-scroll-line"></span>Scroll</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CREDENTIALS STRIP — like SimStudios AFI / TIFF bar -->
-<div class="creds">
-  <div class="cred"><div class="cred-val">Telile</div><div class="cred-lbl">Community TV Broadcast</div></div>
-  <div class="cred"><div class="cred-val">10+</div><div class="cred-lbl">Films Produced</div></div>
-  <div class="cred"><div class="cred-val">East Coast Rising</div><div class="cred-lbl">101.5 The Hawk Feature</div></div>
-  <div class="cred"><div class="cred-val">ACU</div><div class="cred-lbl">Atlantic Cinematic Universe</div></div>
-  <div class="cred"><div class="cred-val">Rogue Tide</div><div class="cred-lbl">Original Music · DistroKid</div></div>
-  <div class="cred"><div class="cred-val">Cape Breton</div><div class="cred-lbl">Based in St. Peter's, NS</div></div>
-</div>
-
-<!-- FATHER & SON PHOTO — full width cinematic -->
-<div style="position:relative;width:100%;height:clamp(400px,55vw,680px);overflow:hidden;">
-  <img src="lucas_liam_photo.jpg" alt="Lucas & Liam — Every story worth telling starts here" style="width:100%;height:100%;object-fit:cover;object-position:center 30%;">
-  <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,6,10,0.2) 0%,rgba(5,6,10,0.7) 100%);"></div>
-  <div style="position:absolute;bottom:48px;left:52px;right:52px;">
-    <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,56px);font-weight:300;font-style:italic;color:var(--salt);line-height:1.1;">Every story worth telling<br>starts <em style="color:var(--ember);font-style:normal;">here.</em></div>
-    <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--salt2);margin-top:12px;">Lucas & Liam · Cape Breton, Nova Scotia</div>
+<button id="countChip" type="button" aria-expanded="false" aria-controls="feed">✦ <b id="countN">0</b> tonight</button>
+<div id="feed" role="log" aria-label="Recent sightings"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<a id="credit" href="https://lucasliamlegacy.com" target="_blank" rel="noopener noreferrer">
+  <span class="studio">Lucas &amp; Liam Legacy Studios</span>
+  <span class="place">St. Peter&rsquo;s, Cape Breton</span>
+</a>
+<button id="soundBtn" type="button" aria-pressed="false" aria-label="Turn on shore sound">&#9834;</button>
+<div id="intro" role="dialog" aria-label="About this sky">
+  <div class="box">
+    <p>When someone under this sky sees a shooting star and taps the button, it flies for everyone watching. One sky, the whole Maritimes under it.</p>
+    <button id="introGo" type="button">Look up &#11088;</button>
   </div>
 </div>
+<div id="fallback">This scene needs WebGL. Try a different browser, or turn on hardware acceleration.</div>
 
-<!-- WHO WE ARE — mirrors SimStudios "A Studio Built at..." section -->
-<section class="who" id="who">
-  <div class="sec-tag">Who We Are</div>
-  <div class="sec-title-serif">A studio built at the intersection<br>of <em>craft and place.</em></div>
-  <div class="who-grid">
-    <div>
-      <div class="who-quote">"The tools changed. The craft didn't."</div>
-      <div class="who-body">
-        <p>Lucas & Liam Legacy Studios is a Cape Breton cinematic production studio founded by Lucas Cotton — filmmaker, storyteller, and father. We build brand films, heritage documentaries, and complete digital identities for tourism businesses and organizations across Atlantic Canada.</p>
-        <p>What makes us different isn't the tools. It's the place. Every frame we shoot comes from someone who grew up on this island — who knows what the fog off the Bras d'Or looks like at 6am, what a Cape Breton voice sounds like, and why the stories here matter. We don't parachute in. We're already here.</p>
-        <p>We work across three verticals that most studios treat as separate businesses: cinematic film production, web design and digital identity, and heritage documentary for broadcast. For our clients that means one relationship, one creative vision, and work that holds together across every screen it appears on.</p>
-        <p>Our documentary work airs on Telile Community Television. Our animated characters — Cod B'y and Puffy of the Atlantic Cinematic Universe — are built on primary source historical research. Our music releases under Rogue Tide on major streaming platforms. We've been featured on East Coast Rising through 101.5 The Hawk.</p>
-        <p>We work fast. Most projects film in a single day and deliver within two to three weeks. No account managers, no agency overhead — just Lucas on the phone and Lucas on location.</p>
-      </div>
-    </div>
-    <div class="who-stats">
-      <div class="who-stat"><span class="ws-lbl">Home Base</span><span class="ws-val">St. Peter's<em>,</em> CB</span></div>
-      <div class="who-stat"><span class="ws-lbl">Broadcast Credits</span><span class="ws-val">Telile TV</span></div>
-      <div class="who-stat"><span class="ws-lbl">Music Project</span><span class="ws-val">Rogue Tide</span></div>
-      <div class="who-stat"><span class="ws-lbl">Film Universe</span><span class="ws-val">ACU</span></div>
-      <div class="who-stat"><span class="ws-lbl">Turnaround</span><span class="ws-val">2<em>–</em>3 Weeks</span></div>
-      <div class="who-stat"><span class="ws-lbl">Discovery Call</span><span class="ws-val">Free</span></div>
-    </div>
-  </div>
-  <div style="margin-top:48px;padding-top:40px;border-top:1px solid var(--wire);font-family:'Bebas Neue',sans-serif;font-size:clamp(22px,3vw,36px);letter-spacing:3px;color:var(--salt);">
-    Cape Breton. Salt and steel. <em style="color:var(--ember);font-style:normal;">Built to last.</em>
-  </div>
-</section>
-
-<!-- FILMS — full-width grid like SimStudios work section, video-ready -->
-<div class="work" id="work">
-  <div class="work-hdr">
-    <div class="sec-tag">The Work</div>
-    <div class="sec-title-bebas">WHAT WE <em>MAKE</em></div>
-  </div>
-  <div class="work-grid">
-
-    <!-- ST. PETER'S CANAL — YouTube thumbnail, click to open -->
-    <a class="film feat" href="https://www.youtube.com/watch?v=vFJU9NN8CIw" target="_blank">
-      <div class="film-thumb">
-        <div class="film-fallback"></div>
-        <img class="film-img" src="https://img.youtube.com/vi/vFJU9NN8CIw/maxresdefault.jpg" alt="St. Peter's Canal — Where Water Learned to Wait">
-        <div class="film-play"><div class="film-play-btn"><div class="play-tri"></div></div></div>
-        <div class="film-ov">
-          <span class="film-cat">Heritage Documentary · Telile Community Television</span>
-          <div class="film-name">ST. PETER'S CANAL — WHERE WATER LEARNED TO WAIT</div>
-          <div class="film-meta">Cape Breton, Nova Scotia · 2024</div>
-        </div>
-      </div>
-    </a>
-
-    <!-- LENOIR FORGE — YouTube thumbnail, click to open -->
-    <a class="film" href="https://www.youtube.com/watch?v=qUq5QlpFP0w" target="_blank">
-      <div class="film-thumb">
-        <div class="film-fallback"></div>
-        <img class="film-img" src="https://img.youtube.com/vi/qUq5QlpFP0w/maxresdefault.jpg" alt="The Real History Behind The LeNoir Forge">
-        <div class="film-play"><div class="film-play-btn"><div class="play-tri"></div></div></div>
-        <div class="film-ov">
-          <span class="film-cat">Heritage Series</span>
-          <div class="film-name">LENOIR / FOREST LAND HISTORY</div>
-          <div class="film-meta">Arichat, Cape Breton · 2024</div>
-        </div>
-      </div>
-    </a>
-
-    <!-- THE LAND YACHT — JPG image, in production -->
-    <div class="film">
-      <div class="film-thumb">
-        <div class="film-fallback"></div>
-        <img class="film-img" src="landyacht.jpg" alt="The Land Yacht — Ingramport">
-        <div class="film-badge">In Production</div>
-        <div class="film-ov">
-          <span class="film-cat">Property Film · In Production</span>
-          <div class="film-name">THE LAND YACHT — INGRAMPORT</div>
-          <div class="film-meta">Nova Scotia · Coming Soon</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- FLOWEDGE — JPG image, in production -->
-    <div class="film">
-      <div class="film-thumb">
-        <div class="film-fallback"></div>
-        <img class="film-img" src="flowedge.jpg" alt="FlowEdge Riverside Getaway">
-        <div class="film-badge">In Production</div>
-        <div class="film-ov">
-          <span class="film-cat">Eco-Tourism Film · In Production</span>
-          <div class="film-name">FLOWEDGE RIVERSIDE GETAWAY</div>
-          <div class="film-meta">Elderbank, NS · Coming Soon</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- COD B'Y CHRONICLES — playlist thumbnail, click to open -->
-    <a class="film" href="https://www.youtube.com/playlist?list=PLv_b9VrY0Og-0u3wyq3-OXNooVnFfcZC1" target="_blank">
-      <div class="film-thumb">
-        <div class="film-fallback" style="background:linear-gradient(135deg,#05060a,#100a18);"></div>
-        <img class="film-img" src="https://img.youtube.com/vi/vFJU9NN8CIw/hqdefault.jpg" alt="Cod B'y Chronicles Series" style="opacity:0.7;">
-        <div class="film-play"><div class="film-play-btn"><div class="play-tri"></div></div></div>
-        <div class="film-ov">
-          <span class="film-cat">ACU Animation · Full Series</span>
-          <div class="film-name">COD B'Y CHRONICLES — SERIES</div>
-          <div class="film-meta">Atlantic Cinematic Universe · Watch All Episodes</div>
-        </div>
-      </div>
-    </a>
-
-  </div>
-</div>
-
-<!-- OFFERS — SimStudios tiered pricing style -->
-<section class="offers" id="offers">
-  <div class="sec-tag">What We Build For You</div>
-  <div class="sec-title-serif">Three packages. Every project starts<br>with <em>a cinematic film.</em></div>
-  <div class="offers-grid">
-
-    <div class="offer">
-      <span class="offer-id">01 — The Film Package</span>
-      <div class="offer-name">Film Only</div>
-      <div class="offer-price">$1,800</div>
-      <span class="offer-note">One-time investment · from</span>
-      <div class="offer-divider"></div>
-      <div class="offer-desc">You have a website. You need a cinematic film that finally does your experience justice — and social content that stops the scroll.</div>
-      <ul class="offer-list">
-        <li><span class="offer-dash">—</span>2–3 minute cinematic brand film, shot on location</li>
-        <li><span class="offer-dash">—</span>4 short-form social clips cut from footage</li>
-        <li><span class="offer-dash">—</span>Colour-graded, broadcast-quality edit</li>
-        <li><span class="offer-dash">—</span>Raw footage handoff — yours forever</li>
-        <li><span class="offer-dash">—</span>Full usage rights, no exceptions</li>
-      </ul>
-      <a href="#contact" class="offer-link">Start here <span class="offer-link-line"></span></a>
-    </div>
-
-    <div class="offer feat">
-      <div class="offer-pop">Most Popular</div>
-      <span class="offer-id">02 — The Digital Legacy Kit</span>
-      <div class="offer-name">Film + Website</div>
-      <div class="offer-price">$3,500</div>
-      <span class="offer-note">Complete package · from</span>
-      <div class="offer-divider"></div>
-      <div class="offer-desc">Stop paying Airbnb commission. Own your bookings, own your brand. Film and full website — built as one cohesive thing.</div>
-      <ul class="offer-list">
-        <li><span class="offer-dash">—</span>2–3 minute cinematic brand film</li>
-        <li><span class="offer-dash">—</span>5-page website built around your film</li>
-        <li><span class="offer-dash">—</span>Online booking / contact integration</li>
-        <li><span class="offer-dash">—</span>Google Business Profile setup</li>
-        <li><span class="offer-dash">—</span>3 short-form social clips</li>
-        <li><span class="offer-dash">—</span>SEO foundation included</li>
-      </ul>
-      <a href="#contact" class="offer-link">Start here <span class="offer-link-line"></span></a>
-    </div>
-
-    <div class="offer">
-      <span class="offer-id">03 — Heritage Documentary</span>
-      <div class="offer-name">The Documentary</div>
-      <div class="offer-price">$5,000</div>
-      <span class="offer-note">Broadcast quality · from</span>
-      <div class="offer-divider"></div>
-      <div class="offer-desc">For heritage societies, conservation groups, and First Nations communities. Stories that need to exist permanently — and deserve broadcast quality.</div>
-      <ul class="offer-list">
-        <li><span class="offer-dash">—</span>10–20 minute documentary short</li>
-        <li><span class="offer-dash">—</span>Research, scripting, filming, full edit</li>
-        <li><span class="offer-dash">—</span>Broadcast-ready for Telile TV</li>
-        <li><span class="offer-dash">—</span>Digital archive companion page</li>
-        <li><span class="offer-dash">—</span>Grant guidance — ACOA, NS Film, BCAH</li>
-      </ul>
-      <a href="#contact" class="offer-link">Start here <span class="offer-link-line"></span></a>
-    </div>
-
-  </div>
-
-  <!-- ADD-ONS -->
-  <div style="margin-top:2px;background:var(--plate);padding:44px 36px;border-top:1px solid var(--wire);">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:40px;">
-      <div>
-        <div class="sec-tag" style="margin-bottom:8px;">Optional Add-ons</div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(20px,2.5vw,28px);font-weight:300;color:var(--salt);">Bolt these onto any package — or start here.</div>
-      </div>
-      <a href="#contact" class="offer-link" style="flex-shrink:0;">Talk to Lucas <span class="offer-link-line"></span></a>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2px;margin-top:32px;background:var(--wire);">
-
-      <div style="background:var(--iron);padding:28px 24px;">
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--ember);line-height:1;">$200</div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--salt3);margin:4px 0 10px;">Per clip</div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--salt);margin-bottom:8px;">Extra Social Clips</div>
-        <div style="font-size:13px;color:var(--salt2);line-height:1.6;">Additional short-form clips cut from your existing footage. Formatted for Reels, TikTok, and Stories.</div>
-      </div>
-
-      <div style="background:var(--iron);padding:28px 24px;">
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--ember);line-height:1;">$300</div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--salt3);margin:4px 0 10px;">One-time setup</div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--salt);margin-bottom:8px;">Google Business Profile</div>
-        <div style="font-size:13px;color:var(--salt2);line-height:1.6;">Full setup and optimization of your Google Business listing. Show up when people search for what you do.</div>
-      </div>
-
-      <div style="background:var(--iron);padding:28px 24px;">
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--ember);line-height:1;">$500</div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--salt3);margin:4px 0 10px;">From</div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--salt);margin-bottom:8px;">SEO Package</div>
-        <div style="font-size:13px;color:var(--salt2);line-height:1.6;">Keyword research, on-page optimization, and metadata setup. Built for NS tourism search terms.</div>
-      </div>
-
-      <div style="background:var(--iron);padding:28px 24px;">
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--ember);line-height:1;">$1,200</div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--salt3);margin:4px 0 10px;">From</div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--salt);margin-bottom:8px;">Website Add-on</div>
-        <div style="font-size:13px;color:var(--salt2);line-height:1.6;">Already have a film? Add a full website built around it. Booking integration, mobile-first, yours forever.</div>
-      </div>
-
-      <div style="background:var(--iron);padding:28px 24px;">
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--ember);line-height:1;">Free</div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--salt3);margin:4px 0 10px;">Always</div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--salt);margin-bottom:8px;">Discovery Call</div>
-        <div style="font-size:13px;color:var(--salt2);line-height:1.6;">Not sure what you need? 20 minutes with Lucas directly. No pressure, no pitch — just a conversation.</div>
-      </div>
-
-    </div>
-  </div>
-
-</section>
-<section class="process" id="process">
-  <div class="sec-tag">How It Works</div>
-  <div class="sec-title-serif">Simple process.<br><em>Done right.</em> Every time.</div>
-  <div class="process-grid">
-    <div class="ps"><div class="ps-n">01</div><div class="ps-title">Discovery Call</div><div class="ps-desc">Free 20 minutes with Lucas directly. Your vision, your story, what success looks like. No commitment — just a conversation.</div><div class="ps-time">Day 1 — Free</div></div>
-    <div class="ps"><div class="ps-n">02</div><div class="ps-title">Scout & Plan</div><div class="ps-desc">Lucas visits your location, locks in the shoot plan and date. Most projects film in one full day on site.</div><div class="ps-time">Week 1–2</div></div>
-    <div class="ps"><div class="ps-n">03</div><div class="ps-title">Film Day</div><div class="ps-desc">We capture everything — your space, your people, your atmosphere. Show up and be yourself. We handle the rest.</div><div class="ps-time">One day on location</div></div>
-    <div class="ps"><div class="ps-n">04</div><div class="ps-title">Deliver & Launch</div><div class="ps-desc">Film edited and graded. Website built around it. Social clips formatted. Everything handed over with full rights. Done.</div><div class="ps-time">2–3 weeks after filming</div></div>
-  </div>
-</section>
-
-<!-- CLIENTS -->
-<section class="clients" id="clients">
-  <div class="clients-intro">
-    <div>
-      <div class="sec-tag">See What We Deliver</div>
-      <div class="sec-title-bebas">THE WORK <em>SPEAKS.</em></div>
-    </div>
-    <p>From boutique tourism properties to conservation organizations and community heritage groups — every project built with care, authenticity, and a deep respect for Atlantic Canadian place and culture.</p>
-  </div>
-  <div class="clients-grid">
-    <div class="client"><span class="client-tag">Premium Stay</span><div class="client-name">THE LAND YACHT</div><div class="client-desc">Thomas & Melanie Heath · Ingramport, NS · Cinematic property feature</div></div>
-    <div class="client"><span class="client-tag">Eco-Tourism</span><div class="client-name">FLOWEDGE RIVERSIDE</div><div class="client-desc">Beth · Elderbank, NS · Indigenous-owned glamping retreat</div></div>
-    <div class="client"><span class="client-tag">Conservation</span><div class="client-name">MIRAMICHI SALMON ASSOC.</div><div class="client-desc">Animation, original music & documentary production</div></div>
-    <div class="client"><span class="client-tag">Heritage Broadcast</span><div class="client-name">TELILE COMMUNITY TV</div><div class="client-desc">Ongoing documentary series · Cape Breton broadcast</div></div>
-    <div class="client"><span class="client-tag">Broadcasting</span><div class="client-name">101.5 THE HAWK</div><div class="client-desc">Chuck Boudreau · East Coast Rising · Chuck Drops In format</div></div>
-    <div class="client"><span class="client-tag">Heritage Research</span><div class="client-name">ISLE MADAME HISTORICAL</div><div class="client-desc">Anne Leavitt · Cod B'y Chronicles research partnership</div></div>
-  </div>
-</section>
-
-<!-- MUSIC / SOLIDARITY -->
-<section class="music-sec" id="music">
-  <div class="music-inner">
-
-    <div class="sec-tag">Rogue Tide — New Release</div>
-    <div class="sec-title-bebas">THE CLAPPING <em>STOPPED</em></div>
-
-    <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(15px,1.8vw,19px);font-weight:300;font-style:italic;color:var(--salt2);line-height:1.65;max-width:680px;margin-top:-24px;margin-bottom:0;">
-      Written in solidarity with 2,200 CUPE Nova Scotia long-term care workers — on strike across 24 homes from Yarmouth to Glace Bay.
-    </div>
-
-    <div class="music-player-wrap">
-      <iframe
-        width="100%"
-        height="300"
-        scrolling="no"
-        frameborder="no"
-        allow="autoplay"
-        src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A2302506089&color=%23b87e20&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true">
-      </iframe>
-      <div class="music-attr">
-        <a href="https://soundcloud.com/lucas-cotton-362002952" title="LucasCottonACU" target="_blank">LucasCottonACU</a>
-        <span style="opacity:0.3;">·</span>
-        <a href="https://soundcloud.com/lucas-cotton-362002952/the-clapping-stopped" title="The Clapping Stopped" target="_blank">The Clapping Stopped</a>
-      </div>
-    </div>
-
-    <div class="music-context">
-      <div class="music-context-left">
-        <p>
-          During COVID, long-term care workers across Nova Scotia masked up, doubled shifts, and walked straight into outbreaks. When families were locked outside — they were in there. Holding hands. Sitting with people in their last hours so they wouldn't be alone.
-        </p>
-        <p style="margin-top:14px;">
-          We called them heroes. We said we'd never forget. This is what forgetting looks like.
-        </p>
-        <a href="https://soundcloud.com/lucas-cotton-362002952/the-clapping-stopped" target="_blank" class="music-stream-link">
-          Stream everywhere <span class="music-stream-line"></span>
-        </a>
-      </div>
-      <div class="music-context-right">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--ember);margin-bottom:16px;">Stand with them</div>
-        <ul class="music-action-list">
-          <li><span class="music-action-dash">—</span>Honk when you drive by the line</li>
-          <li><span class="music-action-dash">—</span>Drop off a coffee</li>
-          <li><span class="music-action-dash">—</span>Call your MLA</li>
-          <li><span class="music-action-dash">—</span>Share this song</li>
-        </ul>
-        <div style="margin-top:28px;padding-top:20px;border-top:1px solid var(--wire);">
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--salt3);margin-bottom:10px;">24 homes on strike</div>
-          <div style="font-size:12px;color:var(--salt3);line-height:1.9;">
-            Harbourstone · Alderwood · Richmond Villa · Northside Community · Seaview Manor · Celtic Court · St. Anne · Port Hawkesbury · St. Vincent's · Admiral · Maplestone · Glasgow Hall · Bisset Court · Ivy Meadows · Ocean View · Bayside · Queen's Manor · Villa St. Joseph · Roseway Manor · Surf Lodge · Ryan Hall · The Meadows · The Birches · Maritime Odd Fellows
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- PRESS KIT -->
-<section class="press" id="press">
-
-  <div class="sec-tag">Media & Press</div>
-  <div class="sec-title-bebas">PRESS <em>KIT</em></div>
-
-  <div class="press-grid">
-
-    <!-- LEFT — Bio + Coverage -->
-    <div>
-      <div class="press-bio">
-        <p>Lucas Cotton is a Cape Breton filmmaker, songwriter, and content creator operating out of St. Peter's, Nova Scotia. He is the founder of Lucas & Liam Legacy Studios — a cinematic production studio building original films, animated series, heritage documentaries, and music rooted in Atlantic Canadian place and culture.</p>
-        <p>His animated characters Cod B'y and Puffy anchor the Atlantic Cinematic Universe — a growing creative framework built on primary source Cape Breton history. His music releases under the name Rogue Tide on all major streaming platforms. His documentary work airs on Telile Community Television under a formal Letter of Support and broadcast agreement.</p>
-        <p>Most recently, Lucas produced "The Clapping Stopped" — an original song and fully animated Pixar-realism video created in solidarity with the 2,200 CUPE Nova Scotia long-term care workers on strike across 24 homes. The video was produced using Richmond Villa in St. Peter's as its primary setting.</p>
-        <p>All work is produced independently in Cape Breton. No agency. No middleman. Every story built to last.</p>
-      </div>
-
-      <!-- Coverage hits -->
-      <div class="press-coverage">
-        <div class="press-coverage-hdr">Media Coverage</div>
-
-        <a href="https://porthawkesburyreporter.com/st-peters-video-studio-making-waves/" target="_blank" class="press-hit" style="text-decoration:none;display:block;">
-          <div class="press-hit-outlet">Port Hawkesbury Reporter</div>
-          <div class="press-hit-title">St. Peter's Video Studio Making Waves</div>
-          <div class="press-hit-meta">April 2026 · By Charlie Teljeur · Second Feature</div>
-        </a>
-
-        <a href="https://www.instagram.com/p/DWPvGlNgH5K/" target="_blank" class="press-hit" style="text-decoration:none;display:block;">
-          <div class="press-hit-outlet">Port Hawkesbury Reporter</div>
-          <div class="press-hit-title">First Feature — Lucas & Liam Legacy Studios</div>
-          <div class="press-hit-meta">2025 · By Charlie Teljeur · Original print feature</div>
-        </a>
-
-        <a href="https://www.instagram.com/p/DVoeaVTABfm/" target="_blank" class="press-hit" style="text-decoration:none;display:block;">
-          <div class="press-hit-outlet">101.5 The Hawk · East Coast Rising</div>
-          <div class="press-hit-title">East Coast Rising Feature with Chuck Boudreau</div>
-          <div class="press-hit-meta">2025 · Cape Breton Regional Radio · Sundays 9am</div>
-        </a>
-
-        <a href="https://www.youtube.com/watch?v=q4smVdOX77w" target="_blank" class="press-hit" style="text-decoration:none;display:block;">
-          <div class="press-hit-outlet">Telile Community Television</div>
-          <div class="press-hit-title">Documentary Broadcast — Lucas & Liam Legacy Studios</div>
-          <div class="press-hit-meta">Ongoing · Cape Breton Island Broadcast</div>
-        </a>
-
-        <div class="press-hit">
-          <div class="press-hit-outlet">Telile Community Television</div>
-          <div class="press-hit-title">Broadcast Agreement + Letter of Support</div>
-          <div class="press-hit-meta">On file · Formal broadcast partnership — Cape Breton Island</div>
-        </div>
-
-      </div>
-
-      <!-- Stats row -->
-      <div class="press-stat-row">
-        <div class="press-stat">
-          <div class="press-stat-val">2<em>+</em></div>
-          <div class="press-stat-lbl">Print Features</div>
-        </div>
-        <div class="press-stat">
-          <div class="press-stat-val">24</div>
-          <div class="press-stat-lbl">Homes Represented</div>
-        </div>
-        <div class="press-stat">
-          <div class="press-stat-val">CB<em>TV</em></div>
-          <div class="press-stat-lbl">Broadcast Partner</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- RIGHT — Assets + Contact -->
-    <div class="press-right">
-
-      <!-- Current release -->
-      <div class="press-assets">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--ember);margin-bottom:12px;">Current Release</div>
-        <div class="press-assets-title">"THE CLAPPING STOPPED"</div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:var(--salt2);margin-bottom:8px;">Rogue Tide — April 2026</div>
-        <div class="press-assets-sub">Original folk-rock single and fully animated short video produced in solidarity with 2,200 CUPE Nova Scotia long-term care workers on strike across 24 homes. Featuring ACU characters Cod B'y and Puffy. Primary location: Richmond Villa, St. Peter's, Cape Breton.</div>
-        <ul class="press-asset-list">
-          <li><span class="press-asset-dash">—</span>Single available on all streaming platforms</li>
-          <li><span class="press-asset-dash">—</span>Animated video available for media embed</li>
-          <li><span class="press-asset-dash">—</span>High-res stills available on request</li>
-          <li><span class="press-asset-dash">—</span>Interview available — phone, video, or in person</li>
-        </ul>
-        <a href="https://soundcloud.com/lucas-cotton-362002952/the-clapping-stopped" target="_blank" class="music-stream-link" style="margin-top:0;">
-          Listen now <span class="music-stream-line"></span>
-        </a>
-      </div>
-
-      <!-- Press assets available -->
-      <div class="press-assets">
-        <div class="press-assets-title">ASSETS AVAILABLE</div>
-        <div class="press-assets-sub">All media assets available upon request. Email Lucas directly with your outlet and deadline and everything will be in your inbox same day.</div>
-        <ul class="press-asset-list">
-          <li><span class="press-asset-dash">—</span>Studio biography — short and long form</li>
-          <li><span class="press-asset-dash">—</span>High-resolution production stills</li>
-          <li><span class="press-asset-dash">—</span>Cod B'y & Puffy character reference images</li>
-          <li><span class="press-asset-dash">—</span>Lucas & Liam studio logo files</li>
-          <li><span class="press-asset-dash">—</span>Rogue Tide EPK — full artist press kit</li>
-          <li><span class="press-asset-dash">—</span>Telile broadcast agreement on file</li>
-          <li><span class="press-asset-dash">—</span>Previous Reporter articles on file</li>
-        </ul>
-      </div>
-
-      <!-- Media contact -->
-      <div class="press-contact">
-        <div class="press-contact-label">Media Contact</div>
-        <div class="press-contact-name">LUCAS COTTON</div>
-        <div class="press-contact-role">Founder — Lucas & Liam Legacy Studios · St. Peter's, Cape Breton</div>
-        <a href="mailto:lucasliamlegacystudios@gmail.com?subject=Press%20Inquiry%20%E2%80%94%20Lucas%20%26%20Liam%20Legacy%20Studios" class="press-contact-email">
-          lucasliamlegacystudios@gmail.com
-          <span style="font-size:14px;">→</span>
-        </a>
-        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--wire);font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--salt3);">Response within 24 hours · Interview available</div>
-      </div>
-
-    </div>
-  </div>
-
-</section>
-
-<!-- FUNNEL EMBED -->
-<div class="funnel-sec" id="funnel">
-  <div class="funnel-intro">
-    <div class="sec-tag">Find Your Package</div>
-    <div class="sec-title-bebas">NOT SURE WHERE<br>TO <em>START?</em></div>
-    <p>Answer a few questions — we'll match you with the right package and give you a clear next step in under 2 minutes.</p>
-  </div>
-  <div class="funnel-frame">
-    <iframe class="funnel-iframe" id="funnelIframe" src="lucas_liam_funnel.html" scrolling="no"></iframe>
-  </div>
-</div>
-
-<!-- CONTACT -->
-<section class="contact" id="contact">
-  <div class="contact-l">
-    <div class="sec-tag" style="margin-bottom:20px;">Start a Project</div>
-    <h2>LET'S MAKE<br>SOMETHING<br><em>REAL.</em></h2>
-    <p>Tourism operator, heritage organization, broadcaster, or someone with a story worth telling — every project starts with a free conversation with Lucas directly. No agency, no middleman.</p>
-    <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#108;&#117;&#99;&#97;&#115;&#108;&#105;&#97;&#109;&#108;&#101;&#103;&#97;&#99;&#121;&#115;&#116;&#117;&#100;&#105;&#111;&#115;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;" class="contact-email">
-      &#108;&#117;&#99;&#97;&#115;&#108;&#105;&#97;&#109;&#108;&#101;&#103;&#97;&#99;&#121;&#115;&#116;&#117;&#100;&#105;&#111;&#115;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;
-      <span class="contact-email-arr"></span>
-    </a>
-    <div style="margin-top:28px;">
-      <a href="mailto:lucasliamlegacystudios@gmail.com?subject=Book%20a%20Discovery%20Call&body=Hi%20Lucas%2C%0A%0AI%27d%20like%20to%20book%20a%20free%20discovery%20call.%0A%0AMy%20name%3A%0AMy%20business%3A%0ABest%20time%20to%20reach%20me%3A" class="btn-ember" style="display:inline-flex;align-items:center;gap:12px;text-decoration:none;">
-        Book a Free Discovery Call
-        <span style="font-size:16px;opacity:0.8;">→</span>
-      </a>
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--salt3);margin-top:12px;">20 minutes · No commitment · No agency</div>
-    </div>
-  </div>
-  <div class="contact-r">
-    <!-- CONTACT FORM — using Netlify Forms, works automatically on Netlify hosting -->
-    <form name="contact" method="POST" data-netlify="true" style="display:flex;flex-direction:column;gap:14px;">
-      <input type="hidden" name="form-name" value="contact">
-      <div>
-        <label style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--salt3);display:block;margin-bottom:6px;">Your Name</label>
-        <input type="text" name="name" required placeholder="Lucas Cotton" style="width:100%;padding:12px 16px;background:var(--iron);border:1px solid var(--wire2);color:var(--salt);font-family:'Barlow',sans-serif;font-size:14px;outline:none;transition:border-color .2s;" onfocus="this.style.borderColor='var(--ember)'" onblur="this.style.borderColor='var(--wire2)'">
-      </div>
-      <div>
-        <label style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--salt3);display:block;margin-bottom:6px;">Business Name</label>
-        <input type="text" name="business" placeholder="The Land Yacht" style="width:100%;padding:12px 16px;background:var(--iron);border:1px solid var(--wire2);color:var(--salt);font-family:'Barlow',sans-serif;font-size:14px;outline:none;transition:border-color .2s;" onfocus="this.style.borderColor='var(--ember)'" onblur="this.style.borderColor='var(--wire2)'">
-      </div>
-      <div>
-        <label style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--salt3);display:block;margin-bottom:6px;">Email or Phone</label>
-        <input type="text" name="contact" required placeholder="your@email.com or (902) 555-0000" style="width:100%;padding:12px 16px;background:var(--iron);border:1px solid var(--wire2);color:var(--salt);font-family:'Barlow',sans-serif;font-size:14px;outline:none;transition:border-color .2s;" onfocus="this.style.borderColor='var(--ember)'" onblur="this.style.borderColor='var(--wire2)'">
-      </div>
-      <div>
-        <label style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--salt3);display:block;margin-bottom:6px;">Tell Me About Your Project</label>
-        <textarea name="message" rows="4" placeholder="What's your story?" style="width:100%;padding:12px 16px;background:var(--iron);border:1px solid var(--wire2);color:var(--salt);font-family:'Barlow',sans-serif;font-size:14px;outline:none;resize:vertical;transition:border-color .2s;" onfocus="this.style.borderColor='var(--ember)'" onblur="this.style.borderColor='var(--wire2)'"></textarea>
-      </div>
-      <button type="submit" class="btn-ember" style="border:none;cursor:pointer;width:100%;text-align:center;padding:16px;">Send It →</button>
-    </form>
-  </div>
-</section>
-
-<footer>
-  <div class="ft-top">
-
-    <!-- Brand column -->
-    <div class="ft-brand">
-      <div class="ft-brand-mark">LUCAS<em>&</em>LIAM<em>.</em></div>
-      <div class="ft-brand-tag">Stories worth leaving behind.<br>Cape Breton, Nova Scotia.</div>
-      <!-- SOCIAL LINKS — update handles as needed -->
-      <div class="social-links">
-        <a href="https://soundcloud.com/lucas-cotton-362002952" target="_blank" rel="noopener noreferrer" class="soc" aria-label="SoundCloud">SC</a>
-        <a href="https://www.youtube.com/@lucasliamlegacystudios" target="_blank" rel="noopener noreferrer" class="soc" aria-label="YouTube">YT</a>
-        <!-- Update with your Instagram handle -->
-        <a href="https://www.instagram.com/lucasliamlegacy" target="_blank" rel="noopener noreferrer" class="soc" aria-label="Instagram">IG</a>
-        <!-- Update with your TikTok handle -->
-        <a href="https://www.tiktok.com/@lucasliamlegacy" target="_blank" rel="noopener noreferrer" class="soc" aria-label="TikTok">TT</a>
-      </div>
-    </div>
-
-    <!-- Quick nav column -->
-    <div>
-      <div class="ft-col-lbl">Navigate</div>
-      <ul class="ft-nav-list">
-        <li><a href="#work">The Work</a></li>
-        <li><a href="#offers">Packages</a></li>
-        <li><a href="#process">How It Works</a></li>
-        <li><a href="#music">Music</a></li>
-        <li><a href="#press">Press Kit</a></li>
-        <li><a href="#who">The Studio</a></li>
-        <li><a href="#contact">Start a Project</a></li>
-      </ul>
-    </div>
-
-    <!-- Contact column -->
-    <div>
-      <div class="ft-col-lbl">Contact</div>
-      <ul class="ft-nav-list">
-        <li><a href="mailto:lucasliamlegacystudios@gmail.com">Email Lucas</a></li>
-        <li><a href="mailto:lucasliamlegacystudios@gmail.com?subject=Book%20a%20Discovery%20Call">Book a Call</a></li>
-        <li><a href="https://lucasliamlegacy.ca" target="_blank">lucasliamlegacy.ca</a></li>
-      </ul>
-      <div style="margin-top:20px;font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--salt3);">Broadcast Partner</div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--salt);margin-top:4px;">Telile Community TV</div>
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--salt3);margin-top:2px;">Cape Breton Island Broadcast</div>
-    </div>
-
-  </div>
-
-  <div class="ft-bottom">
-    <div class="ft-copy">© 2026 Lucas &amp; Liam Legacy Studios · Cape Breton, Nova Scotia · All rights reserved</div>
-    <div class="ft-legal">Ecclesiastes 9:10</div>
-  </div>
-</footer>
-
-<a href="#" class="btt" id="btt" aria-label="Back to top">↑</a>
-
+<script src="three.min.js"></script>
+<script src="supabase.min.js"></script>
 <script>
-// ── CURSOR ──
-const cur=document.getElementById('cur'),ring=document.getElementById('curRing');
-let mx=0,my=0,rx=0,ry=0,active=false;
-document.addEventListener('mousemove',e=>{
-  if(!active){document.body.classList.add('has-cursor');active=true;}
-  mx=e.clientX;my=e.clientY;
-  cur.style.left=mx+'px';cur.style.top=my+'px';
-});
-document.addEventListener('mouseleave',()=>{document.body.classList.remove('has-cursor');active=false;});
-(function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
-document.querySelectorAll('a,button,.offer,.film,.client,.ps,.press-hit,.soc').forEach(el=>{
-  el.addEventListener('mouseenter',()=>{
-    cur.style.width='12px';cur.style.height='12px';
-    ring.style.width='48px';ring.style.height='48px';
-    ring.style.borderColor='rgba(200,68,26,0.5)';
-  });
-  el.addEventListener('mouseleave',()=>{
-    cur.style.width='8px';cur.style.height='8px';
-    ring.style.width='32px';ring.style.height='32px';
-    ring.style.borderColor='rgba(242,237,228,0.35)';
-  });
-});
+  /* ----------------------------------------------------------------------
+     CONFIGURATION — paste the two values from your Supabase project here.
+     Dashboard → Project Settings → API Keys → "Publishable key".
+     (Supabase renamed this: it used to be called the anon key. Same thing,
+     same permissions, same RLS role. The legacy anon key still works but
+     is being retired at the end of 2026.)
 
-// ── HAMBURGER MENU ──
-const ham=document.getElementById('navHam'),mob=document.getElementById('mobNav');
-function openMenu(){ham.classList.add('open');mob.classList.add('open');document.body.style.overflow='hidden';}
-function closeMenu(){ham.classList.remove('open');mob.classList.remove('open');document.body.style.overflow='';}
-ham.addEventListener('click',()=>ham.classList.contains('open')?closeMenu():openMenu());
-document.querySelectorAll('.mob-link').forEach(l=>l.addEventListener('click',closeMenu));
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
+     A publishable key is MEANT to sit in public HTML — the row-level
+     security policies are what protect the data, not the key. Never paste
+     a secret or service_role key into this file; those bypass every policy.
 
-// ── NAV SCROLL STATE ──
-const nav=document.querySelector('nav');
-window.addEventListener('scroll',()=>{
-  nav.classList.toggle('scrolled',window.scrollY>60);
-},{ passive:true });
+     Until these are filled in, the sky runs in solo mode.
+     ---------------------------------------------------------------------- */
+ var SUPABASE_URL = 'https://qcwaldfxpuzburhoyayh.supabase.co';
+var SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_ZiEldowy-aBZsdTM_OO2Fg_PtddStwI';
+</script>
+<script>
+(function () {
+  'use strict';
 
-// ── BACK TO TOP ──
-const btt=document.getElementById('btt');
-window.addEventListener('scroll',()=>{
-  btt.classList.toggle('visible',window.scrollY>400);
-},{ passive:true });
+  // ==========================================================================
+  //  ATLANTIC NIGHT SKY — SCENE FOUNDATION (rev 2)
+  //
+  //  Vantage: a Cape Breton shoreline, looking southeast over the Atlantic.
+  //  Scale is honest: 1 unit = 1 metre, eye height 2 m, so the water plane
+  //  ends at the true 5 km sea horizon for that eye height.
+  //
+  //  Three things carry the realism, in order of how much they matter:
+  //   1. The Milky Way is STAR DENSITY, not a painted texture. A dim, narrow
+  //      glow shell sits under ~16,000 tiny points clustered on the galactic
+  //      plane. Painting it as a texture is what makes CG skies look overcast.
+  //   2. Atmospheric extinction — stars dim and redden into the horizon haze.
+  //   3. A steep magnitude hierarchy. Most stars are barely there; a few
+  //      dozen carry the whole sky. Uniform dots read as a sprinkle.
+  //
+  //  Extension point for Prompt 2: `window.Scene` at the bottom.
+  // ==========================================================================
 
-// ── FUNNEL IFRAME AUTO-RESIZE ──
-window.addEventListener('message',e=>{
-  if(e.data&&e.data.type==='resize'){
-    const f=document.getElementById('funnelIframe');
-    if(f)f.style.height=(e.data.height+40)+'px';
+  var canvas = document.getElementById('sky');
+  var curtain = document.getElementById('curtain');
+  if (!window.THREE) { document.getElementById('fallback').style.display = 'flex'; return; }
+
+  var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // --- Site constants ------------------------------------------------------
+  var EYE_HEIGHT   = 2.0;
+  var HORIZON_DIST = 5000;
+  var DOME_R       = 12000;
+  var STAR_R       = 9000;
+  var MW_R         = 8500;
+  var LATITUDE     = 45.65 * Math.PI / 180;   // St. Peter's, Cape Breton
+
+  // Facing southeast: north is 135 deg to the left, celestial pole at latitude.
+  var VIEW_AZIMUTH = -135 * Math.PI / 180;
+  var POLE = new THREE.Vector3(
+    Math.sin(VIEW_AZIMUTH) * Math.cos(LATITUDE),
+    Math.sin(LATITUDE),
+    -Math.cos(VIEW_AZIMUTH) * Math.cos(LATITUDE)
+  ).normalize();
+
+  // Thin crescent moon, low and left. Faint enough not to kill the Milky Way.
+  // The moon sits in the open-water notch between the treeline and the
+  // headland (az -3 deg), so its halo and glitter path land in the one part
+  // of the frame with visible sea. At -36 deg both were hidden behind trees.
+  var MOON_AZIMUTH = -3 * Math.PI / 180;
+  var MOON_DIR = new THREE.Vector3(
+    Math.sin(MOON_AZIMUTH) * Math.cos(0.175),
+    Math.sin(0.175),
+    -Math.cos(MOON_AZIMUTH) * Math.cos(0.175)
+  ).normalize();
+  var GLITTER_AXIS = new THREE.Vector2(MOON_DIR.x, MOON_DIR.z).normalize();
+
+  var SKY_RATE = (REDUCED ? 0 : 4) * (2 * Math.PI) / 86164;   // ~4x sidereal
+
+  // --- Deterministic RNG: the same sky every visit -------------------------
+  var seed = 20260812;
+  function rnd() {
+    seed = (seed * 1664525 + 1013904223) % 4294967296;
+    return seed / 4294967296;
   }
-},false);
+  function gauss() {
+    var u = 1 - rnd(), v = rnd();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+  }
 
-// ── SECTION REVEAL ON SCROLL ──
-const revealEls=document.querySelectorAll('section,.work,.funnel-sec,.music-sec');
-const observer=new IntersectionObserver(entries=>{
-  entries.forEach(entry=>{
-    if(entry.isIntersecting){
-      entry.target.style.opacity='1';
-      entry.target.style.transform='translateY(0)';
-      observer.unobserve(entry.target);
+  // --- Renderer ------------------------------------------------------------
+  var renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({
+      canvas: canvas, antialias: window.devicePixelRatio < 2,
+      alpha: false, powerPreference: 'high-performance', stencil: false
+    });
+  } catch (e) {
+    document.getElementById('fallback').style.display = 'flex';
+    return;
+  }
+  var DPR = Math.min(window.devicePixelRatio || 1, 2);
+  renderer.setPixelRatio(DPR);
+  renderer.setClearColor(0x000000, 1);
+
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(70, 1, 1, 20000);
+  camera.position.set(0, EYE_HEIGHT, 0);
+  camera.rotation.order = 'YXZ';
+  var BASE_PITCH = 22 * Math.PI / 180;   // set properly in resize()
+  var BASE_YAW = 0;
+
+  var skyBox   = new THREE.Group(); skyBox.position.y   = EYE_HEIGHT; scene.add(skyBox);
+  var skyGroup = new THREE.Group(); skyGroup.position.y = EYE_HEIGHT; scene.add(skyGroup);
+
+  // ==========================================================================
+  //  1. SKY DOME
+  //  Much darker than instinct suggests. A real dark-sky night is nearly
+  //  black — every bit of lift here costs star contrast directly.
+  // ==========================================================================
+  var HORIZON_RGB = new THREE.Vector3(0.0215, 0.0285, 0.0545);
+
+  var domeMat = new THREE.ShaderMaterial({
+    side: THREE.BackSide, depthWrite: false, fog: false,
+    uniforms: {
+      uMoonDir: { value: MOON_DIR.clone() },
+      uTownDir: { value: new THREE.Vector3(Math.sin(0.70), 0, -Math.cos(0.70)).normalize() },
+      uMoonGlow: { value: 1.0 }
+    },
+    vertexShader: [
+      'varying vec3 vDir;',
+      'void main(){ vDir = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }'
+    ].join('\n'),
+    fragmentShader: [
+      'varying vec3 vDir;',
+      'uniform vec3 uMoonDir; uniform vec3 uTownDir; uniform float uMoonGlow;',
+      'float hash21(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453); }',
+      'void main(){',
+      '  vec3 d = normalize(vDir);',
+      '  float h = d.y;',
+      '  vec3 zenith  = vec3(0.0052, 0.0072, 0.0190);',
+      '  vec3 horizon = vec3(0.0215, 0.0285, 0.0545);',
+      '  vec3 col = mix(horizon, zenith, smoothstep(-0.04, 0.66, h));',
+      // Airglow: a thin band lifted just above the sea horizon.
+      '  col += vec3(0.0125, 0.0165, 0.0215) * exp(-pow((h - 0.028) / 0.095, 2.0));',
+      // Low crescent moon: halo only, no disc until Prompt 4.
+      '  float md = max(dot(d, normalize(uMoonDir)), 0.0);',
+      '  col += vec3(0.080, 0.086, 0.104) * pow(md, 48.0) * 0.60 * uMoonGlow;',
+      '  col += vec3(0.021, 0.025, 0.037) * pow(md,  7.0) * 0.36 * uMoonGlow;',
+      // Sodium wash from a town behind the headland. Tight to the horizon.
+      '  float tz = max(dot(normalize(vec3(d.x, 0.0, d.z)), uTownDir), 0.0);',
+      '  col += vec3(0.105, 0.058, 0.022) * pow(tz, 12.0)',
+      '       * exp(-pow(max(h, 0.0) / 0.048, 2.0)) * 0.40;',
+      // Dither. Dark gradients band badly on 8-bit mobile panels.
+      '  col += (hash21(gl_FragCoord.xy) - 0.5) * 0.0035;',
+      '  gl_FragColor = vec4(col, 1.0);',
+      '}'
+    ].join('\n')
+  });
+  var dome = new THREE.Mesh(new THREE.SphereGeometry(DOME_R, 48, 32), domeMat);
+  dome.renderOrder = -10;
+  skyBox.add(dome);
+
+  // ==========================================================================
+  //  2. MILKY WAY GLOW SHELL
+  //  Deliberately faint and narrow. It only has to hint that something is
+  //  behind the star haze; the haze itself does the visible work.
+  // ==========================================================================
+  var BAND_NORMAL = new THREE.Vector3(0.80, 0.30, 0.52).normalize();
+  var BAND_SIGMA = 0.15;   // in normalized texture-v units (~13 deg half-width)
+
+  function makeMilkyWayTexture() {
+    var W = 1024, H = 512;
+    var c = document.createElement('canvas'); c.width = W; c.height = H;
+    var ctx = c.getContext('2d');
+    var img = ctx.createImageData(W, H);
+    var px = img.data;
+
+    // Integer hash, not Math.sin — this runs ~20M times and sin is the
+    // difference between a 200 ms build and a 2 s freeze on a phone.
+    function h2(x, y, period) {
+      x = ((x % period) + period) % period;
+      var n = (x * 374761393 + y * 668265263) | 0;
+      n = Math.imul(n ^ (n >>> 13), 1274126177) | 0;
+      return ((n ^ (n >>> 16)) >>> 0) / 4294967296;
+    }
+    function vnoise(x, y, period) {
+      var xi = Math.floor(x), yi = Math.floor(y);
+      var xf = x - xi, yf = y - yi;
+      var u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
+      var a = h2(xi, yi, period),      b = h2(xi + 1, yi, period);
+      var cc = h2(xi, yi + 1, period), d = h2(xi + 1, yi + 1, period);
+      return a * (1 - u) * (1 - v) + b * u * (1 - v) + cc * (1 - u) * v + d * u * v;
+    }
+    // `span` = how far the x argument travels across the texture. It must
+    // scale with each octave or the sphere shows a vertical seam.
+    function fbm(x, y, oct, span) {
+      var s = 0, amp = 0.5, f = 1;
+      for (var i = 0; i < oct; i++) { s += amp * vnoise(x * f, y * f, span * f); f *= 2; amp *= 0.5; }
+      return s;
+    }
+
+    // The band's centreline wanders. Precomputed per column — it has no y term.
+    var wob = new Float32Array(W);
+    for (var wx = 0; wx < W; wx++) wob[wx] = (fbm((wx / W) * 16, 3.7, 3, 16) - 0.5) * 0.26;
+
+    for (var y = 0; y < H; y++) {
+      var ny = (y / H) * 2 - 1;
+      for (var x = 0; x < W; x++) {
+        var u0 = x / W;
+        var t = (ny - wob[x]) / BAND_SIGMA;
+        var core = Math.exp(-t * t);
+
+        var clump = fbm(u0 * 96, ny * 9.0 + 11.0, 5, 96);
+        var rift  = fbm(u0 * 40, ny * 4.5 + 41.0, 4, 40);
+
+        // The Great Rift — dark dust cutting the band lengthwise. Without
+        // this the band reads as cloud rather than galaxy.
+        var lane = Math.exp(-Math.pow((t + 0.35) / 0.55, 2.0));
+        var dust = 1.0 - lane * (0.45 + rift * 0.50);
+
+        var v = core * (0.20 + clump * 1.15) * dust;
+        v = Math.max(0, Math.min(1, v)) * 0.30;
+
+        var i4 = (y * W + x) * 4;
+        px[i4]     = (v * 200) | 0;
+        px[i4 + 1] = (v * 194) | 0;
+        px[i4 + 2] = (v * 210) | 0;
+        px[i4 + 3] = 255;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+
+    var tex = new THREE.CanvasTexture(c);
+    tex.wrapS = THREE.RepeatWrapping;
+    tex.wrapT = THREE.ClampToEdgeWrapping;
+    tex.minFilter = THREE.LinearFilter;
+    tex.magFilter = THREE.LinearFilter;
+    tex.generateMipmaps = false;
+    return tex;
+  }
+
+  var mw = new THREE.Mesh(
+    new THREE.SphereGeometry(MW_R, 64, 40),
+    new THREE.ShaderMaterial({
+      // depthTest stays ON: transparent objects always render after opaque
+      // ones in three.js regardless of renderOrder, so without it the sky
+      // paints straight over the treeline.
+      side: THREE.BackSide, transparent: true, depthWrite: false, depthTest: true,
+      blending: THREE.AdditiveBlending,
+      uniforms: { uMap: { value: makeMilkyWayTexture() } },
+      vertexShader: [
+        'varying vec2 vUv; varying vec3 vWorld;',
+        'void main(){ vUv = uv; vWorld = (modelMatrix * vec4(position,1.0)).xyz;',
+        '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }'
+      ].join('\n'),
+      fragmentShader: [
+        'varying vec2 vUv; varying vec3 vWorld;',
+        'uniform sampler2D uMap;',
+        'void main(){',
+        '  vec3 t = texture2D(uMap, vUv).rgb;',
+        '  float alt = normalize(vWorld).y;',
+        '  float ext = smoothstep(-0.01, 0.40, alt);',
+        '  gl_FragColor = vec4(t * ext * 0.38, 1.0);',
+        '}'
+      ].join('\n')
+    })
+  );
+  mw.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), BAND_NORMAL);
+  mw.renderOrder = -6;
+  skyGroup.add(mw);
+
+  // ==========================================================================
+  //  3. STARFIELDS
+  //  Two point systems sharing one shader: the resolved stars, and a dense
+  //  faint haze concentrated on the galactic plane.
+  // ==========================================================================
+  function starMaterial(bright) {
+    return new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, depthTest: true,
+      blending: THREE.AdditiveBlending,
+      uniforms: {
+        uTime:    { value: 0 },
+        uDpr:     { value: DPR },
+        uTwinkle: { value: REDUCED ? 0.0 : 1.0 },
+        uBright:  { value: bright }
+      },
+      vertexShader: [
+        'attribute vec3 aColor; attribute float aSize; attribute float aPhase; attribute float aSpeed;',
+        'uniform float uTime; uniform float uDpr; uniform float uTwinkle; uniform float uBright;',
+        'varying vec3 vColor; varying float vAlpha;',
+        'void main(){',
+        '  vec4 world = modelMatrix * vec4(position, 1.0);',
+        '  float alt = normalize(world.xyz).y;',
+        // Extinction: hard cut in the last degrees, then a gentler ramp.
+        '  float ext = smoothstep(-0.012, 0.055, alt);',
+        '  ext *= 0.50 + 0.50 * smoothstep(0.02, 0.55, alt);',
+        // Reddening is only strong below ~10 deg, not halfway up the sky.
+        '  vColor = mix(vec3(1.0, 0.66, 0.40), aColor, clamp(alt * 6.5, 0.0, 1.0));',
+        '  float tw = 1.0 - uTwinkle * 0.34 * (0.5 + 0.5 * sin(uTime * aSpeed + aPhase));',
+        '  vAlpha = ext * tw * uBright;',
+        '  gl_PointSize = aSize * uDpr * (0.84 + 0.16 * tw);',
+        '  gl_Position = projectionMatrix * viewMatrix * world;',
+        '}'
+      ].join('\n'),
+      fragmentShader: [
+        'varying vec3 vColor; varying float vAlpha;',
+        'void main(){',
+        '  vec2 uv = gl_PointCoord - 0.5;',
+        '  float d = dot(uv, uv);',
+        // A small saturated core with a wide soft glare. The core has to stay
+        // tight — widen it and the bright stars render as visible discs.
+        '  float core = smoothstep(0.05, 0.0, d);',
+        '  float glare = exp(-d * 9.0);',
+        '  float a = (core * 0.95 + glare * 0.40) * vAlpha;',
+        '  if (a < 0.004) discard;',
+        '  gl_FragColor = vec4(vColor, a);',
+        '}'
+      ].join('\n')
+    });
+  }
+
+  // Orthonormal frame on the galactic plane, for biased sampling.
+  var bU = new THREE.Vector3(1, 0, 0);
+  if (Math.abs(BAND_NORMAL.dot(bU)) > 0.9) bU.set(0, 0, 1);
+  bU.crossVectors(BAND_NORMAL, bU).normalize();
+  var bV = new THREE.Vector3().crossVectors(BAND_NORMAL, bU).normalize();
+  var tmp = new THREE.Vector3();
+
+  function sampleDir(bandChance, sigma) {
+    for (var guard = 0; guard < 200; guard++) {
+      if (rnd() < bandChance) {
+        var a = rnd() * Math.PI * 2;
+        var off = gauss() * sigma;
+        var co = Math.cos(off), so = Math.sin(off);
+        tmp.set(0, 0, 0)
+          .addScaledVector(bU, Math.cos(a) * co)
+          .addScaledVector(bV, Math.sin(a) * co)
+          .addScaledVector(BAND_NORMAL, so).normalize();
+      } else {
+        var z = rnd() * 2 - 1, th = rnd() * Math.PI * 2, r = Math.sqrt(1 - z * z);
+        tmp.set(r * Math.cos(th), z, r * Math.sin(th));
+      }
+      if (tmp.y >= -0.20) return true;   // below this it's never seen
+    }
+    return false;
+  }
+
+  function buildPoints(count, bandChance, sigma, sizeFn, colorFn, bright, radius) {
+    var pos = [], col = [], siz = [], pha = [], spd = [];
+    for (var i = 0; i < count; i++) {
+      if (!sampleDir(bandChance, sigma)) continue;
+      pos.push(tmp.x * radius, tmp.y * radius, tmp.z * radius);
+      var m = rnd();
+      var c = colorFn(m);
+      col.push(c[0], c[1], c[2]);
+      siz.push(sizeFn(m));
+      pha.push(rnd() * Math.PI * 2);
+      spd.push(0.5 + rnd() * 1.9 + (1 - m) * 1.4);
+    }
+    var g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    g.setAttribute('aColor',   new THREE.Float32BufferAttribute(col, 3));
+    g.setAttribute('aSize',    new THREE.Float32BufferAttribute(siz, 1));
+    g.setAttribute('aPhase',   new THREE.Float32BufferAttribute(pha, 1));
+    g.setAttribute('aSpeed',   new THREE.Float32BufferAttribute(spd, 1));
+    var p = new THREE.Points(g, starMaterial(bright));
+    p.frustumCulled = false;
+    return p;
+  }
+
+  // Stellar colour by rough spectral class. Mostly white; blue and amber rare.
+  function starColor(u) {
+    if (u < 0.09) return [0.72, 0.81, 1.00];   // hot blue
+    if (u < 0.42) return [0.89, 0.93, 1.00];   // blue-white
+    if (u < 0.80) return [1.00, 0.99, 0.96];   // white
+    if (u < 0.93) return [1.00, 0.91, 0.75];   // yellow
+    return                [1.00, 0.76, 0.55];  // amber giant
+  }
+
+  // (a) The faint haze that IS the Milky Way. Tiny, dim, tightly clustered.
+  var haze = buildPoints(
+    21000, 0.93, 0.105,
+    function () { return 0.55 + rnd() * 0.85; },
+    function () { var w = 0.94 + rnd() * 0.06; return [w, w * 0.985, w * 0.95]; },
+    0.50, MW_R - 200
+  );
+  haze.renderOrder = -5;
+  skyGroup.add(haze);
+
+  // (b) Resolved stars. pow(u, 6) keeps the bright ones genuinely rare —
+  // this steep magnitude hierarchy is what stops a starfield reading as a
+  // uniform sprinkle of identical dots.
+  var stars = buildPoints(
+    5800, 0.24, 0.16,
+    function (u) { return 0.85 + Math.pow(u, 6.0) * 5.4; },
+    starColor, 1.0, STAR_R
+  );
+  stars.renderOrder = -4;
+  skyGroup.add(stars);
+
+  // (c) First-magnitude anchors. Every real sky has a handful you navigate by.
+  var anchors = buildPoints(
+    64, 0.28, 0.20,
+    function () { return 6.4 + rnd() * 3.6; },
+    starColor, 1.0, STAR_R - 100
+  );
+  anchors.renderOrder = -3;
+  skyGroup.add(anchors);
+
+  // ==========================================================================
+  //  4. OCEAN
+  //  Nearly black water, one moonlight glitter path, blending into the sky
+  //  colour over the last kilometre so the plane edge doesn't read as card.
+  // ==========================================================================
+  var oceanMat = new THREE.ShaderMaterial({
+    side: THREE.DoubleSide, depthWrite: true, transparent: false,
+    uniforms: {
+      uTime:    { value: 0 },
+      uEye:     { value: new THREE.Vector3(0, EYE_HEIGHT, 0) },
+      uAxis:    { value: GLITTER_AXIS.clone() },
+      uHorizon: { value: HORIZON_RGB.clone() },
+      uMotion:  { value: REDUCED ? 0.15 : 1.0 },
+      uFlash:   { value: 0 }
+    },
+    vertexShader: [
+      'varying vec3 vWorld;',
+      'void main(){ vWorld = (modelMatrix * vec4(position,1.0)).xyz;',
+      '  gl_Position = projectionMatrix * viewMatrix * vec4(vWorld,1.0); }'
+    ].join('\n'),
+    fragmentShader: [
+      'varying vec3 vWorld;',
+      'uniform float uTime; uniform vec3 uEye; uniform vec2 uAxis;',
+      'uniform vec3 uHorizon; uniform float uMotion; uniform float uFlash;',
+      'void main(){',
+      '  vec2 rel = vWorld.xz - uEye.xz;',
+      '  float dist = length(rel);',
+      '  vec2 dir = rel / max(dist, 0.001);',
+      '  vec3 base = mix(vec3(0.0040,0.0053,0.0105), uHorizon * 0.62, smoothstep(50.0, 4000.0, dist));',
+      // Long swell — broad, slow, nearly subliminal.
+      '  float swell = sin(rel.x * 0.021 + uTime * 0.20 * uMotion)',
+      '              * sin(rel.y * 0.017 - uTime * 0.14 * uMotion);',
+      '  base += vec3(0.0016, 0.0021, 0.0032) * swell;',
+      // Glitter path: a narrow cone toward the moon azimuth.
+      '  float band = pow(max(dot(dir, uAxis), 0.0), 22.0);',
+      '  float t = uTime * uMotion;',
+      // Two rotated coordinate frames so the sparkle grid never lines up
+      // with the screen axes — axis-aligned sin products read as rows of
+      // dashes in the near field.
+      '  vec2 ra = mat2(0.866, -0.5, 0.5, 0.866) * rel;',
+      '  vec2 rb = mat2(0.940, 0.342, -0.342, 0.940) * rel;',
+      '  float s1 = pow(max(0.0, sin(ra.x * 0.85 + t * 0.9) * sin(ra.y * 1.23 - t * 0.7)), 34.0);',
+      '  float s2 = pow(max(0.0, sin(rb.x * 1.61 - t * 1.1) * sin(rb.y * 0.71 + t * 0.8)), 52.0);',
+      '  float s3 = pow(max(0.0, sin(ra.x * 0.33 + t * 0.5) * sin(rb.y * 2.10 + t * 1.3)), 22.0);',
+      // Sparkle fades only in the immediate foreground (first ~50 m) and is
+      // dampened, not deleted, in the near field. From 2 m eye height nearly
+      // ALL visible water is inside 200 m — a 200 m cutoff erased the whole
+      // moonglade, which the previous revision proved the hard way.
+      '  float near = smoothstep(2400.0, 260.0, dist) * smoothstep(12.0, 58.0, dist);',
+      '  near *= mix(0.42, 1.0, smoothstep(90.0, 500.0, dist));',
+      '  base += vec3(0.185, 0.192, 0.212) * band * (s1*0.9 + s2 + s3*0.45) * near * (1.0 + uFlash * 2.2);',
+      // A bright fireball genuinely lights the water. Kept very low.
+      '  base += vec3(0.009, 0.010, 0.013) * uFlash;',
+      '  base = mix(base, uHorizon * 0.88, smoothstep(3500.0, 4980.0, dist));',
+      '  gl_FragColor = vec4(base, 1.0);',
+      '}'
+    ].join('\n')
+  });
+  var ocean = new THREE.Mesh(new THREE.CircleGeometry(HORIZON_DIST, 96), oceanMat);
+  ocean.rotation.x = -Math.PI / 2;
+  scene.add(ocean);
+
+  // ==========================================================================
+  //  5. LAND — silhouette only
+  //
+  //  Spruce are built from a trunk plus overlapping drooping branch triangles,
+  //  not from one zigzag outline. A modulated outline gives you flame shapes;
+  //  a real conifer silhouette comes from branch whorls that get shorter and
+  //  steeper toward the leader. Black spruce here are spindly — roughly 6:1
+  //  height to width, with a distinct club-shaped crown.
+  // ==========================================================================
+  function tri(a, ax, ay, bx, by, cx, cy) {
+    a.push(ax, ay, 0, bx, by, 0, cx, cy, 0);
+  }
+
+  function spruce(out, cx, baseY, h, R, lean) {
+    var tipX = cx + lean * h * 0.08;
+    var tw = Math.max(0.05, R * 0.06);
+    // Trunk, tapering.
+    tri(out, cx - tw, baseY, cx + tw, baseY, tipX + tw * 0.3, baseY + h);
+    tri(out, cx - tw, baseY, tipX + tw * 0.3, baseY + h, tipX - tw * 0.3, baseY + h);
+
+    var whorls = 17 + ((rnd() * 8) | 0);
+    for (var i = 0; i < whorls; i++) {
+      var t = 0.05 + (i / whorls) * 0.86 + (rnd() - 0.5) * 0.018;
+      var y = baseY + h * t;
+      var ax = cx + lean * h * 0.08 * t * t;
+      var thick = h * 0.020 * (1.0 - t * 0.40);
+      for (var s = -1; s <= 1; s += 2) {
+        var len = R * Math.pow(1.0 - t, 1.15) * (0.88 + rnd() * 0.72);
+        var droop = len * (0.22 + rnd() * 0.28);   // branches sweep downward
+        tri(out, ax, y + thick, ax, y - thick * 0.55, ax + s * len, y - droop);
+      }
+    }
+    // Club-shaped crown, then the bare leader spire.
+    for (var j = 0; j < 4; j++) {
+      var cy2 = baseY + h * (0.88 + j * 0.030);
+      var cl = R * 0.20 * (1 - j * 0.19);
+      tri(out, tipX, cy2 + h * 0.020, tipX, cy2 - h * 0.008, tipX - cl, cy2 - cl * 0.35);
+      tri(out, tipX, cy2 + h * 0.020, tipX, cy2 - h * 0.008, tipX + cl * 0.92, cy2 - cl * 0.35);
+    }
+    tri(out, tipX - tw * 0.8, baseY + h * 0.96, tipX + tw * 0.8, baseY + h * 0.96, tipX, baseY + h * 1.09);
+  }
+
+  // A dead standing spruce — bare trunk, a few broken stubs. One in eight or
+  // so along this shore; it breaks up the rhythm more than any noise value.
+  function snag(out, cx, baseY, h, R, lean) {
+    var tipX = cx + lean * h * 0.09;
+    var tw = Math.max(0.05, R * 0.055);
+    tri(out, cx - tw, baseY, cx + tw, baseY, tipX + tw * 0.2, baseY + h);
+    tri(out, cx - tw, baseY, tipX + tw * 0.2, baseY + h, tipX - tw * 0.2, baseY + h);
+    var stubs = 4 + ((rnd() * 4) | 0);
+    for (var i = 0; i < stubs; i++) {
+      var t = 0.35 + rnd() * 0.6;
+      var y = baseY + h * t;
+      var ax = cx + lean * h * 0.09 * t * t;
+      var len = R * (0.25 + rnd() * 0.45);
+      var s = rnd() < 0.5 ? -1 : 1;
+      tri(out, ax, y + h * 0.012, ax, y - h * 0.008, ax + s * len, y - len * 0.45);
+    }
+  }
+
+  function buildTreeline(x0, x1, z, baseY, hex, hMin, hMax) {
+    var out = [];
+    var X0 = x0 - 25, X1 = x1 + 25;
+    function bank(t) {
+      return baseY + Math.sin(t * 11.0) * 0.8 + Math.sin(t * 27.0 + 2.1) * 0.4 + Math.sin(t * 4.0) * 0.5;
+    }
+    // The stand ends by tapering to the bank over ~16 m, never a hard cut.
+    function taper(x) { return Math.min(1, Math.max(0, (x1 - x) / 16)); }
+
+    // Closed canopy. A spruce stand is a solid dark MASS with leaders poking
+    // out the top, not a row of separate trees — separate trees with sky
+    // between their trunks is what made the last version read as a fence of
+    // spindles. The mass runs to the ground, so it doubles as the bank.
+    var NB = 320, prevX = X0, prevY = bank(0);
+    var mid = (hMin + hMax) * 0.5;
+    for (var k = 1; k <= NB; k++) {
+      var t = k / NB;
+      var xx = X0 + (X1 - X0) * t;
+      var u = (xx - x0) / (x1 - x0);
+      // Low-frequency mass, kept LOW — at 0.60 it buried half the trees and
+      // read as a bald hill...
+      var und = 0.40 + 0.13 * Math.sin(u * 21.0 + 0.7) + 0.09 * Math.sin(u * 8.3 + 2.9);
+      // ...plus crown serration: pointed tips every ~2.4 m with jittered
+      // phase. Inverting pow(abs(cos)) gives cusped peaks over rounded
+      // valleys — tree tips up, crown shoulders meeting below. This texture
+      // on the canopy edge is what a spruce stand actually looks like at
+      // this distance.
+      var crown = 1.0 - Math.pow(Math.abs(Math.cos(u * 184.0 + Math.sin(u * 9.0) * 3.0)), 0.7);
+      var yy = bank(t) + (mid * Math.max(0, und) + mid * 0.22 * crown) * taper(xx);
+      tri(out, prevX, prevY, xx, yy, xx, baseY - 70);
+      tri(out, prevX, prevY, xx, baseY - 70, prevX, baseY - 70);
+      prevX = xx; prevY = yy;
+    }
+
+    // Individual trees, dense enough that crowns overlap. Trees shrink into
+    // the taper so the stand thins out toward the open water.
+    var x = x0 + 1;
+    while (x < x1) {
+      var tp = taper(x);
+      var h = (hMin + rnd() * (hMax - hMin)) * (0.55 + 0.45 * tp);
+      if (rnd() < 0.16) h *= 0.55;                 // wind-burned runts
+      var R = h * (0.155 + rnd() * 0.055);         // ~6:1 height to width
+      var lean = (rnd() - 0.5) * 1.5;
+      var by = bank((x - X0) / (X1 - X0)) - 0.4;
+      if (rnd() < 0.09 && tp > 0.5) snag(out, x, by, h * 0.92, R, lean);
+      else spruce(out, x, by, h, R, lean);
+      x += R * 0.75 + rnd() * (R * 0.95);
+    }
+    var g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(out, 3));
+    var m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color: hex, fog: false, side: THREE.DoubleSide }));
+    m.position.z = z;
+    return m;
+  }
+
+  function buildHeadland(x0, x1, z, baseY, height, hex, fringe) {
+    var out = [];
+    var N = 260, prevX = x0, prevY;
+    // Ridge wavelength stays constant in metres, not in span fraction —
+    // otherwise a wide ridge comes out unnaturally smooth and planar.
+    var fscale = (x1 - x0) / 1500;
+    function crest(t) {
+      // Rises steeply from the water, shoulders over, falls away inland.
+      var mass = Math.pow(Math.sin(Math.PI * Math.pow(t, 0.66)), 0.50);
+      var ridge = Math.sin(t * 7.3 * fscale + 1.7) * 0.060 + Math.sin(t * 17.9 * fscale) * 0.024
+                + Math.sin(t * 3.1 * fscale + 0.4) * 0.045;
+      var cove = -0.22 * Math.exp(-Math.pow((t - 0.62) / 0.055, 2.0));  // a notch
+      return baseY + height * Math.max(0, mass + ridge + cove);
+    }
+    prevY = crest(0);
+    for (var i = 1; i <= N; i++) {
+      var t = i / N;
+      var xx = x0 + (x1 - x0) * t;
+      var yy = crest(t);
+      tri(out, prevX, prevY, xx, yy, xx, baseY - 500);
+      tri(out, prevX, prevY, xx, baseY - 500, prevX, baseY - 500);
+      prevX = xx; prevY = yy;
+    }
+    // A sparse fringe of spruce along the crest. At 1.4 km a 12 m tree is
+    // still ~10 px tall — it's the detail that gives the headland its scale.
+    if (fringe) {
+      var fx = x0;
+      while (fx < x1) {
+        var fh = fringe * (0.65 + rnd() * 0.8);
+        spruce(out, fx, crest((fx - x0) / (x1 - x0)) - fh * 0.05, fh, fh * 0.17, (rnd() - 0.5) * 1.2);
+        fx += fringe * (0.5 + rnd() * 2.6);
+      }
+    }
+    var g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(out, 3));
+    var m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color: hex, fog: false, side: THREE.DoubleSide }));
+    m.position.z = z;
+    return m;
+  }
+
+  var land = new THREE.Group();
+  // Back row first — very slightly lighter. At night distant land reads
+  // lighter than near land, because it has more skyglow in front of it.
+  land.add(buildTreeline(-165, -4, -168, 3, 0x01040c, 11, 22));
+  land.add(buildTreeline(-150, -9,  -95, 3, 0x000205, 10, 21));
+  // Headland, camera-right, 1.4 km out, 95 m high — about 4 deg elevation.
+  land.add(buildHeadland(18, 1500, -1400, 0, 95, 0x000308, 11));
+  // A fainter ridge further back so the right side has depth, not one mass.
+  land.add(buildHeadland(700, 4600, -3800, 0, 230, 0x01050c, 0));
+  scene.add(land);
+
+  // A light on the headland tip — Fl R 4s, like a channel marker. One red
+  // point, the only man-made light in the scene. This coast is never
+  // entirely without one, and it gives the far shore its sense of scale.
+  var markerGeo = new THREE.BufferGeometry();
+  markerGeo.setAttribute('position', new THREE.Float32BufferAttribute([48, 56, -1398], 3));
+  // A raw WebGL point is a SQUARE — on a high-DPR phone the marker rendered
+  // as a little red brick. A light is a glow: gaussian falloff, soft edge.
+  var markerMat = new THREE.ShaderMaterial({
+    transparent: true, depthWrite: false, depthTest: true,
+    blending: THREE.AdditiveBlending,
+    uniforms: { uDpr: { value: DPR }, uOp: { value: 0 } },
+    vertexShader: [
+      'uniform float uDpr;',
+      'void main(){',
+      '  gl_PointSize = 6.0 * uDpr;',
+      '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
+      '}'
+    ].join('\n'),
+    fragmentShader: [
+      'uniform float uOp;',
+      'void main(){',
+      '  vec2 uv = gl_PointCoord - 0.5;',
+      '  float d = dot(uv, uv);',
+      '  float a = (exp(-d * 26.0) * 0.9 + exp(-d * 7.0) * 0.25) * uOp;',
+      '  if (a < 0.01) discard;',
+      '  gl_FragColor = vec4(1.0, 0.26, 0.16, a);',
+      '}'
+    ].join('\n')
+  });
+  var marker = new THREE.Points(markerGeo, markerMat);
+  marker.frustumCulled = false;
+  scene.add(marker);
+
+  // ==========================================================================
+  //  6. SHOOTING STARS
+  //
+  //  Anatomy of one meteor, tuned to how they actually look:
+  //   - A bright head moving on a straight alt/az track, 20-60 deg descent,
+  //     crossing 13-45 deg of sky in 0.5-1.3 s. Fast and brief.
+  //   - A brightness ENVELOPE: it fades in over the first ~15%, peaks past
+  //     the middle, and extinguishes. Meteors never pop in at full blaze.
+  //   - Per-meteor flicker on the head — combustion is not steady.
+  //   - A warm wake of short-lived particles dropped along the track.
+  //   - ~1 in 8 is a fireball: bigger, brighter, greenish head, longer
+  //     track, a persistent drifting train that outlives the head by
+  //     seconds, a likely terminal burst — and a faint flash on the water.
+  //
+  //  All wake/train/burst particles share ONE ring buffer and one draw
+  //  call; heads share another. Twelve concurrent meteors max, and a launch
+  //  queue that staggers activations 90 ms apart, so a burst of community
+  //  reports (Prompt 3) cascades across the sky instead of clumping.
+  //
+  //  Meteors use Math.random, not the seeded rnd() — no two ever identical.
+  // ==========================================================================
+  var DEG = Math.PI / 180;
+  var METEOR_R = 7800;
+  var MAX_METEORS = 12;
+  var MAX_P = 1600;
+  var rrnd = Math.random;
+
+  var meteorGroup = new THREE.Group();
+  meteorGroup.position.y = EYE_HEIGHT;
+  scene.add(meteorGroup);
+
+  var meteorVS = [
+    'attribute vec3 aColor; attribute float aSize; attribute float aAlpha;',
+    'uniform float uDpr;',
+    'varying vec3 vColor; varying float vAlpha;',
+    'void main(){',
+    '  vColor = aColor; vAlpha = aAlpha;',
+    '  gl_PointSize = aSize * uDpr;',
+    '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
+    '}'
+  ].join('\n');
+  var meteorFS = [
+    'varying vec3 vColor; varying float vAlpha;',
+    'void main(){',
+    '  vec2 uv = gl_PointCoord - 0.5;',
+    '  float d = dot(uv, uv);',
+    '  float core = smoothstep(0.06, 0.0, d);',
+    '  float glare = exp(-d * 10.0);',
+    '  float a = (core * 0.9 + glare * 0.45) * vAlpha;',
+    '  if (a < 0.004) discard;',
+    '  gl_FragColor = vec4(vColor, a);',
+    '}'
+  ].join('\n');
+
+  function meteorMaterial() {
+    return new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, depthTest: true,
+      blending: THREE.AdditiveBlending,
+      uniforms: { uDpr: { value: DPR } },
+      vertexShader: meteorVS, fragmentShader: meteorFS
+    });
+  }
+  function dynAttr(arr, n) {
+    var a = new THREE.BufferAttribute(arr, n);
+    a.setUsage(THREE.DynamicDrawUsage);
+    return a;
+  }
+
+  // Particle ring buffer (wake + trains + bursts).
+  var pPos = new Float32Array(MAX_P * 3), pCol = new Float32Array(MAX_P * 3);
+  var pSize = new Float32Array(MAX_P), pAlpha = new Float32Array(MAX_P);
+  var pVel = new Float32Array(MAX_P * 3);
+  var pBirth = new Float32Array(MAX_P), pLife = new Float32Array(MAX_P);
+  var pBright = new Float32Array(MAX_P);
+  var pNext = 0;
+  var pGeo = new THREE.BufferGeometry();
+  pGeo.setAttribute('position', dynAttr(pPos, 3));
+  pGeo.setAttribute('aColor',   dynAttr(pCol, 3));
+  pGeo.setAttribute('aSize',    dynAttr(pSize, 1));
+  pGeo.setAttribute('aAlpha',   dynAttr(pAlpha, 1));
+  var pPoints = new THREE.Points(pGeo, meteorMaterial());
+  pPoints.frustumCulled = false;
+  meteorGroup.add(pPoints);
+
+  // Heads.
+  var hPos = new Float32Array(MAX_METEORS * 3), hCol = new Float32Array(MAX_METEORS * 3);
+  var hSize = new Float32Array(MAX_METEORS), hAlpha = new Float32Array(MAX_METEORS);
+  var hGeo = new THREE.BufferGeometry();
+  hGeo.setAttribute('position', dynAttr(hPos, 3));
+  hGeo.setAttribute('aColor',   dynAttr(hCol, 3));
+  hGeo.setAttribute('aSize',    dynAttr(hSize, 1));
+  hGeo.setAttribute('aAlpha',   dynAttr(hAlpha, 1));
+  var hPoints = new THREE.Points(hGeo, meteorMaterial());
+  hPoints.frustumCulled = false;
+  meteorGroup.add(hPoints);
+
+  // The STREAK itself is a ribbon, not particles. Discrete points can't make
+  // a continuous needle of light — at 1-2 px each they render as beads on a
+  // string, which the first cut of this engine proved. The ribbon is a
+  // camera-facing triangle strip sampled analytically along the track:
+  // width tapers to nothing at the tail, alpha decays exponentially, colour
+  // runs cool at the head to warm at the tail. Particles are kept only for
+  // what discreteness is GOOD at: shed sparks, drifting trains, bursts.
+  var TRAIL_K = 14;
+  var rVerts = MAX_METEORS * TRAIL_K * 2;
+  var rPos = new Float32Array(rVerts * 3);
+  var rCol = new Float32Array(rVerts * 3);
+  var rAlpha = new Float32Array(rVerts);
+  var rU = new Float32Array(rVerts);
+  var rIdx = [];
+  for (var rm = 0; rm < MAX_METEORS; rm++) {
+    var off = rm * TRAIL_K * 2;
+    for (var rk = 0; rk < TRAIL_K; rk++) {
+      rU[off + rk * 2] = 0; rU[off + rk * 2 + 1] = 1;
+      if (rk < TRAIL_K - 1) {
+        var a0 = off + rk * 2;
+        rIdx.push(a0, a0 + 1, a0 + 2, a0 + 1, a0 + 3, a0 + 2);
+      }
+    }
+  }
+  var rGeo = new THREE.BufferGeometry();
+  rGeo.setIndex(new THREE.BufferAttribute(new Uint16Array(rIdx), 1));
+  rGeo.setAttribute('position', dynAttr(rPos, 3));
+  rGeo.setAttribute('aColor',   dynAttr(rCol, 3));
+  rGeo.setAttribute('aAlpha',   dynAttr(rAlpha, 1));
+  rGeo.setAttribute('aU',       dynAttr(rU, 1));
+  var ribbon = new THREE.Mesh(rGeo, new THREE.ShaderMaterial({
+    transparent: true, depthWrite: false, depthTest: true,
+    blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
+    vertexShader: [
+      'attribute vec3 aColor; attribute float aAlpha; attribute float aU;',
+      'varying vec3 vColor; varying float vAlpha; varying float vU;',
+      'void main(){',
+      '  vColor = aColor; vAlpha = aAlpha; vU = aU;',
+      '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
+      '}'
+    ].join('\n'),
+    fragmentShader: [
+      'varying vec3 vColor; varying float vAlpha; varying float vU;',
+      'void main(){',
+      '  float edge = pow(max(0.0, sin(3.14159 * vU)), 1.5);',
+      '  float a = vAlpha * edge;',
+      '  if (a < 0.004) discard;',
+      '  gl_FragColor = vec4(vColor, a);',
+      '}'
+    ].join('\n')
+  }));
+  ribbon.frustumCulled = false;
+  meteorGroup.add(ribbon);
+
+  var trailP = new Float32Array(TRAIL_K * 3);
+  function zeroRibbon(i) {
+    var o = i * TRAIL_K * 2;
+    for (var z = 0; z < TRAIL_K * 2; z++) rAlpha[o + z] = 0;
+  }
+
+  function spawnParticle(x, y, z, vx, vy, vz, r, g, b, size, life, bright) {
+    var i = pNext; pNext = (pNext + 1) % MAX_P;
+    pPos[i*3] = x; pPos[i*3+1] = y; pPos[i*3+2] = z;
+    pVel[i*3] = vx; pVel[i*3+1] = vy; pVel[i*3+2] = vz;
+    pCol[i*3] = r; pCol[i*3+1] = g; pCol[i*3+2] = b;
+    pSize[i] = size; pLife[i] = life; pBirth[i] = elapsed; pBright[i] = bright;
+  }
+
+  var mv = new THREE.Vector3(), mv2 = new THREE.Vector3();
+  function altAz(altDeg, azDeg, out) {
+    var alt = altDeg * DEG, az = azDeg * DEG;
+    return out.set(
+      Math.sin(az) * Math.cos(alt),
+      Math.sin(alt),
+      -Math.cos(az) * Math.cos(alt)
+    ).multiplyScalar(METEOR_R);
+  }
+
+  var meteors = [];
+  for (var mi = 0; mi < MAX_METEORS; mi++) meteors.push({ active: false });
+  var pending = [];
+  var nextLaunch = 0;
+
+  function fireStar(opts) {
+    if (pending.length < 40) pending.push(opts || {});
+  }
+
+  function activate(m, opts) {
+    var fireball = opts.fireball !== undefined ? !!opts.fireball : (rrnd() < 0.125);
+    var az0 = -50 + rrnd() * 100;
+    var alt0 = 26 + rrnd() * 38;
+    var desc = (20 + rrnd() * 40) * (fireball ? 0.85 : 1.0);
+    var dir = rrnd() < 0.5 ? -1 : 1;
+    if (az0 > 28) dir = -1; else if (az0 < -28) dir = 1;   // arc back into frame
+    var L = fireball ? 26 + rrnd() * 19 : 13 + rrnd() * 17;
+    var maxDrop = alt0 + 6;                                // never dive far below horizon
+    if (Math.sin(desc * DEG) * L > maxDrop) L = maxDrop / Math.sin(desc * DEG);
+    var speed = fireball ? 26 + rrnd() * 14 : 23 + rrnd() * 15;   // deg/s
+
+    m.active = true; m.fireball = fireball;
+    m.t0 = elapsed; m.dur = L / speed;
+    m.az0 = az0; m.alt0 = alt0;
+    m.dAz = dir * Math.cos(desc * DEG) * L;
+    m.dAlt = -Math.sin(desc * DEG) * L;
+    m.burst = rrnd() < (fireball ? 0.6 : 0.12);
+    m.bursted = false;
+    m.flickPh = rrnd() * 6.283;
+    m.flickSp = 17 + rrnd() * 14;
+    m.headSize = (fireball ? 5.2 : 2.9) + rrnd() * 1.2;
+    m.lastSpawnS = 0;
+    m.spawnStep = (fireball ? 0.22 : 0.55) / L;   // sparse: sparks, not trail
+  }
+
+  function terminalBurst(c, fireball) {
+    var n = fireball ? 14 : 9;
+    for (var i = 0; i < n; i++) {
+      var vx = rrnd() - 0.5, vy = rrnd() - 0.5, vz = rrnd() - 0.5;
+      var vl = Math.sqrt(vx*vx + vy*vy + vz*vz) || 1;
+      var sp = 90 + rrnd() * 240;
+      spawnParticle(c.x, c.y, c.z, vx/vl*sp, vy/vl*sp, vz/vl*sp,
+        1.0, 0.93, 0.80, 1.4 + rrnd() * 1.3, 0.45 + rrnd() * 0.6, 1.1);
+    }
+  }
+
+  function updateMeteors(dt) {
+    // Staggered launches from the queue.
+    if (pending.length && elapsed >= nextLaunch) {
+      var slot = -1;
+      for (var q = 0; q < MAX_METEORS; q++) if (!meteors[q].active) { slot = q; break; }
+      if (slot >= 0) { activate(meteors[slot], pending.shift()); nextLaunch = elapsed + 0.09; }
+      else nextLaunch = elapsed + 0.15;
+    }
+
+    var flashTarget = 0;
+
+    for (var i = 0; i < MAX_METEORS; i++) {
+      var m = meteors[i], hi = i * 3;
+      if (!m.active) { hAlpha[i] = 0; zeroRibbon(i); continue; }
+      var s = (elapsed - m.t0) / m.dur;
+      if (s >= 1) { m.active = false; hAlpha[i] = 0; zeroRibbon(i); continue; }
+
+      altAz(m.alt0 + m.dAlt * s, m.az0 + m.dAz * s, mv);
+      hPos[hi] = mv.x; hPos[hi+1] = mv.y; hPos[hi+2] = mv.z;
+
+      var env = Math.pow(Math.sin(Math.PI * Math.pow(s, 0.85)), 0.8);
+      var fl = 0.80 + 0.20 * Math.sin(elapsed * m.flickSp + m.flickPh)
+                     * Math.sin(elapsed * m.flickSp * 2.63);
+      var b = env * fl * (m.fireball ? 1.9 : 1.25);
+      if (m.burst && s > 0.87) {
+        b *= 2.2;
+        if (!m.bursted) { m.bursted = true; terminalBurst(mv, m.fireball); }
+      }
+      hAlpha[i] = Math.min(1.7, b);
+      hSize[i] = m.headSize * (0.9 + 0.2 * fl) * (m.burst && s > 0.87 ? 1.5 : 1.0);
+      if (m.fireball) {
+        hCol[hi] = 0.86; hCol[hi+1] = 1.0; hCol[hi+2] = 0.93;
+        flashTarget = Math.max(flashTarget, env * 0.30 + (m.burst && s > 0.87 ? 0.35 : 0));
+      } else {
+        hCol[hi] = 0.93; hCol[hi+1] = 0.96; hCol[hi+2] = 1.0;
+      }
+
+      // Ribbon: sample the track analytically from the head back through
+      // the tail window, orient each row perpendicular to travel and view.
+      var trailTime = m.fireball ? 0.30 : 0.17;
+      var tailS = Math.min(s, trailTime / m.dur);
+      var rOff = i * TRAIL_K * 2;
+      for (var k = 0; k < TRAIL_K; k++) {
+        var fr = k / (TRAIL_K - 1);
+        var sk = s - tailS * fr;
+        altAz(m.alt0 + m.dAlt * sk, m.az0 + m.dAz * sk, mv2);
+        trailP[k * 3] = mv2.x; trailP[k * 3 + 1] = mv2.y; trailP[k * 3 + 2] = mv2.z;
+      }
+      for (k = 0; k < TRAIL_K; k++) {
+        var fr2 = k / (TRAIL_K - 1);
+        var iA = k === 0 ? 0 : k - 1, iB = k === TRAIL_K - 1 ? TRAIL_K - 1 : k + 1;
+        var tx = trailP[iA * 3] - trailP[iB * 3];
+        var ty = trailP[iA * 3 + 1] - trailP[iB * 3 + 1];
+        var tz = trailP[iA * 3 + 2] - trailP[iB * 3 + 2];
+        var px2 = trailP[k * 3], py2 = trailP[k * 3 + 1], pz2 = trailP[k * 3 + 2];
+        // side = normalize(cross(tangent, radial)); radial ~ view direction
+        var sx = ty * pz2 - tz * py2, sy = tz * px2 - tx * pz2, sz = tx * py2 - ty * px2;
+        var sl = Math.sqrt(sx * sx + sy * sy + sz * sz) || 1;
+        var hw = (m.fireball ? 10.5 : 6.0) * (1 - fr2 * 0.9) * (0.88 + 0.12 * fl);
+        sx = sx / sl * hw; sy = sy / sl * hw; sz = sz / sl * hw;
+        var v0 = (rOff + k * 2) * 3, v1 = v0 + 3;
+        rPos[v0] = px2 + sx; rPos[v0 + 1] = py2 + sy; rPos[v0 + 2] = pz2 + sz;
+        rPos[v1] = px2 - sx; rPos[v1 + 1] = py2 - sy; rPos[v1 + 2] = pz2 - sz;
+        var sk2 = Math.max(s - tailS * fr2, 0.0001);
+        var envK = Math.pow(Math.sin(Math.PI * Math.pow(sk2, 0.85)), 0.8);
+        var aK = envK * Math.exp(-2.4 * fr2) * fl * (m.fireball ? 1.35 : 0.95);
+        if (m.burst && s > 0.87) aK *= 1.6;
+        rAlpha[rOff + k * 2] = aK; rAlpha[rOff + k * 2 + 1] = aK;
+        var cr, cg, cb;
+        if (m.fireball) { cr = 0.88 - 0.28 * fr2; cg = 1.0 - 0.05 * fr2; cb = 0.94 - 0.19 * fr2; }
+        else            { cr = 0.95 + 0.05 * fr2; cg = 0.97 - 0.23 * fr2; cb = 1.0 - 0.52 * fr2; }
+        rCol[v0] = cr; rCol[v0 + 1] = cg; rCol[v0 + 2] = cb;
+        rCol[v1] = cr; rCol[v1 + 1] = cg; rCol[v1 + 2] = cb;
+      }
+
+      // Drop wake particles along the segment travelled this frame.
+      while (m.lastSpawnS + m.spawnStep <= s) {
+        m.lastSpawnS += m.spawnStep;
+        var ss = m.lastSpawnS;
+        altAz(m.alt0 + m.dAlt * ss + (rrnd() - 0.5) * 0.10,
+              m.az0 + m.dAz * ss + (rrnd() - 0.5) * 0.10, mv2);
+        var envW = Math.pow(Math.sin(Math.PI * Math.pow(ss, 0.85)), 0.8);
+        spawnParticle(mv2.x, mv2.y, mv2.z,
+          (rrnd() - 0.5) * 18, (rrnd() - 0.5) * 18, (rrnd() - 0.5) * 18,
+          1.0, 0.88, 0.70,
+          (m.fireball ? 3.2 : 2.4) * (0.7 + rrnd() * 0.6),
+          (m.fireball ? 0.50 : 0.32) * (0.7 + rrnd() * 0.7),
+          envW * (m.fireball ? 0.9 : 0.6));
+        // Persistent drifting train — the fireball's signature.
+        if (m.fireball && rrnd() < 0.8) {
+          spawnParticle(mv2.x, mv2.y, mv2.z,
+            (rrnd() - 0.5) * 34, 8 + rrnd() * 16, (rrnd() - 0.5) * 34,
+            0.55, 0.95, 0.75,
+            1.8 + rrnd() * 1.4, 1.7 + rrnd() * 1.9, 0.30);
+        }
+      }
+    }
+
+    hGeo.attributes.position.needsUpdate = true;
+    hGeo.attributes.aColor.needsUpdate = true;
+    hGeo.attributes.aSize.needsUpdate = true;
+    hGeo.attributes.aAlpha.needsUpdate = true;
+    rGeo.attributes.position.needsUpdate = true;
+    rGeo.attributes.aColor.needsUpdate = true;
+    rGeo.attributes.aAlpha.needsUpdate = true;
+
+    for (var pI = 0; pI < MAX_P; pI++) {
+      if (pLife[pI] <= 0) { pAlpha[pI] = 0; continue; }
+      var age = elapsed - pBirth[pI];
+      if (age >= pLife[pI]) { pLife[pI] = 0; pAlpha[pI] = 0; continue; }
+      var k = 1 - age / pLife[pI];
+      pAlpha[pI] = pBright[pI] * k * k;
+      var p3 = pI * 3;
+      pPos[p3]   += pVel[p3]   * dt;
+      pPos[p3+1] += pVel[p3+1] * dt;
+      pPos[p3+2] += pVel[p3+2] * dt;
+    }
+    pGeo.attributes.position.needsUpdate = true;
+    pGeo.attributes.aColor.needsUpdate = true;
+    pGeo.attributes.aSize.needsUpdate = true;
+    pGeo.attributes.aAlpha.needsUpdate = true;
+
+    var f = oceanMat.uniforms.uFlash.value;
+    oceanMat.uniforms.uFlash.value = f + (flashTarget - f) * Math.min(1, dt * 9);
+  }
+
+  // ==========================================================================
+  //  6b. COMMUNITY REPORTING — Supabase backend
+  //
+  //  Two changes of substance from the artifact build:
+  //
+  //  1. REALTIME, not polling. Sightings arrive over a websocket in about a
+  //     second instead of up to ten. On a shower night that is the whole
+  //     difference between a feed and a shared sky.
+  //  2. Real localStorage. On a proper domain the cooldown and the chosen
+  //     community survive a reload, which the artifact sandbox could not do.
+  //
+  //  If Supabase is not configured yet, everything below degrades to solo
+  //  mode and the sky still works — so this file is safe to deploy before
+  //  the database exists.
+  // ==========================================================================
+  var COMMUNITIES = ["St. Peter's", "Isle Madame", "Sydney", "Glace Bay",
+    "Baddeck", "Chéticamp", "Mabou", "Louisbourg", "Ingonish",
+    "Elsewhere in the Maritimes"];
+  var COOLDOWN = 15;
+
+  var reportBtn = document.getElementById('report');
+  var communitySel = document.getElementById('community');
+  var chip = document.getElementById('countChip');
+  var countEl = document.getElementById('countN');
+  var feedEl = document.getElementById('feed');
+  var toastEl = document.getElementById('toast');
+
+  var CONFIGURED = !!(window.supabase && SUPABASE_URL.indexOf('YOUR-PROJECT') < 0);
+  var sb = CONFIGURED ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY) : null;
+
+  // A random per-device string. Not a name, not a location, not an account —
+  // it exists so the rate limit has something to count against and so your
+  // own sighting doesn't fly at you twice.
+  function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+  var CLIENT_ID = (function () {
+    var v = store('onesky:client');
+    if (!v) {
+      v = (window.crypto && crypto.randomUUID) ? crypto.randomUUID()
+        : 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+      store('onesky:client', v);
+    }
+    return v;
+  })();
+
+  (function () {
+    for (var i = 0; i < COMMUNITIES.length; i++) {
+      var o = document.createElement('option');
+      o.value = String(i); o.textContent = COMMUNITIES[i];
+      communitySel.appendChild(o);
+    }
+    var saved = store('onesky:community');
+    if (saved !== null && saved !== '' && COMMUNITIES[parseInt(saved, 10)]) communitySel.value = saved;
+  })();
+  communitySel.addEventListener('change', function () { store('onesky:community', communitySel.value); });
+
+  var lastReport = parseInt(store('onesky:last') || '0', 10) || -1e9;
+  var tonightCount = 0;
+  var soloLog = [];
+  var toastTimer = null;
+  var recentRows = [];
+  var liveOk = false;
+
+  function fmtTime(ts) {
+    var d = new Date(ts), h = d.getHours(), m = d.getMinutes();
+    var ap = h < 12 ? 'a.m.' : 'p.m.'; h = h % 12; if (h === 0) h = 12;
+    return h + ':' + (m < 10 ? '0' : '') + m + ' ' + ap;
+  }
+  // "Tonight" runs noon to noon, so 1 a.m. still belongs to the evening.
+  function tonightStart() {
+    var d = new Date();
+    var n = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12, 0, 0);
+    if (d.getTime() < n.getTime()) n.setDate(n.getDate() - 1);
+    return n.getTime();
+  }
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 3600);
+  }
+  function bumpCount(n) { countEl.textContent = String(n); }
+  function communityName(c) {
+    return (c !== null && c >= 0 && c < COMMUNITIES.length) ? COMMUNITIES[c] : null;
+  }
+
+  function renderFeed(entries, solo) {
+    var html = '<div class="head">Sightings tonight' + (solo ? ' · solo sky' : '') + '</div>';
+    if (!entries.length) {
+      html += '<div class="row"><span>None yet</span><span>be the first</span></div>';
+    }
+    for (var i = 0; i < Math.min(entries.length, 14); i++) {
+      var e = entries[i];
+      html += '<div class="row"><span>' + fmtTime(e.ts) + '</span><span>' +
+        (communityName(e.c) || '—') + '</span></div>';
+    }
+    if (solo) html += '<div class="note">This sky is running without its shared connection — your sightings stay on this device.</div>';
+    feedEl.innerHTML = html;
+  }
+
+  chip.addEventListener('click', function () {
+    var open = feedEl.classList.toggle('open');
+    chip.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+
+  function setCooldown() {
+    lastReport = Date.now();
+    store('onesky:last', String(lastReport));
+    reportBtn.disabled = true;
+    (function step() {
+      var left = Math.ceil((lastReport + COOLDOWN * 1000 - Date.now()) / 1000);
+      if (left <= 0) {
+        reportBtn.disabled = false;
+        reportBtn.textContent = 'I saw one ⭐';
+        return;
+      }
+      reportBtn.textContent = 'Logged ✦ ' + left;
+      setTimeout(step, 250);
+    })();
+  }
+  if (Date.now() - lastReport < COOLDOWN * 1000) setCooldown();
+
+  function report() {
+    if (Date.now() - lastReport < COOLDOWN * 1000) return;
+    fireStar();                                   // the star flies immediately
+    setCooldown();
+    var ci = communitySel.value === '' ? null : parseInt(communitySel.value, 10);
+    var ts = Date.now();
+    tonightCount++; bumpCount(tonightCount);
+    recentRows.unshift({ ts: ts, c: ci });
+    if (!CONFIGURED) {
+      soloLog.unshift({ ts: ts, c: ci });
+      renderFeed(soloLog, true);
+      return;
+    }
+    renderFeed(recentRows, false);
+    sb.from('sightings').insert({ community: ci, client_id: CLIENT_ID })
+      .then(function (res) {
+        if (res && res.error) {
+          var msg = String(res.error.message || '');
+          // The server enforces the same cooldown the button does; if it
+          // fires, the clocks simply disagree — no need to alarm anyone.
+          if (msg.indexOf('rate_limited') >= 0) return;
+          toast("Couldn't share that one — it still flew for you");
+          tonightCount = Math.max(0, tonightCount - 1); bumpCount(tonightCount);
+        }
+      });
+  }
+  reportBtn.addEventListener('click', report);
+  document.addEventListener('keydown', function (e) {
+    if (e.code === 'Space' && !e.repeat && document.activeElement !== communitySel) {
+      e.preventDefault(); report();
     }
   });
-},{threshold:0.08});
-revealEls.forEach(el=>{
-  el.style.opacity='0';
-  el.style.transform='translateY(24px)';
-  el.style.transition='opacity .7s ease, transform .7s ease';
-  observer.observe(el);
-});
+
+  // --- Arrivals from everyone else -----------------------------------------
+  function arrive(rows) {
+    if (!rows.length) return;
+    var toFire = Math.min(rows.length, 6);        // a flurry, never a barrage
+    for (var i = 0; i < toFire; i++) fireStar();
+    if (rows.length === 1) {
+      var n = communityName(rows[0].c);
+      toast(n && n !== COMMUNITIES[COMMUNITIES.length - 1]
+        ? 'Someone in ' + n + ' just saw one ⭐'
+        : 'Someone out there just saw one ⭐');
+    } else {
+      toast(rows.length + ' sightings just came in ✨');
+    }
+  }
+
+  function refresh(fireNew) {
+    return sb.from('sightings')
+      .select('id, created_at, community, client_id')
+      .gte('created_at', new Date(tonightStart()).toISOString())
+      .order('created_at', { ascending: false })
+      .limit(200)
+      .then(function (res) {
+        if (!res || res.error) throw (res && res.error) || new Error('no response');
+        var rows = (res.data || []).map(function (r) {
+          return { id: r.id, ts: new Date(r.created_at).getTime(), c: r.community, cid: r.client_id };
+        });
+        // Anything newer than what we already knew, from someone else.
+        var known = {};
+        for (var i = 0; i < recentRows.length; i++) if (recentRows[i].id) known[recentRows[i].id] = 1;
+        var fresh = rows.filter(function (r) {
+          return !known[r.id] && r.cid !== CLIENT_ID && r.ts > Date.now() - 90000;
+        });
+        recentRows = rows;
+        tonightCount = rows.length;
+        bumpCount(tonightCount);
+        renderFeed(rows, false);
+        if (fireNew && fresh.length) arrive(fresh);
+      });
+  }
+
+  if (!CONFIGURED) {
+    renderFeed([], true);
+  } else {
+    refresh(false).catch(function () {
+      renderFeed([], true);
+      toast('Shared sky unreachable right now — your stars still fly');
+    });
+
+    sb.channel('sightings-live')
+      .on('postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'sightings' },
+        function (payload) {
+          var r = payload && payload.new;
+          if (!r || r.client_id === CLIENT_ID) return;   // already flew for us
+          var row = { id: r.id, ts: new Date(r.created_at).getTime(), c: r.community, cid: r.client_id };
+          recentRows.unshift(row);
+          tonightCount++; bumpCount(tonightCount);
+          renderFeed(recentRows, false);
+          arrive([row]);
+        })
+      .subscribe(function (status) { liveOk = (status === 'SUBSCRIBED'); });
+
+    // Reconciliation. Websockets drop — on a phone, every time the screen
+    // sleeps. This catches anything the socket missed without ever being
+    // the primary path.
+    setInterval(function () { if (!document.hidden) refresh(!liveOk).catch(function () {}); }, 45000);
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) refresh(true).catch(function () {});
+    });
+  }
+  window.fireStar = fireStar;
+
+  // ==========================================================================
+  //  6c. ATMOSPHERE — moon, showers, sound, welcome
+  // ==========================================================================
+
+  // --- The moon, at its true phase tonight ---------------------------------
+  // Standard synodic approximation from the 2000-01-06 new moon; good to a
+  // few hours, which is far finer than the eye can judge a phase.
+  var SYNODIC = 29.53058867;
+  var moonPhase = (((Date.now() / 86400000 + 2440587.5) - 2451550.26) / SYNODIC) % 1;
+  if (moonPhase < 0) moonPhase += 1;
+  var moonIllum = (1 - Math.cos(2 * Math.PI * moonPhase)) / 2;
+
+  // Halo brightness follows the real phase — a crescent no longer casts a
+  // full moon's glow, and vice versa.
+  domeMat.uniforms.uMoonGlow.value = 0.35 + 0.75 * moonIllum;
+
+  var moonMat = null;
+  if (moonIllum > 0.02) {
+    moonMat = new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, depthTest: true,
+      uniforms: {
+        uPx:     { value: 16 },
+        uCos:    { value: Math.cos(2 * Math.PI * moonPhase) },
+        uWaning: { value: moonPhase > 0.5 ? 1.0 : 0.0 },
+        uTint:   { value: new THREE.Vector3(1.0, 0.94, 0.84) }
+      },
+      vertexShader: [
+        'uniform float uPx;',
+        'void main(){',
+        '  gl_PointSize = uPx;',
+        '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
+        '}'
+      ].join('\n'),
+      fragmentShader: [
+        'uniform float uCos; uniform float uWaning; uniform vec3 uTint;',
+        'void main(){',
+        '  vec2 uv = gl_PointCoord - 0.5;',
+        '  float r = length(uv);',
+        '  float disc = smoothstep(0.5, 0.455, r);',
+        '  if (disc < 0.01) discard;',
+        // Terminator: a half-ellipse whose width runs with cos(2*pi*phase).
+        // Waxing lights the right limb, waning the left.
+        '  float E = sqrt(max(0.0001, 0.25 - uv.y * uv.y));',
+        '  float x = mix(uv.x, -uv.x, uWaning);',
+        '  float lit = smoothstep(uCos * E - 0.03, uCos * E + 0.03, x);',
+        '  float lum = mix(0.055, 1.0, lit);',       // earthshine on the dark limb
+        '  float a = disc * (0.55 + 0.45 * lit);',
+        '  gl_FragColor = vec4(uTint * lum * 0.85, a);',
+        '}'
+      ].join('\n')
+    });
+    var moonGeo = new THREE.BufferGeometry();
+    var mp = MOON_DIR.clone().multiplyScalar(7000);
+    moonGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([mp.x, mp.y, mp.z]), 3));
+    var moon = new THREE.Points(moonGeo, moonMat);
+    moon.frustumCulled = false;
+    moon.renderOrder = 0;      // after the stars, so its dark limb covers them
+    var moonHolder = new THREE.Group();
+    moonHolder.position.y = EYE_HEIGHT;
+    moonHolder.add(moon);
+    scene.add(moonHolder);
+  }
+
+  // --- Meteor shower calendar ----------------------------------------------
+  var SHOWERS = [
+    { m: 1,  d: 3,  name: 'Quadrantids',   dir: 'northeast' },
+    { m: 4,  d: 22, name: 'Lyrids',        dir: 'northeast' },
+    { m: 5,  d: 5,  name: 'Eta Aquariids', dir: 'east before dawn' },
+    { m: 8,  d: 12, name: 'Perseids',      dir: 'northeast' },
+    { m: 10, d: 21, name: 'Orionids',      dir: 'east after midnight' },
+    { m: 11, d: 17, name: 'Leonids',       dir: 'east after midnight' },
+    { m: 12, d: 13, name: 'Geminids',      dir: 'east' },
+    { m: 12, d: 22, name: 'Ursids',        dir: 'north' }
+  ];
+  (function () {
+    var note = document.getElementById('showerNote');
+    var now = new Date();
+    for (var i = 0; i < SHOWERS.length; i++) {
+      var s = SHOWERS[i];
+      var peak = new Date(now.getFullYear(), s.m - 1, s.d);
+      var dDays = (now - peak) / 86400000;
+      if (dDays > -1.2 && dDays < 2.2) {
+        note.textContent = s.name + ' peak tonight \u2014 look ' + s.dir;
+        reportBtn.classList.add('pulse');
+        return;
+      }
+    }
+    // The Perseids run long; between peaks, say so quietly.
+    var yr = now.getFullYear();
+    if (now >= new Date(yr, 6, 17) && now <= new Date(yr, 7, 24)) {
+      note.textContent = 'The Perseids are active \u2014 look northeast after dark';
+    }
+  })();
+
+  // --- Shore sound: synthesized waves and wind, muted by default -----------
+  // No audio files: two loops of filtered noise. Waves are low-passed noise
+  // swelling on two slow, incommensurate LFOs; wind is a band-passed sigh.
+  var sound = (function () {
+    var ctx = null, master = null, on = false;
+    var btn = document.getElementById('soundBtn');
+    function noiseSource(c) {
+      var len = 2 * c.sampleRate;
+      var buf = c.createBuffer(1, len, c.sampleRate);
+      var d = buf.getChannelData(0);
+      for (var i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+      var src = c.createBufferSource();
+      src.buffer = buf; src.loop = true;
+      return src;
+    }
+    function build() {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      master = ctx.createGain(); master.gain.value = 0;
+      master.connect(ctx.destination);
+      // Waves
+      var n1 = noiseSource(ctx);
+      var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 420; lp.Q.value = 0.6;
+      var g1 = ctx.createGain(); g1.gain.value = 0.26;
+      var l1 = ctx.createOscillator(); l1.frequency.value = 0.071;
+      var l1g = ctx.createGain(); l1g.gain.value = 0.13;
+      var l2 = ctx.createOscillator(); l2.frequency.value = 0.043;
+      var l2g = ctx.createGain(); l2g.gain.value = 0.09;
+      l1.connect(l1g); l1g.connect(g1.gain);
+      l2.connect(l2g); l2g.connect(g1.gain);
+      n1.connect(lp); lp.connect(g1); g1.connect(master);
+      // Wind
+      var n2 = noiseSource(ctx);
+      var bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 330; bp.Q.value = 0.9;
+      var g2 = ctx.createGain(); g2.gain.value = 0.05;
+      var l3 = ctx.createOscillator(); l3.frequency.value = 0.021;
+      var l3g = ctx.createGain(); l3g.gain.value = 0.032;
+      l3.connect(l3g); l3g.connect(g2.gain);
+      n2.connect(bp); bp.connect(g2); g2.connect(master);
+      n1.start(); n2.start(); l1.start(); l2.start(); l3.start();
+    }
+    function set(state) {
+      on = state;
+      btn.classList.toggle('on', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      btn.setAttribute('aria-label', on ? 'Turn off shore sound' : 'Turn on shore sound');
+      if (on) {
+        if (!ctx) build();
+        if (ctx.state === 'suspended') ctx.resume();
+        master.gain.cancelScheduledValues(ctx.currentTime);
+        master.gain.linearRampToValueAtTime(0.10, ctx.currentTime + 1.8);
+      } else if (ctx) {
+        master.gain.cancelScheduledValues(ctx.currentTime);
+        master.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.6);
+      }
+    }
+    btn.addEventListener('click', function () { set(!on); });
+    document.addEventListener('visibilitychange', function () {
+      if (!ctx) return;
+      if (document.hidden) ctx.suspend();
+      else if (on) ctx.resume();
+    });
+    return { isOn: function () { return on; } };
+  })();
+
+  // --- Welcome overlay ------------------------------------------------------
+  var introEl = document.getElementById('intro');
+  function dismissIntro() { introEl.classList.remove('show'); }
+  document.getElementById('introGo').addEventListener('click', dismissIntro);
+  introEl.addEventListener('click', function (e) { if (e.target === introEl) dismissIntro(); });
+
+  // ==========================================================================
+  //  7. LOOP
+  // ==========================================================================
+  var clock = new THREE.Clock();
+  var elapsed = 0, running = true;
+  var poleQ = new THREE.Quaternion();
+
+  function resize() {
+    var w = window.innerWidth, h = window.innerHeight;
+    camera.aspect = w / h;
+    // Pitch and field of view move together so the horizon lands around a
+    // fifth of the way up the frame on any shape of screen.
+    if (camera.aspect < 0.85)      { camera.fov = 74; BASE_PITCH = 24 * Math.PI / 180; }
+    else if (camera.aspect < 1.5)  { camera.fov = 62; BASE_PITCH = 20 * Math.PI / 180; }
+    else                           { camera.fov = 52; BASE_PITCH = 15 * Math.PI / 180; }
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h, false);
+    // Deliberately ~4.5x the true 0.52 deg disc. Honest scale renders about
+    // seven CSS pixels on a phone — you cannot see a phase in seven pixels,
+    // so accuracy there would cost the feature its meaning. Film does the
+    // same thing for the same reason.
+    if (moonMat) moonMat.uniforms.uPx.value = Math.min(64, 2.4 / camera.fov * (h * DPR));
+  }
+  window.addEventListener('resize', resize, { passive: true });
+  window.addEventListener('orientationchange', function () { setTimeout(resize, 120); }, { passive: true });
+  resize();
+
+  document.addEventListener('visibilitychange', function () {
+    running = !document.hidden;
+    if (running) { clock.getDelta(); tick(); }
+  });
+
+  var mats = [stars.material, haze.material, anchors.material];
+
+  function tick() {
+    if (!running) return;
+    requestAnimationFrame(tick);
+    var dt = Math.min(clock.getDelta(), 0.1);
+    elapsed += dt;
+
+    // Sidereal rotation, negative so stars rise east and set west.
+    poleQ.setFromAxisAngle(POLE, -SKY_RATE * elapsed);
+    skyGroup.quaternion.copy(poleQ);
+
+    // Ambient drift: two slow incommensurate sines, under a degree of travel.
+    // It should feel like standing still, not like a camera move.
+    var m = REDUCED ? 0.25 : 1.0;
+    camera.rotation.y = BASE_YAW
+      + (Math.sin(elapsed * 0.037) * 0.0130 + Math.sin(elapsed * 0.0131) * 0.0062) * m;
+    camera.rotation.x = BASE_PITCH
+      + (Math.sin(elapsed * 0.0214) * 0.0068 + Math.sin(elapsed * 0.0091) * 0.0031) * m;
+
+    for (var i = 0; i < mats.length; i++) mats[i].uniforms.uTime.value = elapsed;
+    oceanMat.uniforms.uTime.value = elapsed;
+
+    // Channel marker: flash 0.7 s, dark 3.3 s.
+    var mph = elapsed % 4.0;
+    markerMat.uniforms.uOp.value = mph < 0.7 ? Math.sin(Math.PI * mph / 0.7) * 0.9 : 0.0;
+
+    updateMeteors(dt);
+
+    renderer.render(scene, camera);
+  }
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(function () {
+    curtain.classList.add('lift');
+    tick();
+    setTimeout(function () { introEl.classList.add('show'); }, 1500);
+    setTimeout(function () { document.getElementById('credit').classList.add('show'); }, 3200);
+  });
+
+  // --- Extension point for Prompt 2 (shooting star engine) -----------------
+  window.Scene = {
+    THREE: THREE, scene: scene, skyGroup: skyGroup, camera: camera, renderer: renderer,
+    constants: { STAR_R: STAR_R, DOME_R: DOME_R, EYE_HEIGHT: EYE_HEIGHT, POLE: POLE },
+    fireStar: fireStar,
+    now: function () { return elapsed; }
+  };
+})();
 </script>
 </body>
 </html>
