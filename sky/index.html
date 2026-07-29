@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ONE-SKY-REALSKY-v1.5 :: real star engine integrated into the live tracker.
+<!-- ONE-SKY-REALSKY-v1.7 :: real star engine integrated into the live tracker.
      Base: sky/index.html sha256 ada4f4d53a2863a9711b3d0d4a8c8abca240ae9b2127f29840ba848d53404077
      Star data: HYG Database v4.1 (astronexus.com), CC BY-SA 4.0. -->
 <html lang="en">
@@ -154,6 +154,7 @@
   @media (prefers-reduced-motion: reduce) { #report.pulse { animation: none; } }
   #soundBtn, #linesBtn, #compassBtn {
     position: fixed; left: 14px;
+    /* compassBtn overrides left/bottom below — it lives on the right */
     bottom: calc(20px + env(safe-area-inset-bottom));
     width: 42px; height: 42px; border-radius: 50%;
     background: rgba(8, 12, 22, 0.5);
@@ -165,9 +166,24 @@
     z-index: 5; touch-action: manipulation; padding: 0;
   }
   #soundBtn.on, #linesBtn.on, #compassBtn.on { color: #d8dfec; border-color: rgba(160, 180, 220, 0.5); }
-  #linesBtn { left: 64px; display: flex; align-items: center; justify-content: center; }
+  /* Utility buttons live in SYMMETRIC CORNER STACKS — two circles per
+     corner, the report pill alone on the centre line between them. A single
+     row of five would need the pill shrunk to fit a 360px phone, and the
+     hero never gives up size for furniture. Symmetry is also what makes the
+     centred pill READ as centred. */
+  #linesBtn {
+    left: 14px; bottom: calc(72px + env(safe-area-inset-bottom));
+    display: flex; align-items: center; justify-content: center;
+  }
   #linesBtn:focus-visible { outline: 2px solid rgba(150, 170, 210, 0.55); outline-offset: 2px; }
-  #compassBtn { left: 114px; display: flex; align-items: center; justify-content: center; }
+  /* Right side, stacked above the share button — clear of the report pill
+     on any width of phone. (It sat at left:114px for one version and parked
+     itself on top of the I-saw-one button; measured once, moved forever.) */
+  #compassBtn {
+    left: auto; right: 14px;
+    bottom: calc(72px + env(safe-area-inset-bottom));
+    display: flex; align-items: center; justify-content: center;
+  }
   #compassBtn:focus-visible { outline: 2px solid rgba(150, 170, 210, 0.55); outline-offset: 2px; }
   #compassBtn.on svg { animation: compassGlow 2.4s ease-in-out infinite; }
   @keyframes compassGlow {
@@ -1576,7 +1592,8 @@
   //  Dragging the sky switches compass mode off — the finger outranks the
   //  sensor, always.
   var MAG_DECLINATION = -16.5 * D2R;
-  var compassOn = false, compassEverGot = false;
+  var compassOn = false, compassEverGot = false, absoluteSeen = false;
+  var relFix = null;                 // relative-mode anchor (see onOrient)
   var compassBtn = document.getElementById('compassBtn');
   var devQTarget = new THREE.Quaternion(), haveDevQ = false;
   var _cEuler = new THREE.Euler(), _cZee = new THREE.Vector3(0, 0, 1);
@@ -1604,6 +1621,13 @@
 
   function onOrient(e) {
     if (e.alpha === null || e.alpha === undefined) return;
+    // Some browsers fire only 'deviceorientationabsolute', some fire only
+    // 'deviceorientation' (with or without a real compass behind it), and a
+    // few fire both. Listen to everything, prefer absolute when it exists.
+    var isAbs = (e.type === 'deviceorientationabsolute') || e.absolute === true ||
+                (typeof e.webkitCompassHeading === 'number' && !isNaN(e.webkitCompassHeading));
+    if (isAbs && !absoluteSeen) { absoluteSeen = true; relFix = null; }
+    if (!isAbs && absoluteSeen) return;              // absolute outranks relative
     var alpha = e.alpha;
     // iOS: alpha is relative to page load, but webkitCompassHeading is a
     // real magnetic heading. One reading pins the offset between them.
@@ -1615,7 +1639,22 @@
     devQTarget.setFromEuler(_cEuler);
     devQTarget.multiply(_cQ1);                       // look out the back camera
     devQTarget.multiply(_cQ0.setFromAxisAngle(_cZee, -screenAngle() * DEG));
-    devQTarget.premultiply(_cDecl);                  // magnetic -> true north
+    if (isAbs) {
+      devQTarget.premultiply(_cDecl);                // magnetic -> true north
+    } else {
+      // RELATIVE fallback: no compass behind these numbers, so no claim of
+      // north is made. Anchor the first reading to wherever the person was
+      // already looking; from there the sky follows the phone's motion.
+      // Honest degradation: motion without a false heading.
+      if (relFix === null) {
+        camera.getWorldDirection(_fwd);
+        var wantAz = azOf(_fwd);
+        _fwd.set(0, 0, -1).applyQuaternion(devQTarget);
+        relFix = new THREE.Quaternion().setFromAxisAngle(
+          new THREE.Vector3(0, 1, 0), azOf(_fwd) - wantAz);
+      }
+      devQTarget.premultiply(relFix);
+    }
     haveDevQ = true; compassEverGot = true;
   }
 
@@ -1638,22 +1677,23 @@
 
   function startCompass() {
     userPanned = true;
-    iosAlphaOffset = null; compassEverGot = false;
-    if ('ondeviceorientationabsolute' in window) {
-      window.addEventListener('deviceorientationabsolute', onOrient, true);
-    } else {
-      window.addEventListener('deviceorientation', onOrient, true);
-    }
+    iosAlphaOffset = null; compassEverGot = false; absoluteSeen = false; relFix = null;
+    // BOTH channels, always. Deciding which one a browser actually speaks
+    // is the browser's business, not a guess made from a property probe —
+    // the property existed in one browser whose events never fired, and the
+    // toast blamed the phone for it.
+    window.addEventListener('deviceorientationabsolute', onOrient, true);
+    window.addEventListener('deviceorientation', onOrient, true);
     setCompass(true);
     toast('Point your phone at the sky \u2014 drag to take back over');
-    // Some desktops expose the API but have no sensor. If nothing arrives,
-    // say so instead of leaving a lit button that does nothing.
+    // If nothing arrives on either channel, the sensors are blocked or
+    // absent. Say which fix to try, not just that it failed.
     setTimeout(function () {
       if (compassOn && !compassEverGot) {
         setCompass(false);
-        toast('No motion sensors on this device');
+        toast('Motion blocked \u2014 allow sensors for this site, or try Chrome');
       }
-    }, 2000);
+    }, 2500);
   }
 
   compassBtn.addEventListener('click', function () {
