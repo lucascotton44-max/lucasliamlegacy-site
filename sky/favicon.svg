@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- One Sky favicon: the page's own four-point star, meteor trail, night tile. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#03060e"/><stop offset="1" stop-color="#0c1c38"/>
+    </linearGradient>
+    <linearGradient id="t" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#dbe2f0" stop-opacity="0"/>
+      <stop offset="1" stop-color="#dbe2f0" stop-opacity="0.9"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="13" fill="url(#bg)"/>
+  <line x1="9" y1="9" x2="24" y2="24" stroke="url(#t)" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M 33,17 C 35.4,28 37.5,30 48,32.5 C 37.5,35 35.4,37 33,48 C 30.6,37 28.5,35 18,32.5 C 28.5,30 30.6,28 33,17 Z" fill="#e8edf6"/>
+</svg>
