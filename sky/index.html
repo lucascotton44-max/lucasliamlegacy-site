@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ONE-SKY-REALSKY-v1.4 :: real star engine integrated into the live tracker.
+<!-- ONE-SKY-REALSKY-v1.5 :: real star engine integrated into the live tracker.
      Base: sky/index.html sha256 ada4f4d53a2863a9711b3d0d4a8c8abca240ae9b2127f29840ba848d53404077
      Star data: HYG Database v4.1 (astronexus.com), CC BY-SA 4.0. -->
 <html lang="en">
@@ -152,7 +152,7 @@
   }
   #report.pulse { animation: reportPulse 3s ease-in-out infinite; }
   @media (prefers-reduced-motion: reduce) { #report.pulse { animation: none; } }
-  #soundBtn, #linesBtn {
+  #soundBtn, #linesBtn, #compassBtn {
     position: fixed; left: 14px;
     bottom: calc(20px + env(safe-area-inset-bottom));
     width: 42px; height: 42px; border-radius: 50%;
@@ -164,9 +164,17 @@
     transition: color 200ms ease, border-color 200ms ease;
     z-index: 5; touch-action: manipulation; padding: 0;
   }
-  #soundBtn.on, #linesBtn.on { color: #d8dfec; border-color: rgba(160, 180, 220, 0.5); }
+  #soundBtn.on, #linesBtn.on, #compassBtn.on { color: #d8dfec; border-color: rgba(160, 180, 220, 0.5); }
   #linesBtn { left: 64px; display: flex; align-items: center; justify-content: center; }
   #linesBtn:focus-visible { outline: 2px solid rgba(150, 170, 210, 0.55); outline-offset: 2px; }
+  #compassBtn { left: 114px; display: flex; align-items: center; justify-content: center; }
+  #compassBtn:focus-visible { outline: 2px solid rgba(150, 170, 210, 0.55); outline-offset: 2px; }
+  #compassBtn.on svg { animation: compassGlow 2.4s ease-in-out infinite; }
+  @keyframes compassGlow {
+    0%, 100% { filter: drop-shadow(0 0 0 rgba(160, 185, 230, 0)); }
+    50% { filter: drop-shadow(0 0 5px rgba(160, 185, 230, 0.8)); }
+  }
+  @media (prefers-reduced-motion: reduce) { #compassBtn.on svg { animation: none; } }
   /* Star data licence. CC BY-SA 4.0 requires the credit to be visible, so it
      is part of the page, not a comment in the source. */
   #dataCredit {
@@ -278,6 +286,12 @@
   <span class="place">St. Peter&rsquo;s, Cape Breton</span>
 </a>
 <button id="soundBtn" type="button" aria-pressed="false" aria-label="Turn on shore sound">&#9834;</button>
+<button id="compassBtn" type="button" aria-pressed="false" aria-label="Point your phone at the sky">
+  <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M15.5 8.5 13.3 13.3 8.5 15.5 10.7 10.7z" fill="currentColor" stroke="none"/>
+  </svg>
+</button>
 <button id="linesBtn" type="button" aria-pressed="false" aria-label="Show constellation figures">
   <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <path d="M5 16.5 9.5 7l5 5.5L19 5.5"/>
@@ -446,8 +460,8 @@
   function noWebGL(msg) {
     var f = document.getElementById('fallback');
     if (f) { f.textContent = msg; f.style.display = 'flex'; }
-    ['reportBar', 'countChip', 'feed', 'soundBtn', 'linesBtn', 'shareBtn',
-     'dataCredit', 'intro', 'toast'].forEach(function (id) {
+    ['reportBar', 'countChip', 'feed', 'soundBtn', 'linesBtn', 'compassBtn',
+     'shareBtn', 'dataCredit', 'intro', 'toast'].forEach(function (id) {
       var el = document.getElementById(id);
       if (el) el.style.display = 'none';
     });
@@ -1489,10 +1503,18 @@
   var dragging = false, dragId = null, lastPX = 0, lastPY = 0, userPanned = false;
   var PITCH_MIN = 1 * D2R, PITCH_MAX = 84 * D2R;
 
-  function currentAzimuth() { var a = (-viewYaw) % TAU; return a < 0 ? a + TAU : a; }
+  function currentAzimuth() {
+    if (compassOn && haveDevQ) {
+      camera.getWorldDirection(_caz);
+      return azOf(_caz);
+    }
+    var a = (-viewYaw) % TAU; return a < 0 ? a + TAU : a;
+  }
+  var _caz = new THREE.Vector3();
   function dragScale() { return (camera.fov * D2R) / Math.max(1, window.innerHeight); }
 
   canvas.addEventListener('pointerdown', function (e) {
+    if (compassOn) { setCompass(false); toast('Compass off \u2014 drag to look around'); }
     dragging = true; dragId = e.pointerId; userPanned = true;
     lastPX = e.clientX; lastPY = e.clientY;
     yawVel = 0; pitchVel = 0;
@@ -1530,6 +1552,124 @@
     else return;
     yawVel = 0; pitchVel = 0;
     e.preventDefault();
+  });
+
+  // ==========================================================================
+  //  5c. COMPASS MODE — point the phone at the sky
+  //
+  //  The device's orientation sensors drive the camera, so the screen shows
+  //  the patch of sky the phone is aimed at — a window you hold up, not a
+  //  map you scroll. Three things make this correct rather than merely fun:
+  //
+  //  1. MAGNETIC DECLINATION. Phone compasses report MAGNETIC north, and at
+  //     St. Peter's magnetic north sits 16.5 degrees west of true north
+  //     (WMM, computed for Aug 2026; it drifts ~0.1 deg/yr — worth
+  //     recomputing every few years). Skip this and Polaris lands a fist's
+  //     width from where the phone says it should be.
+  //  2. The full 3-axis quaternion, roll included. Tilt your head, tilt the
+  //     phone — the in-scene horizon tilts on screen to match the real one.
+  //  3. iOS requires a user tap to grant sensor access, so activation lives
+  //     in the button, never on load. On iOS the alpha channel is relative,
+  //     not compass-true; the first webkitCompassHeading reading calibrates
+  //     it, which is the standard approach everywhere.
+  //
+  //  Dragging the sky switches compass mode off — the finger outranks the
+  //  sensor, always.
+  var MAG_DECLINATION = -16.5 * D2R;
+  var compassOn = false, compassEverGot = false;
+  var compassBtn = document.getElementById('compassBtn');
+  var devQTarget = new THREE.Quaternion(), haveDevQ = false;
+  var _cEuler = new THREE.Euler(), _cZee = new THREE.Vector3(0, 0, 1);
+  var _cQ0 = new THREE.Quaternion();
+  var _cQ1 = new THREE.Quaternion(-Math.sqrt(0.5), 0, 0, Math.sqrt(0.5));
+  // Sign note, learned the empirical way: premultiplying the camera by a
+  // +theta yaw turns the VIEW by -theta. To move a magnetic bearing to a
+  // true one (true = magnetic + declination) the quaternion needs -decl.
+  var _cDecl = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), -MAG_DECLINATION);
+  var iosAlphaOffset = null;
+  var _fwd = new THREE.Vector3();
+
+  // Show the button only where sensors can plausibly exist.
+  if (!('DeviceOrientationEvent' in window) ||
+      (!('ontouchstart' in window) && navigator.maxTouchPoints === 0)) {
+    compassBtn.style.display = 'none';
+  }
+
+  function screenAngle() {
+    if (screen.orientation && typeof screen.orientation.angle === 'number') {
+      return screen.orientation.angle;
+    }
+    return (typeof window.orientation === 'number') ? window.orientation : 0;
+  }
+
+  function onOrient(e) {
+    if (e.alpha === null || e.alpha === undefined) return;
+    var alpha = e.alpha;
+    // iOS: alpha is relative to page load, but webkitCompassHeading is a
+    // real magnetic heading. One reading pins the offset between them.
+    if (typeof e.webkitCompassHeading === 'number' && !isNaN(e.webkitCompassHeading)) {
+      if (iosAlphaOffset === null) iosAlphaOffset = e.alpha + e.webkitCompassHeading;
+      alpha = e.alpha - iosAlphaOffset + 360;
+    }
+    _cEuler.set(e.beta * DEG, alpha * DEG, -e.gamma * DEG, 'YXZ');
+    devQTarget.setFromEuler(_cEuler);
+    devQTarget.multiply(_cQ1);                       // look out the back camera
+    devQTarget.multiply(_cQ0.setFromAxisAngle(_cZee, -screenAngle() * DEG));
+    devQTarget.premultiply(_cDecl);                  // magnetic -> true north
+    haveDevQ = true; compassEverGot = true;
+  }
+
+  function setCompass(on) {
+    compassOn = on;
+    compassBtn.classList.toggle('on', on);
+    compassBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    if (!on) {
+      window.removeEventListener('deviceorientationabsolute', onOrient, true);
+      window.removeEventListener('deviceorientation', onOrient, true);
+      haveDevQ = false;
+      // Hand the drag controls the direction the phone was last aimed, so
+      // switching off doesn't snap the view somewhere else.
+      camera.getWorldDirection(_fwd);
+      viewYaw = -azOf(_fwd);
+      viewPitch = Math.max(PITCH_MIN, Math.min(PITCH_MAX, altOf(_fwd)));
+      yawVel = 0; pitchVel = 0;
+    }
+  }
+
+  function startCompass() {
+    userPanned = true;
+    iosAlphaOffset = null; compassEverGot = false;
+    if ('ondeviceorientationabsolute' in window) {
+      window.addEventListener('deviceorientationabsolute', onOrient, true);
+    } else {
+      window.addEventListener('deviceorientation', onOrient, true);
+    }
+    setCompass(true);
+    toast('Point your phone at the sky \u2014 drag to take back over');
+    // Some desktops expose the API but have no sensor. If nothing arrives,
+    // say so instead of leaving a lit button that does nothing.
+    setTimeout(function () {
+      if (compassOn && !compassEverGot) {
+        setCompass(false);
+        toast('No motion sensors on this device');
+      }
+    }, 2000);
+  }
+
+  compassBtn.addEventListener('click', function () {
+    if (compassOn) { setCompass(false); toast('Compass off'); return; }
+    // iOS 13+: sensor access needs an explicit grant, from a user gesture.
+    if (typeof DeviceOrientationEvent !== 'undefined' &&
+        typeof DeviceOrientationEvent.requestPermission === 'function') {
+      DeviceOrientationEvent.requestPermission().then(function (state) {
+        if (state === 'granted') startCompass();
+        else toast('Compass needs motion access \u2014 check Safari settings');
+      }).catch(function () {
+        toast('Compass needs motion access \u2014 check Safari settings');
+      });
+    } else {
+      startCompass();
+    }
   });
 
   // ==========================================================================
@@ -2715,13 +2855,20 @@
       if (Math.abs(pitchVel) < 2e-5) pitchVel = 0;
     }
 
-    // Ambient drift: two slow incommensurate sines, under a degree of travel.
-    // It should feel like standing still, not like a camera move.
-    var m = REDUCED ? 0.25 : 1.0;
-    camera.rotation.y = viewYaw
-      + (Math.sin(elapsed * 0.037) * 0.0130 + Math.sin(elapsed * 0.0131) * 0.0062) * m;
-    camera.rotation.x = viewPitch
-      + (Math.sin(elapsed * 0.0214) * 0.0068 + Math.sin(elapsed * 0.0091) * 0.0031) * m;
+    if (compassOn && haveDevQ) {
+      // The phone's own aim drives the view. Slerp smooths sensor jitter
+      // without adding lag anyone can feel; no ambient drift on top — the
+      // hand holding the phone supplies all the life the frame needs.
+      camera.quaternion.slerp(devQTarget, 0.25);
+    } else {
+      // Ambient drift: two slow incommensurate sines, under a degree of travel.
+      // It should feel like standing still, not like a camera move.
+      var m = REDUCED ? 0.25 : 1.0;
+      camera.rotation.y = viewYaw
+        + (Math.sin(elapsed * 0.037) * 0.0130 + Math.sin(elapsed * 0.0131) * 0.0062) * m;
+      camera.rotation.x = viewPitch
+        + (Math.sin(elapsed * 0.0214) * 0.0068 + Math.sin(elapsed * 0.0091) * 0.0031) * m;
+    }
 
     for (var i = 0; i < mats.length; i++) mats[i].uniforms.uTime.value = elapsed;
     oceanMat.uniforms.uTime.value = elapsed;
