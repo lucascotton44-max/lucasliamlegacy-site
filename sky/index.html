@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ONE-SKY-REALSKY-v1.8 :: real star engine integrated into the live tracker.
+<!-- ONE-SKY-REALSKY-v1.9.1 :: real star engine integrated into the live tracker.
      Base: sky/index.html sha256 ada4f4d53a2863a9711b3d0d4a8c8abca240ae9b2127f29840ba848d53404077
      Star data: HYG Database v4.1 (astronexus.com), CC BY-SA 4.0. -->
 <html lang="en">
@@ -125,6 +125,28 @@
   }
   #feed .sub { padding-top: 9px; }
   #feed .note { padding-top: 8px; color: #6d7890; font-size: 11.5px; }
+  /* Live bearing. Top centre is the one place a compass belongs — over the
+     middle of the view, where the direction being reported actually points.
+     Deliberately quiet: it is an instrument, not a headline. */
+  #heading {
+    position: fixed; top: calc(15px + env(safe-area-inset-top)); left: 50%;
+    transform: translateX(-50%);
+    z-index: 4; pointer-events: none;
+    font: 500 12.5px/1 ui-sans-serif, -apple-system, system-ui, sans-serif;
+    letter-spacing: 0.14em; color: #97a1b6;
+    text-shadow: 0 1px 5px rgba(0, 0, 0, 0.9);
+    opacity: 0; transition: opacity 900ms ease;
+    white-space: nowrap;
+  }
+  #heading.show { opacity: 1; }
+  @media (max-width: 560px) {
+    /* The studio wordmark reaches the centre line on a narrow screen, so the
+       bearing takes a row of its own below it rather than fighting for space. */
+    #heading { top: calc(76px + env(safe-area-inset-top)); }
+  }
+  #heading b { color: #dbe2f0; font-weight: 600; letter-spacing: 0.1em; }
+  #heading .deg { color: #6f7a90; font-weight: 400; letter-spacing: 0.06em; }
+
   #toast {
     position: fixed; top: calc(14px + env(safe-area-inset-top)); left: 50%;
     transform: translateX(-50%) translateY(-8px);
@@ -296,6 +318,7 @@
 </div>
 <button id="countChip" type="button" aria-expanded="false" aria-controls="feed">✦ <b id="countN">0</b> tonight</button>
 <div id="feed" role="log" aria-label="Recent sightings"></div>
+<div id="heading" aria-live="off"><b>NE</b> <span class="deg">40&deg;</span></div>
 <div id="toast" role="status" aria-live="polite"></div>
 <a id="credit" href="https://lucasliamlegacy.com" target="_blank" rel="noopener noreferrer">
   <span class="studio">Lucas &amp; Liam Legacy Studios</span>
@@ -477,7 +500,7 @@
     var f = document.getElementById('fallback');
     if (f) { f.textContent = msg; f.style.display = 'flex'; }
     ['reportBar', 'countChip', 'feed', 'soundBtn', 'linesBtn', 'compassBtn',
-     'shareBtn', 'dataCredit', 'intro', 'toast'].forEach(function (id) {
+     'shareBtn', 'dataCredit', 'intro', 'toast', 'heading'].forEach(function (id) {
       var el = document.getElementById(id);
       if (el) el.style.display = 'none';
     });
@@ -1569,6 +1592,44 @@
     yawVel = 0; pitchVel = 0;
     e.preventDefault();
   });
+
+  // ==========================================================================
+  //  5b2. CARDINAL MARKS
+  //
+  //  Eight letters standing at their true bearings, just above the horizon.
+  //  depthTest is OFF on purpose: these are an instrument, not scenery, so
+  //  they read over the treeline instead of hiding behind it — the same
+  //  choice every sky app makes, for the same reason. They sit in world
+  //  space, NOT in skyGroup: north stays north while the stars turn past it.
+  // ==========================================================================
+  var COMPASS16 = ['N','NNE','NE','ENE','E','ESE','SE','SSE',
+                   'S','SSW','SW','WSW','W','WNW','NW','NNW'];
+  var compassMarks = new THREE.Group();
+  compassMarks.position.y = EYE_HEIGHT;
+  scene.add(compassMarks);
+  (function () {
+    var pts = [['N', 0], ['NE', 45], ['E', 90], ['SE', 135],
+               ['S', 180], ['SW', 225], ['W', 270], ['NW', 315]];
+    for (var i = 0; i < pts.length; i++) {
+      var isN = pts[i][0] === 'N';
+      var sp = labelSprite(pts[i][0],
+        isN ? 'rgba(255, 222, 160, 0.95)' : 'rgba(190, 202, 224, 0.88)',
+        isN ? 30 : 26);
+      sp.material.depthTest = false;
+      sp.material.opacity = isN ? 0.85 : 0.6;
+      sp.center.set(0.5, 0.5);
+      sp.renderOrder = 6;
+      var az = pts[i][1] * D2R, alt = 4.5 * D2R;
+      sp.position.set(Math.sin(az) * Math.cos(alt), Math.sin(alt),
+                      -Math.cos(az) * Math.cos(alt)).multiplyScalar(5200);
+      // Apparent size, worked from the geometry rather than eyeballed: the
+      // sprite is 145 world units tall and sits 5,200 out, so 5200*tan(1.9deg)
+      // = 172 units is the target -- a scale near 1.2. First pass used 4.0
+      // and put a letter six degrees tall across the treeline.
+      sp.scale.multiplyScalar(isN ? 1.30 : 1.15);
+      compassMarks.add(sp);
+    }
+  })();
 
   // ==========================================================================
   //  5c. COMPASS MODE — point the phone at the sky
@@ -2876,6 +2937,20 @@
     location.reload();
   }, false);
 
+  // Bearing readout. Only touches the DOM when the whole degree changes —
+  // sixty text writes a second for a number that moves at walking pace would
+  // be a waste of a phone's battery.
+  var headingEl = document.getElementById('heading');
+  var headingShown = -1;
+  function updateHeading() {
+    var deg = currentAzimuth() * R2D;
+    var whole = Math.round(deg) % 360;
+    if (whole === headingShown) return;
+    headingShown = whole;
+    var pt = COMPASS16[Math.round((whole % 360) / 22.5) % 16];
+    headingEl.innerHTML = '<b>' + pt + '</b> <span class="deg">' + whole + '\u00b0</span>';
+  }
+
   var mats = [stars.material, haze.material, subMag.material, anchors.material, planetMat];
 
   function tick() {
@@ -2924,6 +2999,7 @@
     var mph = elapsed % 4.0;
     markerMat.uniforms.uOp.value = mph < 0.7 ? Math.sin(Math.PI * mph / 0.7) * 0.9 : 0.0;
 
+    updateHeading();
     updateMeteors(dt);
 
     renderer.render(scene, camera);
@@ -2937,6 +3013,7 @@
     setTimeout(function () {
       document.getElementById('credit').classList.add('show');
       document.getElementById('dataCredit').classList.add('show');
+      headingEl.classList.add('show');
     }, 3200);
   });
 
