@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<!-- ONE-SKY-REALSKY-v2.3 :: real star engine integrated into the live tracker.
+<!-- ONE-SKY-REALSKY-v2.4 :: real star engine integrated into the live tracker.
      Base: sky/index.html sha256 ada4f4d53a2863a9711b3d0d4a8c8abca240ae9b2127f29840ba848d53404077
-     Star data: HYG Database v4.1 (astronexus.com), CC BY-SA 4.0. -->
+     Star data: HYG Database v4.1 (astronexus.com), CC BY-SA 4.0.
+     Soundtrack: "One Sky" (sky/one-sky.m4a), written for this page. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -395,7 +396,7 @@
   <span class="studio">Lucas &amp; Liam Legacy Studios</span>
   <span class="place">St. Peter&rsquo;s, Cape Breton</span>
 </a>
-<button id="soundBtn" type="button" aria-pressed="false" aria-label="Turn on shore sound">&#9834;</button>
+<button id="soundBtn" type="button" aria-pressed="false" aria-label="Turn on sound">&#9834;</button>
 <button id="compassBtn" type="button" aria-pressed="false" aria-label="Point your phone at the sky">
   <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <circle cx="12" cy="12" r="9"/>
@@ -3111,12 +3112,24 @@
     set(store('onesky:figures') === '1');
   })();
 
-  // --- Shore sound: synthesized waves and wind, muted by default -----------
-  // No audio files: two loops of filtered noise. Waves are low-passed noise
-  // swelling on two slow, incommensurate LFOs; wind is a band-passed sigh.
+  // --- Sound: synthesized shore, and the page's own slow air ---------------
+  // The shore is synthesized live — two loops of filtered noise. Waves are
+  // low-passed noise swelling on two slow, incommensurate LFOs; wind is a
+  // band-passed sigh. Under the same button rides "One Sky" (one-sky.m4a),
+  // the air written for this page. It is fetched only when sound is first
+  // turned on — nobody pays 4 MB for a page they keep muted. The render
+  // fades out at the close, so repeating it back-to-back would read as a
+  // restart; instead the shore holds the room for SONG_REST_S seconds and
+  // the air returns on a long fade. Song and shore share the one master
+  // gain, so the button and the tab-hide suspend govern both alike.
   var sound = (function () {
     var ctx = null, master = null, on = false;
     var btn = document.getElementById('soundBtn');
+    var SONG_URL = 'one-sky.m4a';
+    var SONG_LEVEL = 0.9;   // the song against the shore bed, through the same master
+    var SONG_REST_S = 45;   // shore-only breather between plays of the air
+    var songBuf = null, songLoading = false, songSrc = null, songDying = null,
+        songGain = null, songTimer = 0;
     function noiseSource(c) {
       var len = 2 * c.sampleRate;
       var buf = c.createBuffer(1, len, c.sampleRate);
@@ -3150,20 +3163,74 @@
       l3.connect(l3g); l3g.connect(g2.gain);
       n2.connect(bp); bp.connect(g2); g2.connect(master);
       n1.start(); n2.start(); l1.start(); l2.start(); l3.start();
+      // Song bus
+      songGain = ctx.createGain(); songGain.gain.value = 0;
+      songGain.connect(master);
+    }
+    function loadSong() {
+      if (songBuf || songLoading) return;
+      songLoading = true;
+      fetch(SONG_URL).then(function (r) {
+        if (!r.ok) throw new Error('song ' + r.status);
+        return r.arrayBuffer();
+      }).then(function (ab) {
+        return new Promise(function (res, rej) {
+          // Callback form for older Safari; newer browsers also return a
+          // promise, and its rejection must be absorbed or it surfaces as
+          // an unhandled error alongside the callback.
+          var p = ctx.decodeAudioData(ab, res, rej);
+          if (p && p.catch) p.catch(rej);
+        });
+      }).then(function (buf) {
+        songBuf = buf; songLoading = false;
+        if (on) startSong(2.5);
+      }).catch(function () {
+        // Shore-only tonight. Cleared so the next toggle tries again.
+        songLoading = false;
+      });
+    }
+    function startSong(fade) {
+      if (!songBuf || songSrc || !on) return;
+      if (songDying) { try { songDying.stop(); } catch (e) {} songDying = null; }
+      var src = ctx.createBufferSource();
+      src.buffer = songBuf;
+      src.connect(songGain);
+      songGain.gain.cancelScheduledValues(ctx.currentTime);
+      songGain.gain.setValueAtTime(0, ctx.currentTime);
+      songGain.gain.linearRampToValueAtTime(SONG_LEVEL, ctx.currentTime + fade);
+      src.onended = function () {
+        if (songSrc !== src) return; // stopped by the button, not by the song ending
+        songSrc = null;
+        if (on) songTimer = setTimeout(function () { startSong(6); }, SONG_REST_S * 1000);
+      };
+      songSrc = src;
+      src.start();
+    }
+    function stopSong() {
+      clearTimeout(songTimer);
+      if (!songSrc) return;
+      var s = songSrc;
+      songSrc = null; songDying = s; // detach first so onended does not reschedule
+      setTimeout(function () {       // stop after the master ramp has landed at 0
+        try { s.stop(); } catch (e) {}
+        if (songDying === s) songDying = null;
+      }, 700);
     }
     function set(state) {
       on = state;
       btn.classList.toggle('on', on);
       btn.setAttribute('aria-pressed', on ? 'true' : 'false');
-      btn.setAttribute('aria-label', on ? 'Turn off shore sound' : 'Turn on shore sound');
+      btn.setAttribute('aria-label', on ? 'Turn off sound' : 'Turn on sound');
       if (on) {
         if (!ctx) build();
         if (ctx.state === 'suspended') ctx.resume();
         master.gain.cancelScheduledValues(ctx.currentTime);
         master.gain.linearRampToValueAtTime(0.10, ctx.currentTime + 1.8);
+        if (songBuf) startSong(2.5); else loadSong();
       } else if (ctx) {
         master.gain.cancelScheduledValues(ctx.currentTime);
         master.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.6);
+        stopSong();
       }
     }
     btn.addEventListener('click', function () { set(!on); });
