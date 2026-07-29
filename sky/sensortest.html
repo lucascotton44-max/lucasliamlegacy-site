@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>One Sky — sensor test</title>
+<style>
+  :root { color-scheme: dark; }
+  body {
+    margin: 0; padding: 18px 16px calc(24px + env(safe-area-inset-bottom));
+    background: #05070f; color: #d8dfec;
+    font: 400 15px/1.5 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  h1 { font: 600 17px/1.3 ui-sans-serif, system-ui, sans-serif; margin: 0 0 4px; }
+  .sub { font: 400 13px/1.45 ui-sans-serif, system-ui, sans-serif; color: #8b95ab; margin-bottom: 16px; }
+  button {
+    width: 100%; padding: 16px; border-radius: 12px; margin-bottom: 16px;
+    background: #16243f; color: #dde3f0; border: 1px solid rgba(150,170,210,0.45);
+    font: 600 17px ui-sans-serif, system-ui, sans-serif;
+  }
+  .box { border: 1px solid #233250; border-radius: 10px; padding: 12px; margin-bottom: 12px; background: #080d18; }
+  .box h2 { font: 600 12px ui-sans-serif, system-ui, sans-serif; letter-spacing: .1em;
+            text-transform: uppercase; color: #7d879e; margin: 0 0 8px; }
+  .row { display: flex; justify-content: space-between; gap: 12px; padding: 3px 0; }
+  .k { color: #8b95ab; }
+  .v { text-align: right; word-break: break-all; }
+  .ok { color: #7ee0a0; } .bad { color: #ff8f7a; } .warn { color: #ffd98a; }
+  #verdict { font: 600 15px/1.5 ui-sans-serif, system-ui, sans-serif; padding: 14px;
+             border-radius: 10px; background: #0e1626; border: 1px solid #2a3a5c; }
+</style>
+</head>
+<body>
+<h1>One Sky — sensor test</h1>
+<div class="sub">Tap the button, then <b>rotate the phone slowly</b> for a few seconds. This page only reads sensors; it stores and sends nothing.</div>
+
+<button id="go">Start sensor test</button>
+
+<div id="verdict">Not started.</div>
+
+<div class="box">
+  <h2>Event counts</h2>
+  <div class="row"><span class="k">deviceorientationabsolute</span><span class="v" id="cAbs">0</span></div>
+  <div class="row"><span class="k">deviceorientation</span><span class="v" id="cRel">0</span></div>
+  <div class="row"><span class="k">devicemotion</span><span class="v" id="cMot">0</span></div>
+</div>
+
+<div class="box">
+  <h2>Latest values</h2>
+  <div class="row"><span class="k">alpha (compass)</span><span class="v" id="vA">—</span></div>
+  <div class="row"><span class="k">beta (tilt)</span><span class="v" id="vB">—</span></div>
+  <div class="row"><span class="k">gamma (roll)</span><span class="v" id="vG">—</span></div>
+  <div class="row"><span class="k">absolute flag</span><span class="v" id="vAbs">—</span></div>
+  <div class="row"><span class="k">webkitCompassHeading</span><span class="v" id="vWk">—</span></div>
+  <div class="row"><span class="k">accel incl. gravity</span><span class="v" id="vAcc">—</span></div>
+</div>
+
+<div class="box">
+  <h2>Environment</h2>
+  <div class="row"><span class="k">secure context (https)</span><span class="v" id="eSec">—</span></div>
+  <div class="row"><span class="k">DeviceOrientationEvent</span><span class="v" id="eDOE">—</span></div>
+  <div class="row"><span class="k">absolute event supported</span><span class="v" id="eAbsSup">—</span></div>
+  <div class="row"><span class="k">requestPermission (iOS)</span><span class="v" id="ePerm">—</span></div>
+  <div class="row"><span class="k">permission: accelerometer</span><span class="v" id="ePa">—</span></div>
+  <div class="row"><span class="k">permission: magnetometer</span><span class="v" id="ePm">—</span></div>
+  <div class="row"><span class="k">permission: gyroscope</span><span class="v" id="ePg">—</span></div>
+  <div class="row"><span class="k">touch points</span><span class="v" id="eTouch">—</span></div>
+  <div class="row"><span class="k">browser</span><span class="v" id="eUA">—</span></div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var nAbs = 0, nRel = 0, nMot = 0;
+  var sawAlpha = false, sawTilt = false, sawAbsFlag = false, started = false;
+
+  function fmt(v) { return (v === null || v === undefined) ? 'null' : (typeof v === 'number' ? v.toFixed(1) : String(v)); }
+  function cls(el, good) { el.className = 'v ' + (good ? 'ok' : 'bad'); }
+
+  // ---- environment ----
+  $('eSec').textContent = String(window.isSecureContext);
+  cls($('eSec'), window.isSecureContext);
+  $('eDOE').textContent = ('DeviceOrientationEvent' in window) ? 'present' : 'MISSING';
+  cls($('eDOE'), 'DeviceOrientationEvent' in window);
+  $('eAbsSup').textContent = ('ondeviceorientationabsolute' in window) ? 'yes' : 'no';
+  $('ePerm').textContent = (typeof DeviceOrientationEvent !== 'undefined' &&
+    typeof DeviceOrientationEvent.requestPermission === 'function') ? 'yes (iOS 13+)' : 'no (Android/desktop)';
+  $('eTouch').textContent = String(navigator.maxTouchPoints);
+  var ua = navigator.userAgent;
+  var name = /DuckDuckGo/i.test(ua) ? 'DuckDuckGo' : /EdgA|Edg/i.test(ua) ? 'Edge'
+           : /Firefox|FxiOS/i.test(ua) ? 'Firefox' : /SamsungBrowser/i.test(ua) ? 'Samsung Internet'
+           : /CriOS|Chrome/i.test(ua) ? 'Chrome' : /Safari/i.test(ua) ? 'Safari' : 'other';
+  $('eUA').textContent = name + (/Android/i.test(ua) ? ' / Android' : /iPhone|iPad/i.test(ua) ? ' / iOS' : '');
+
+  // Permissions API: on Chrome these names report whether the sensor is
+  // allowed. "denied" here is the smoking gun for a blocked site setting.
+  ['accelerometer', 'magnetometer', 'gyroscope'].forEach(function (nm, i) {
+    var el = [$('ePa'), $('ePm'), $('ePg')][i];
+    if (!navigator.permissions || !navigator.permissions.query) { el.textContent = 'API unavailable'; return; }
+    navigator.permissions.query({ name: nm }).then(function (r) {
+      el.textContent = r.state;
+      el.className = 'v ' + (r.state === 'denied' ? 'bad' : r.state === 'granted' ? 'ok' : 'warn');
+    }).catch(function (e) { el.textContent = 'not queryable'; });
+  });
+
+  function verdict() {
+    var v = $('verdict');
+    if (!started) return;
+    if (nAbs + nRel + nMot === 0) {
+      v.innerHTML = '<span class="bad">NO EVENTS AT ALL.</span> The browser is not delivering sensor data. ' +
+        'Check the site permission, and check Android Developer options for a "Sensors off" toggle.';
+    } else if (nAbs + nRel === 0 && nMot > 0) {
+      v.innerHTML = '<span class="warn">MOTION ONLY.</span> devicemotion fires but orientation does not — ' +
+        'unusual; likely a browser restriction on orientation specifically.';
+    } else if (!sawAlpha && sawTilt) {
+      v.innerHTML = '<span class="warn">TILT BUT NO COMPASS.</span> alpha is null — no magnetometer reading. ' +
+        'Up/down and roll are usable; heading is not. The page should fall back to tilt-only.';
+    } else if (sawAlpha && !sawAbsFlag) {
+      v.innerHTML = '<span class="warn">RELATIVE ONLY.</span> alpha arrives but is not compass-true. ' +
+        'The sky can follow the phone, but north must be set by the person.';
+    } else if (sawAlpha && sawAbsFlag) {
+      v.innerHTML = '<span class="ok">FULL COMPASS.</span> Absolute orientation with a true heading. ' +
+        'Everything One Sky needs is here.';
+    }
+  }
+
+  function onOrient(e) {
+    if (e.type === 'deviceorientationabsolute') nAbs++; else nRel++;
+    $('cAbs').textContent = nAbs; $('cRel').textContent = nRel;
+    if (e.alpha !== null && e.alpha !== undefined) sawAlpha = true;
+    if (e.beta !== null && e.beta !== undefined) sawTilt = true;
+    if (e.absolute === true || e.type === 'deviceorientationabsolute') sawAbsFlag = true;
+    $('vA').textContent = fmt(e.alpha);
+    $('vB').textContent = fmt(e.beta);
+    $('vG').textContent = fmt(e.gamma);
+    $('vAbs').textContent = String(e.absolute);
+    $('vWk').textContent = fmt(e.webkitCompassHeading);
+    verdict();
+  }
+  function onMotion(e) {
+    nMot++; $('cMot').textContent = nMot;
+    var a = e.accelerationIncludingGravity;
+    if (a) $('vAcc').textContent = fmt(a.x) + ', ' + fmt(a.y) + ', ' + fmt(a.z);
+    verdict();
+  }
+
+  function attach() {
+    started = true;
+    $('verdict').textContent = 'Listening… rotate the phone slowly.';
+    window.addEventListener('deviceorientationabsolute', onOrient, true);
+    window.addEventListener('deviceorientation', onOrient, true);
+    window.addEventListener('devicemotion', onMotion, true);
+    setTimeout(verdict, 2500);
+    setTimeout(verdict, 6000);
+  }
+
+  $('go').addEventListener('click', function () {
+    $('go').textContent = 'Listening…';
+    if (typeof DeviceOrientationEvent !== 'undefined' &&
+        typeof DeviceOrientationEvent.requestPermission === 'function') {
+      DeviceOrientationEvent.requestPermission().then(function (s) {
+        $('ePerm').textContent = 'yes — ' + s;
+        cls($('ePerm'), s === 'granted');
+        attach();
+      }).catch(function (err) {
+        $('ePerm').textContent = 'error: ' + err.message;
+        attach();
+      });
+    } else {
+      attach();
+    }
+  });
+})();
+</script>
+</body>
+</html>
