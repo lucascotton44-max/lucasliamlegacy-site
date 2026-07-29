@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ONE-SKY-REALSKY-v1.7 :: real star engine integrated into the live tracker.
+<!-- ONE-SKY-REALSKY-v1.8 :: real star engine integrated into the live tracker.
      Base: sky/index.html sha256 ada4f4d53a2863a9711b3d0d4a8c8abca240ae9b2127f29840ba848d53404077
      Star data: HYG Database v4.1 (astronexus.com), CC BY-SA 4.0. -->
 <html lang="en">
@@ -1624,14 +1624,19 @@
     // Some browsers fire only 'deviceorientationabsolute', some fire only
     // 'deviceorientation' (with or without a real compass behind it), and a
     // few fire both. Listen to everything, prefer absolute when it exists.
-    var isAbs = (e.type === 'deviceorientationabsolute') || e.absolute === true ||
-                (typeof e.webkitCompassHeading === 'number' && !isNaN(e.webkitCompassHeading));
+    // iOS hands back a heading iOS has ALREADY referenced to true north.
+    // Android's absolute alpha is referenced to MAGNETIC north. Same API,
+    // two different zeroes — correct both and the iPhone ends up off by
+    // exactly one declination, which is what real hardware showed: Android
+    // dead on the sun, iPhone about a fist to the side.
+    var headingIsTrue = (typeof e.webkitCompassHeading === 'number' && !isNaN(e.webkitCompassHeading));
+    var isAbs = (e.type === 'deviceorientationabsolute') || e.absolute === true || headingIsTrue;
     if (isAbs && !absoluteSeen) { absoluteSeen = true; relFix = null; }
     if (!isAbs && absoluteSeen) return;              // absolute outranks relative
     var alpha = e.alpha;
     // iOS: alpha is relative to page load, but webkitCompassHeading is a
     // real magnetic heading. One reading pins the offset between them.
-    if (typeof e.webkitCompassHeading === 'number' && !isNaN(e.webkitCompassHeading)) {
+    if (headingIsTrue) {
       if (iosAlphaOffset === null) iosAlphaOffset = e.alpha + e.webkitCompassHeading;
       alpha = e.alpha - iosAlphaOffset + 360;
     }
@@ -1640,7 +1645,9 @@
     devQTarget.multiply(_cQ1);                       // look out the back camera
     devQTarget.multiply(_cQ0.setFromAxisAngle(_cZee, -screenAngle() * DEG));
     if (isAbs) {
-      devQTarget.premultiply(_cDecl);                // magnetic -> true north
+      // Only magnetic readings need the correction. A heading that is
+      // already true gets left alone.
+      if (!headingIsTrue) devQTarget.premultiply(_cDecl);
     } else {
       // RELATIVE fallback: no compass behind these numbers, so no claim of
       // north is made. Anchor the first reading to wherever the person was
