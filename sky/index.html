@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ONE-SKY-REALSKY-v1.3 :: real star engine integrated into the live tracker.
+<!-- ONE-SKY-REALSKY-v1.4 :: real star engine integrated into the live tracker.
      Base: sky/index.html sha256 ada4f4d53a2863a9711b3d0d4a8c8abca240ae9b2127f29840ba848d53404077
      Star data: HYG Database v4.1 (astronexus.com), CC BY-SA 4.0. -->
 <html lang="en">
@@ -1555,6 +1555,7 @@
   // ==========================================================================
   var DEG = Math.PI / 180;
   var METEOR_R = 7800;
+  var skyDayLevel = 0;               // set by updateSkyBodies, read by meteors
   var MAX_METEORS = 12;
   var MAX_P = 1600;
   var rrnd = Math.random;
@@ -1565,22 +1566,28 @@
 
   var meteorVS = [
     'attribute vec3 aColor; attribute float aSize; attribute float aAlpha;',
-    'uniform float uDpr;',
+    'uniform float uDpr; uniform float uDay;',
     'varying vec3 vColor; varying float vAlpha;',
     'void main(){',
     '  vColor = aColor; vAlpha = aAlpha;',
-    '  gl_PointSize = aSize * uDpr;',
+    '  gl_PointSize = aSize * uDpr * (1.0 + 0.45 * uDay);',
     '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
     '}'
   ].join('\n');
   var meteorFS = [
     'varying vec3 vColor; varying float vAlpha;',
+    'uniform float uDay;',
     'void main(){',
     '  vec2 uv = gl_PointCoord - 0.5;',
     '  float d = dot(uv, uv);',
     '  float core = smoothstep(0.06, 0.0, d);',
     '  float glare = exp(-d * 10.0);',
     '  float a = (core * 0.9 + glare * 0.45) * vAlpha;',
+    // Daylight: added light fades against a bright sky exactly the way a
+    // real meteor does — honest, and it breaks the page's one promise, that
+    // a tapped star flies visibly for everyone. Same rule as the chalk
+    // figures: in day mode the streak is boosted to stay seen.
+    '  a = min(1.0, a * (1.0 + 2.6 * uDay));',
     '  if (a < 0.004) discard;',
     '  gl_FragColor = vec4(vColor, a);',
     '}'
@@ -1590,7 +1597,7 @@
     return new THREE.ShaderMaterial({
       transparent: true, depthWrite: false, depthTest: true,
       blending: THREE.AdditiveBlending,
-      uniforms: { uDpr: { value: DPR } },
+      uniforms: { uDpr: { value: DPR }, uDay: { value: 0.0 } },
       vertexShader: meteorVS, fragmentShader: meteorFS
     });
   }
@@ -1661,6 +1668,7 @@
   var ribbon = new THREE.Mesh(rGeo, new THREE.ShaderMaterial({
     transparent: true, depthWrite: false, depthTest: true,
     blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
+    uniforms: { uDay: { value: 0.0 } },
     vertexShader: [
       'attribute vec3 aColor; attribute float aAlpha; attribute float aU;',
       'varying vec3 vColor; varying float vAlpha; varying float vU;',
@@ -1671,9 +1679,11 @@
     ].join('\n'),
     fragmentShader: [
       'varying vec3 vColor; varying float vAlpha; varying float vU;',
+      'uniform float uDay;',
       'void main(){',
       '  float edge = pow(max(0.0, sin(3.14159 * vU)), 1.5);',
       '  float a = vAlpha * edge;',
+      '  a = min(1.0, a * (1.0 + 2.6 * uDay));',
       '  if (a < 0.004) discard;',
       '  gl_FragColor = vec4(vColor, a);',
       '}'
@@ -1857,7 +1867,8 @@
         // side = normalize(cross(tangent, radial)); radial ~ view direction
         var sx = ty * pz2 - tz * py2, sy = tz * px2 - tx * pz2, sz = tx * py2 - ty * px2;
         var sl = Math.sqrt(sx * sx + sy * sy + sz * sz) || 1;
-        var hw = (m.fireball ? 10.5 : 6.0) * (1 - fr2 * 0.9) * (0.88 + 0.12 * fl);
+        var hw = (m.fireball ? 10.5 : 6.0) * (1 - fr2 * 0.9) * (0.88 + 0.12 * fl)
+               * (1.0 + 0.8 * skyDayLevel);
         sx = sx / sl * hw; sy = sy / sl * hw; sz = sz / sl * hw;
         var v0 = (rOff + k * 2) * 3, v1 = v0 + 3;
         rPos[v0] = px2 + sx; rPos[v0 + 1] = py2 + sy; rPos[v0 + 2] = pz2 + sz;
@@ -2588,6 +2599,10 @@
     var starDay = Math.max(0, Math.min(1, (sunAlt + 12 * D2R) / (10.3 * D2R)));
     for (var i = 0; i < mats.length; i++) mats[i].uniforms.uDay.value = starDay;
     mw.material.uniforms.uDay.value = starDay;
+    skyDayLevel = starDay;
+    pPoints.material.uniforms.uDay.value = starDay;
+    hPoints.material.uniforms.uDay.value = starDay;
+    ribbon.material.uniforms.uDay.value = starDay;
 
     // The sun's disc: visible from the moment it clears the sea.
     sunPos[0] = SUN_DIR.x * 7000;
