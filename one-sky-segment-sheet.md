@@ -7,7 +7,7 @@ The whole segment in one sentence: *it's not a picture of the night sky — it's
 
 ## BEAT 1 — THE HOOK (~30 seconds)
 
-"It's not a picture of the sky — it's a calculation of one. There are 2,865 real stars in it, and every single one is exactly where the real star is standing over Cape Breton *right now*. And here's the part I built it for: when someone anywhere in the Maritimes sees a shooting star and taps the button, that star flies on every screen that's watching. Somebody on a wharf in L'Ardoise taps — your phone lights up."
+"It's not a picture of the sky — it's a calculation of one. There are 4,444 real stars in it, and every single one is exactly where the real star is standing over Cape Breton *right now*. And here's the part I built it for: when someone anywhere in the Maritimes sees a shooting star and taps the button, that star flies on every screen that's watching. Somebody on a wharf in L'Ardoise taps — your phone lights up."
 
 *If Scotty asks "how do you know it's accurate":* "The North Star sits at a height equal to your latitude — that's how sailors crossed oceans for four hundred years. We're at 45.66 north. The page puts it at 45.66. Nobody programmed that in — the math just comes out right."
 
