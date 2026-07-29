@@ -200,22 +200,28 @@ $$;
 
 
 -- =============================================================================
---  MIGRATION NOTE — 2026-07-29
+--  MIGRATION NOTE — 2026-07-29, applied
 --
---  The live database carries two pairs of duplicate indexes. They are harmless
---  but not free: every insert maintains all four, and inserts are the hot path
---  on the one night of the year this page is busy. Safe to drop; run these
---  against the live database to match this schema. CONCURRENTLY so nothing
---  blocks while people are watching.
+--  The live database carried two pairs of duplicate indexes:
+--  sightings_created_idx duplicated sightings_created_at_idx, and
+--  sightings_client_created_idx duplicated sightings_client_recent_idx.
+--  Harmless but not free — every insert maintained all four, and inserts are
+--  the hot path on the one night of the year this page is busy. Dropped with:
 --
---      drop index concurrently if exists public.sightings_created_idx;
---      drop index concurrently if exists public.sightings_client_created_idx;
+--      drop index if exists public.sightings_created_idx;
+--      drop index if exists public.sightings_client_created_idx;
 --
---  Confirm afterwards:
+--  Note the PLAIN form. DROP INDEX CONCURRENTLY cannot run inside a
+--  transaction block, and the Supabase SQL editor wraps everything it runs in
+--  one — so the concurrent form simply errors there. CONCURRENTLY is for psql.
+--  On a table this size the plain drop holds its lock for milliseconds and
+--  nobody watching the sky notices a thing.
+--
+--  Verified afterwards with:
 --
 --      select indexname from pg_indexes
 --       where schemaname = 'public' and tablename = 'sightings';
 --
---  Expect three: sightings_pkey, sightings_created_at_idx,
---  sightings_client_recent_idx.
+--  Returned three — sightings_pkey, sightings_created_at_idx,
+--  sightings_client_recent_idx. The live database and this file now agree.
 -- =============================================================================
