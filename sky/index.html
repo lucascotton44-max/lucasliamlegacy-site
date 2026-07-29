@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ONE-SKY-REALSKY-v1.9.1 :: real star engine integrated into the live tracker.
+<!-- ONE-SKY-REALSKY-v2.0.1 :: real star engine integrated into the live tracker.
      Base: sky/index.html sha256 ada4f4d53a2863a9711b3d0d4a8c8abca240ae9b2127f29840ba848d53404077
      Star data: HYG Database v4.1 (astronexus.com), CC BY-SA 4.0. -->
 <html lang="en">
@@ -297,6 +297,77 @@
     font: 600 15px/1 ui-sans-serif, -apple-system, system-ui, sans-serif;
     cursor: pointer; -webkit-tap-highlight-color: transparent;
   }
+  /* Figure panel. A sheet that rises over the bottom of the sky and leaves
+     the constellation itself visible above it — you are meant to keep
+     looking up while you read. */
+  #figPanel {
+    position: fixed; left: 12px; right: 12px;
+    /* Sits ABOVE the report bar, never over it. A person reading about
+       Cassiopeia who sees a real meteor has to be able to tap the button
+       without dismissing anything — that button is the whole product. */
+    bottom: calc(122px + env(safe-area-inset-bottom));
+    z-index: 7;
+    padding: 15px 17px 16px;
+    background: rgba(6, 10, 18, 0.93);
+    border: 1px solid rgba(130, 150, 190, 0.22);
+    border-radius: 18px;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    transform: translateY(14px); opacity: 0; pointer-events: none;
+    transition: transform 300ms cubic-bezier(0.22, 0.7, 0.3, 1), opacity 240ms ease;
+    max-height: 46vh; overflow: hidden;
+  }
+  #figPanel.open { transform: none; opacity: 1; pointer-events: auto; }
+  @media (prefers-reduced-motion: reduce) { #figPanel { transition: none; } }
+  #figPanel .top { display: flex; align-items: baseline; gap: 10px; }
+  #figPanel .nm {
+    font: 500 21px/1.2 "Fraunces", Georgia, "Times New Roman", serif;
+    color: #e2e8f4; letter-spacing: 0.01em; flex: 1 1 auto;
+  }
+  #figPanel .sub {
+    font: 400 10.5px/1 ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: 0.16em; text-transform: uppercase; color: #6f7a90;
+  }
+  #figClose {
+    flex: 0 0 auto; width: 34px; height: 34px; margin: -6px -6px 0 0;
+    border-radius: 50%; background: none; border: 0; padding: 0;
+    color: #8b95ab; font-size: 21px; line-height: 34px; cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #figClose:focus-visible { outline: 2px solid rgba(150,170,210,0.55); outline-offset: 2px; }
+  #figText {
+    margin-top: 12px; min-height: 3.9em;
+    font: 400 15px/1.55 ui-sans-serif, -apple-system, system-ui, sans-serif;
+    color: #c3cbdc;
+  }
+  #figFoot { display: flex; align-items: center; gap: 12px; margin-top: 14px; }
+  #figDots { display: flex; gap: 6px; flex: 1 1 auto; }
+  #figDots i {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: rgba(150, 170, 210, 0.28); transition: background 200ms ease;
+  }
+  #figDots i.on { background: rgba(216, 223, 236, 0.9); }
+  #figNext {
+    flex: 0 0 auto; display: flex; align-items: center; gap: 8px;
+    padding: 10px 16px; border-radius: 999px;
+    background: rgba(16, 22, 36, 0.9);
+    border: 1px solid rgba(150, 170, 210, 0.38);
+    color: #dde3f0;
+    font: 500 13.5px/1 ui-sans-serif, system-ui, sans-serif;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  #figNext:active { background: rgba(22, 30, 48, 0.95); }
+  #figNext:focus-visible { outline: 2px solid rgba(150,170,210,0.6); outline-offset: 2px; }
+  #figHint {
+    position: fixed; left: 50%; transform: translateX(-50%);
+    bottom: calc(130px + env(safe-area-inset-bottom));
+    z-index: 4; pointer-events: none;
+    font: 400 11.5px/1 ui-sans-serif, system-ui, sans-serif;
+    color: #7d879e; text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+    opacity: 0; transition: opacity 600ms ease; white-space: nowrap;
+  }
+  #figHint.show { opacity: 1; }
+
   #fallback {
     position: fixed; inset: 0; display: none;
     align-items: center; justify-content: center;
@@ -353,6 +424,19 @@
     <button id="introGo" type="button">Look up &#11088;</button>
   </div>
 </div>
+<div id="figHint">Tap a constellation to read it</div>
+<div id="figPanel" role="dialog" aria-label="Constellation" aria-hidden="true">
+  <div class="top">
+    <span class="nm" id="figName">—</span>
+    <button id="figClose" type="button" aria-label="Close">&times;</button>
+  </div>
+  <div class="sub" id="figSub"></div>
+  <div id="figText"></div>
+  <div id="figFoot">
+    <span id="figDots"></span>
+    <button id="figNext" type="button">Next <span aria-hidden="true">&rarr;</span></button>
+  </div>
+</div>
 <div id="fallback">This scene needs WebGL. Try a different browser, or turn on hardware acceleration.</div>
 
 <!-- Libraries are served from this folder, not a CDN. That keeps the site's
@@ -361,6 +445,10 @@
      three.js r128 · @supabase/supabase-js 2.110.9 -->
 <script src="three.min.js"></script>
 <script src="supabase.min.js"></script>
+<!-- Editorial content for the constellation panel: your words, songs, video
+     links. Optional — the panel works from computed facts alone if this file
+     is missing. Edit that file to publish; never this one. -->
+<script src="constellations.js"></script>
 <script>
   /* ----------------------------------------------------------------------
      CONFIGURATION — paste the two values from your Supabase project here.
@@ -500,7 +588,8 @@
     var f = document.getElementById('fallback');
     if (f) { f.textContent = msg; f.style.display = 'flex'; }
     ['reportBar', 'countChip', 'feed', 'soundBtn', 'linesBtn', 'compassBtn',
-     'shareBtn', 'dataCredit', 'intro', 'toast', 'heading'].forEach(function (id) {
+     'shareBtn', 'dataCredit', 'intro', 'toast', 'heading',
+     'figPanel', 'figHint'].forEach(function (id) {
       var el = document.getElementById(id);
       if (el) el.style.display = 'none';
     });
@@ -1552,15 +1641,30 @@
   var _caz = new THREE.Vector3();
   function dragScale() { return (camera.fov * D2R) / Math.max(1, window.innerHeight); }
 
+  // Tap and drag are different intentions. A tap opens a constellation; a
+  // drag takes the camera. Deciding at pointerDOWN was wrong — it meant
+  // tapping a figure while holding the phone up killed compass mode before
+  // the finger had even moved. The decision belongs at first movement.
+  var tapX = 0, tapY = 0, tapT = 0, movedPast = false;
+  var TAP_SLOP = 11, TAP_MS = 500;
+
   canvas.addEventListener('pointerdown', function (e) {
-    if (compassOn) { setCompass(false); toast('Compass off \u2014 drag to look around'); }
-    dragging = true; dragId = e.pointerId; userPanned = true;
+    dragging = true; dragId = e.pointerId;
     lastPX = e.clientX; lastPY = e.clientY;
+    tapX = e.clientX; tapY = e.clientY; tapT = Date.now();
+    movedPast = false;
     yawVel = 0; pitchVel = 0;
     try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
   });
   canvas.addEventListener('pointermove', function (e) {
     if (!dragging || e.pointerId !== dragId) return;
+    if (!movedPast &&
+        Math.abs(e.clientX - tapX) + Math.abs(e.clientY - tapY) > TAP_SLOP) {
+      movedPast = true;
+      userPanned = true;
+      if (compassOn) { setCompass(false); toast('Compass off \u2014 drag to look around'); }
+    }
+    if (!movedPast) { lastPX = e.clientX; lastPY = e.clientY; return; }
     var k = dragScale();
     var dx = e.clientX - lastPX, dy = e.clientY - lastPY;
     lastPX = e.clientX; lastPY = e.clientY;
@@ -1572,6 +1676,9 @@
     if (!dragging) return;
     dragging = false; dragId = null;
     try { canvas.releasePointerCapture(e.pointerId); } catch (err) {}
+    if (!movedPast && e.type === 'pointerup' && Date.now() - tapT < TAP_MS) {
+      onSkyTap(tapX, tapY);
+    }
   }
   canvas.addEventListener('pointerup', endDrag);
   canvas.addEventListener('pointercancel', endDrag);
@@ -1779,6 +1886,240 @@
       startCompass();
     }
   });
+
+
+  // ==========================================================================
+  //  5d. THE FIGURE PANEL — tap a constellation, read what is true about it
+  //
+  //  Every fact below is COMPUTED from the same catalogue and the same clock
+  //  that draw the sky. Nothing is recalled from anywhere. "Never sets from
+  //  St. Peter's" is a statement about your latitude and a declination;
+  //  "highest at 1:40 tonight" is a sidereal-time calculation. That is the
+  //  whole point: the page can only say things it can work out.
+  //
+  //  Anything editorial — your words, a song, a video — lives in
+  //  sky/constellations.js, loaded separately. Adding next week's release is
+  //  editing that one small file. No code changes, ever.
+  // ==========================================================================
+  var FIG = (window.ONE_SKY_FIGURES && typeof window.ONE_SKY_FIGURES === 'object')
+    ? window.ONE_SKY_FIGURES : {};
+
+  var figPanel = document.getElementById('figPanel');
+  var figNameEl = document.getElementById('figName');
+  var figSubEl = document.getElementById('figSub');
+  var figTextEl = document.getElementById('figText');
+  var figDotsEl = document.getElementById('figDots');
+  var figHintEl = document.getElementById('figHint');
+  var figFacts = [], figPage = 0, figOpen = -1;
+
+  // Per-figure geometry, worked out once.
+  var FIGINFO = (function () {
+    var out = [];
+    for (var c = 0; c < CONSTELLATIONS.length; c++) {
+      var segs = CONSTELLATIONS[c][1], seen = {}, idx = [];
+      for (var k = 0; k < segs.length; k++) {
+        for (var e = 0; e < 2; e++) {
+          var i = segs[k][e];
+          if (!seen[i] && STARS[i]) { seen[i] = 1; idx.push(i); }
+        }
+      }
+      var sx = 0, sy = 0, sz = 0, best = null, dmin = 91, dmax = -91;
+      for (var j = 0; j < idx.length; j++) {
+        var s = STARS[idx[j]];
+        var a = s[0] * 15 * D2R, d = s[1] * D2R;
+        sx += Math.cos(d) * Math.cos(a); sy += Math.cos(d) * Math.sin(a); sz += Math.sin(d);
+        if (!best || s[2] < best[2]) best = s;
+        if (s[1] < dmin) dmin = s[1];
+        if (s[1] > dmax) dmax = s[1];
+      }
+      var n = idx.length || 1;
+      sx /= n; sy /= n; sz /= n;
+      var hyp = Math.sqrt(sx * sx + sy * sy);
+      var cRa = Math.atan2(sy, sx) * R2D / 15; if (cRa < 0) cRa += 24;
+      var cDec = Math.atan2(sz, hyp) * R2D;
+      out.push({
+        name: CONSTELLATIONS[c][0], stars: idx, segs: segs,
+        ra: cRa, dec: cDec, dmin: dmin, dmax: dmax,
+        best: best, count: idx.length
+      });
+    }
+    return out;
+  })();
+
+  function fmtClock(ms) {
+    var d = new Date(ms), h = d.getHours(), m = d.getMinutes();
+    var ap = h < 12 ? 'a.m.' : 'p.m.'; h = h % 12; if (h === 0) h = 12;
+    return h + ':' + (m < 10 ? '0' : '') + m + ' ' + ap;
+  }
+  function bearingWord(azRad) {
+    return COMPASS16[Math.round((azRad * R2D % 360) / 22.5) % 16]
+      .replace('N', 'north').replace('E', 'east').replace('S', 'south').replace('W', 'west')
+      .replace('northnorth', 'north-north').replace('southsouth', 'south-south');
+  }
+
+  // Next time this figure crosses the meridian — its highest point tonight.
+  function nextTransit(raHours, fromMs) {
+    var lstNow = lstRad(fromMs) * R2D;
+    var target = raHours * 15;
+    var d = (target - lstNow) % 360; if (d < 0) d += 360;
+    return fromMs + (d / 360.98564736629) * 86400000;
+  }
+
+  function computedFacts(f) {
+    var now = Date.now(), lst = lstRad(now), out = [];
+    var v = new THREE.Vector3();
+    equToWorld(f.ra, f.dec, lst, v);
+    var alt = altOf(v) * R2D, az = azOf(v);
+
+    // 1. Where it is, this minute.
+    if (alt > 1.5) {
+      out.push('Right now it is about ' + Math.round(alt) + '° above the horizon, ' +
+               'to the ' + bearingWord(az) + '. Hold your phone up and turn until the ' +
+               'bearing at the top reads ' + Math.round(az * R2D) + '°.');
+    } else {
+      var t = nextTransit(f.ra, now);
+      out.push('It is below the horizon at the moment. It climbs highest at ' +
+               fmtClock(t) + ', and you would want to look a couple of hours either side of that.');
+    }
+
+    // 2. Whether it ever leaves. Pure latitude arithmetic.
+    var alwaysUp = f.dmin > (90 - LATITUDE * R2D);
+    var neverUp  = f.dmax < -(90 - LATITUDE * R2D);
+    if (alwaysUp) {
+      out.push('From St. Peter’s this one never sets. It wheels around the North Star ' +
+               'all night, every night of the year — you can find it in January and in July.');
+    } else if (neverUp) {
+      out.push('This one never rises from Cape Breton — it stays below our horizon all year. ' +
+               'You would have to travel south to see it.');
+    } else {
+      var top = 90 - Math.abs(LATITUDE * R2D - f.dec);
+      out.push('It rises and sets like the sun does. At its highest from here it stands about ' +
+               Math.round(top) + '° up — ' +
+               (top > 60 ? 'nearly overhead.' : top > 30 ? 'a bit over halfway up the sky.' :
+                'low, so you need a clear view in that direction.'));
+    }
+
+    // 3. Its brightest member.
+    if (f.best && f.best[4]) {
+      out.push('Its brightest star is ' + f.best[4] + ', magnitude ' + f.best[2].toFixed(2) +
+               '. ' + (f.best[2] < 0.5 ? 'That puts it among the brightest stars in the whole sky.'
+                 : f.best[2] < 1.6 ? 'Bright enough to pick out from a lit street.'
+                 : 'You want a dark night away from lights for this one.') +
+               ' The figure joins ' + f.count + ' stars in all.');
+    }
+    return out;
+  }
+
+  function renderFig() {
+    figTextEl.textContent = figFacts[figPage] || '';
+    var html = '';
+    for (var i = 0; i < figFacts.length; i++) html += '<i class="' + (i === figPage ? 'on' : '') + '"></i>';
+    figDotsEl.innerHTML = html;
+  }
+
+  function openFig(ci) {
+    var f = FIGINFO[ci];
+    if (!f) return;
+    store('onesky:tapped', '1');
+    figOpen = ci;
+    var extra = FIG[f.name] || {};
+    figFacts = computedFacts(f).concat(
+      Array.isArray(extra.facts) ? extra.facts.filter(function (s) { return !!s; }) : []);
+    figPage = 0;
+    figNameEl.textContent = f.name;
+    figSubEl.textContent = extra.subtitle || '';
+    renderFig();
+    figPanel.classList.add('open');
+    figPanel.setAttribute('aria-hidden', 'false');
+    figHintEl.classList.remove('show');
+    highlightFig(ci);
+  }
+  function closeFig() {
+    figOpen = -1;
+    figPanel.classList.remove('open');
+    figPanel.setAttribute('aria-hidden', 'true');
+    highlightFig(-1);
+  }
+  document.getElementById('figClose').addEventListener('click', closeFig);
+  document.getElementById('figNext').addEventListener('click', function () {
+    if (!figFacts.length) return;
+    figPage = (figPage + 1) % figFacts.length;
+    renderFig();
+  });
+
+  // Highlight: a second, brighter copy of just the chosen figure.
+  var hiGeo = new THREE.BufferGeometry();
+  hiGeo.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(300 * 3), 3));
+  var hiMat = new THREE.LineBasicMaterial({
+    color: 0xcfe0ff, transparent: true, opacity: 0.85, depthWrite: false, depthTest: false
+  });
+  var hiLines = new THREE.LineSegments(hiGeo, hiMat);
+  hiLines.frustumCulled = false; hiLines.renderOrder = 5; hiLines.visible = false;
+  skyGroup.add(hiLines);
+
+  function highlightFig(ci) {
+    if (ci < 0) { hiLines.visible = false; return; }
+    var f = FIGINFO[ci], pos = [], v = new THREE.Vector3(), R = STAR_R - 240;
+    for (var k = 0; k < f.segs.length; k++) {
+      for (var e = 0; e < 2; e++) {
+        var st = STARS[f.segs[k][e]];
+        if (!st) continue;
+        celestial(st[0], st[1], v);
+        pos.push(v.x * R, v.y * R, v.z * R);
+      }
+    }
+    hiGeo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    hiGeo.attributes.position.needsUpdate = true;
+    hiLines.visible = true;
+  }
+
+  // ---- hit testing: which figure did that tap land on? --------------------
+  var _hitV = new THREE.Vector3();
+  function projectStar(i, out) {
+    var st = STARS[i];
+    celestial(st[0], st[1], _hitV).multiplyScalar(STAR_R - 240);
+    _hitV.applyMatrix4(skyGroup.matrixWorld);
+    var behind = _hitV.clone().sub(camera.position).dot(
+      camera.getWorldDirection(new THREE.Vector3())) < 0;
+    _hitV.project(camera);
+    out.x = (_hitV.x * 0.5 + 0.5) * window.innerWidth;
+    out.y = (-_hitV.y * 0.5 + 0.5) * window.innerHeight;
+    out.behind = behind;
+    return out;
+  }
+  function segDist(px, py, ax, ay, bx, by) {
+    var vx = bx - ax, vy = by - ay;
+    var L = vx * vx + vy * vy;
+    var t = L > 0 ? Math.max(0, Math.min(1, ((px - ax) * vx + (py - ay) * vy) / L)) : 0;
+    var dx = px - (ax + t * vx), dy = py - (ay + t * vy);
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+  var _pA = {}, _pB = {};
+  function onSkyTap(px, py) {
+    if (figOpen >= 0) { closeFig(); return; }
+    var bestC = -1, bestD = 46;              // generous: a fingertip is wide
+    for (var c = 0; c < FIGINFO.length; c++) {
+      var f = FIGINFO[c];
+      for (var k = 0; k < f.segs.length; k++) {
+        if (!STARS[f.segs[k][0]] || !STARS[f.segs[k][1]]) continue;
+        projectStar(f.segs[k][0], _pA);
+        projectStar(f.segs[k][1], _pB);
+        if (_pA.behind || _pB.behind) continue;
+        var d = segDist(px, py, _pA.x, _pA.y, _pB.x, _pB.y);
+        if (d < bestD) { bestD = d; bestC = c; }
+      }
+    }
+    if (bestC >= 0) openFig(bestC);
+  }
+
+  // A one-time nudge, the first few nights, so the feature is discoverable.
+  (function () {
+    if (store('onesky:tapped') === '1') return;
+    setTimeout(function () {
+      if (figOpen < 0) figHintEl.classList.add('show');
+      setTimeout(function () { figHintEl.classList.remove('show'); }, 7000);
+    }, 6500);
+  })();
 
   // ==========================================================================
   //  6. SHOOTING STARS
