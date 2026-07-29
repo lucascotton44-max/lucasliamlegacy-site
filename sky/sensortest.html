@@ -56,6 +56,17 @@
 </div>
 
 <div class="box">
+  <h2>Generic Sensor API (the other pipe)</h2>
+  <div class="row"><span class="k">AbsoluteOrientationSensor</span><span class="v" id="gAbsSup">—</span></div>
+  <div class="row"><span class="k">RelativeOrientationSensor</span><span class="v" id="gRelSup">—</span></div>
+  <div class="row"><span class="k">Magnetometer</span><span class="v" id="gMagSup">—</span></div>
+  <div class="row"><span class="k">readings received</span><span class="v" id="gCount">0</span></div>
+  <div class="row"><span class="k">status</span><span class="v" id="gStatus">not started</span></div>
+  <div class="row"><span class="k">heading (deg from N)</span><span class="v" id="gHead">—</span></div>
+  <div class="row"><span class="k">quaternion</span><span class="v" id="gQuat">—</span></div>
+</div>
+
+<div class="box">
   <h2>Environment</h2>
   <div class="row"><span class="k">secure context (https)</span><span class="v" id="eSec">—</span></div>
   <div class="row"><span class="k">DeviceOrientationEvent</span><span class="v" id="eDOE">—</span></div>
@@ -107,9 +118,12 @@
   function verdict() {
     var v = $('verdict');
     if (!started) return;
-    if (nAbs + nRel + nMot === 0) {
-      v.innerHTML = '<span class="bad">NO EVENTS AT ALL.</span> The browser is not delivering sensor data. ' +
-        'Check the site permission, and check Android Developer options for a "Sensors off" toggle.';
+    if (nAbs + nRel + nMot === 0 && nGen > 0) {
+      v.innerHTML = '<span class="ok">GENERIC SENSOR WORKS.</span> DeviceOrientation events are blocked, ' +
+        'but the Generic Sensor API is delivering real orientation. Compass mode should be rebuilt on this pipe.';
+    } else if (nAbs + nRel + nMot === 0) {
+      v.innerHTML = '<span class="bad">NO EVENTS ON EITHER PIPE.</span> Neither DeviceOrientation nor the ' +
+        'Generic Sensor API is delivering. Check Chrome: Settings &rarr; Site settings &rarr; Motion sensors.';
     } else if (nAbs + nRel === 0 && nMot > 0) {
       v.innerHTML = '<span class="warn">MOTION ONLY.</span> devicemotion fires but orientation does not — ' +
         'unusual; likely a browser restriction on orientation specifically.';
@@ -145,8 +159,51 @@
     verdict();
   }
 
+  // ---- Generic Sensor API ------------------------------------------------
+  // Chrome gates this SEPARATELY from DeviceOrientationEvent. If the events
+  // above are silent but readings arrive here, compass mode should simply be
+  // built on this instead — same sensors, different door.
+  var nGen = 0, genSensor = null;
+  $('gAbsSup').textContent = ('AbsoluteOrientationSensor' in window) ? 'present' : 'MISSING';
+  cls($('gAbsSup'), 'AbsoluteOrientationSensor' in window);
+  $('gRelSup').textContent = ('RelativeOrientationSensor' in window) ? 'present' : 'missing';
+  $('gMagSup').textContent = ('Magnetometer' in window) ? 'present' : 'missing';
+
+  function startGeneric() {
+    if (!('AbsoluteOrientationSensor' in window)) { $('gStatus').textContent = 'not supported'; return; }
+    try {
+      genSensor = new AbsoluteOrientationSensor({ frequency: 20, referenceFrame: 'device' });
+      genSensor.addEventListener('reading', function () {
+        nGen++;
+        $('gCount').textContent = nGen;
+        $('gStatus').textContent = 'READING'; $('gStatus').className = 'v ok';
+        var q = genSensor.quaternion;
+        if (q) {
+          $('gQuat').textContent = q.map(function (n) { return n.toFixed(2); }).join(', ');
+          // yaw from quaternion -> compass heading, screen-up convention
+          var h = Math.atan2(2 * (q[3] * q[2] + q[0] * q[1]),
+                             1 - 2 * (q[1] * q[1] + q[2] * q[2])) * 180 / Math.PI;
+          if (h < 0) h += 360;
+          $('gHead').textContent = h.toFixed(1);
+        }
+        verdict();
+      });
+      genSensor.addEventListener('error', function (ev) {
+        $('gStatus').textContent = 'ERROR: ' + (ev.error && ev.error.name ? ev.error.name : 'unknown');
+        $('gStatus').className = 'v bad';
+        verdict();
+      });
+      genSensor.start();
+      $('gStatus').textContent = 'started, waiting…';
+    } catch (err) {
+      $('gStatus').textContent = 'threw: ' + err.name;
+      $('gStatus').className = 'v bad';
+    }
+  }
+
   function attach() {
     started = true;
+    startGeneric();
     $('verdict').textContent = 'Listening… rotate the phone slowly.';
     window.addEventListener('deviceorientationabsolute', onOrient, true);
     window.addEventListener('deviceorientation', onOrient, true);
