@@ -26,7 +26,13 @@
    find, whatever the month. Worth knowing when you plan the release order.
    =========================================================================== */
 
-window.ONE_SKY_FIGURES = {
+window.ONE_SKY_FIGURES = { "Kayla's Star": {
+    subtitle: "",
+    facts: [
+      // your line for her goes here, in quotes — e.g. "..."
+      // each string is one card, shown after the computed facts
+    ]
+  },
 
   /* ---------------------------------------------------------------------
      A worked example. Delete the text, write your own, and it is published.
