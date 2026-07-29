@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ONE-SKY-REALSKY-v1.2 :: real star engine integrated into the live tracker.
+<!-- ONE-SKY-REALSKY-v1.3 :: real star engine integrated into the live tracker.
      Base: sky/index.html sha256 ada4f4d53a2863a9711b3d0d4a8c8abca240ae9b2127f29840ba848d53404077
      Star data: HYG Database v4.1 (astronexus.com), CC BY-SA 4.0. -->
 <html lang="en">
@@ -643,7 +643,7 @@
       // paints straight over the treeline.
       side: THREE.BackSide, transparent: true, depthWrite: false, depthTest: true,
       blending: THREE.AdditiveBlending,
-      uniforms: { uMap: { value: makeMilkyWayTexture() } },
+      uniforms: { uMap: { value: makeMilkyWayTexture() }, uDay: { value: 0.0 } },
       vertexShader: [
         'varying vec2 vUv; varying vec3 vWorld;',
         'void main(){ vUv = uv; vWorld = (modelMatrix * vec4(position,1.0)).xyz;',
@@ -651,12 +651,15 @@
       ].join('\n'),
       fragmentShader: [
         'varying vec2 vUv; varying vec3 vWorld;',
-        'uniform sampler2D uMap;',
+        'uniform sampler2D uMap; uniform float uDay;',
         'void main(){',
         '  vec3 t = texture2D(uMap, vUv).rgb;',
         '  float alt = normalize(vWorld).y;',
         '  float ext = smoothstep(-0.01, 0.40, alt);',
-        '  gl_FragColor = vec4(t * ext * 0.52, 1.0);',
+        // The galaxy is the faintest thing in the sky; it must be the FIRST
+        // casualty of daylight, not a survivor of it. Without this it leaked
+        // through the day sky as grey wisps that read as clouds.
+        '  gl_FragColor = vec4(t * ext * 0.52 * max(0.0, 1.0 - uDay * 1.25), 1.0);',
         '}'
       ].join('\n')
     })
@@ -1021,7 +1024,7 @@
   // meteors fly and you learn where the radiant sits without being told.
   var constMat = new THREE.ShaderMaterial({
     transparent: true, depthWrite: false, depthTest: true,
-    uniforms: { uOpacity: { value: 0.0 } },
+    uniforms: { uOpacity: { value: 0.0 }, uDay: { value: 0.0 } },
     vertexShader: [
       'varying float vExt;',
       'void main(){',
@@ -1031,11 +1034,15 @@
       '}'
     ].join('\n'),
     fragmentShader: [
-      'uniform float uOpacity; varying float vExt;',
+      'uniform float uOpacity; uniform float uDay; varying float vExt;',
       'void main(){',
       '  float a = vExt * uOpacity;',
       '  if (a < 0.004) discard;',
-      '  gl_FragColor = vec4(0.545, 0.635, 0.800, a);',
+      // Night: the same quiet blue-grey as always. Day: near-white chalk —
+      // pale lines vanish against a bright sky, chalk is how a blackboard
+      // diagram survives moving outdoors.
+      '  vec3 col = mix(vec3(0.545, 0.635, 0.800), vec3(0.97, 0.99, 1.0), uDay);',
+      '  gl_FragColor = vec4(col, a);',
       '}'
     ].join('\n')
   });
@@ -2278,6 +2285,50 @@
   moonHolder.add(moon);
   scene.add(moonHolder);
 
+  // --- The sun ---------------------------------------------------------------
+  // Its position was already computed every frame to drive twilight and the
+  // moon's phase. Now it is also drawn: same disc-and-bloom treatment as the
+  // moon, and the same honest deal — it stands exactly where the real one
+  // stands over St. Peter's.
+  var sunMat = new THREE.ShaderMaterial({
+    transparent: true, depthWrite: false, depthTest: true,
+    blending: THREE.AdditiveBlending,
+    uniforms: { uPx: { value: 16 }, uAlpha: { value: 0.0 } },
+    vertexShader: [
+      'uniform float uPx;',
+      'void main(){',
+      '  gl_PointSize = uPx * 3.0;',
+      '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
+      '}'
+    ].join('\n'),
+    fragmentShader: [
+      'uniform float uAlpha;',
+      'void main(){',
+      '  vec2 uv = gl_PointCoord - 0.5;',
+      '  float r = length(uv);',
+      '  float disc = smoothstep(0.115, 0.105, r);',
+      '  float glare = exp(-pow(r * 4.4, 2.0)) * 0.5;',
+      '  float a = (disc + glare) * uAlpha;',
+      '  if (a < 0.006) discard;',
+      '  gl_FragColor = vec4(vec3(1.0, 0.985, 0.94), min(a, 1.0));',
+      '}'
+    ].join('\n')
+  });
+  var sunPos = new Float32Array([0, -7000, 0]);
+  var sunGeo = new THREE.BufferGeometry();
+  (function () {
+    var a = new THREE.BufferAttribute(sunPos, 3);
+    a.setUsage(THREE.DynamicDrawUsage);
+    sunGeo.setAttribute('position', a);
+  })();
+  var sunPoint = new THREE.Points(sunGeo, sunMat);
+  sunPoint.frustumCulled = false;
+  sunPoint.renderOrder = 1;
+  var sunHolder = new THREE.Group();
+  sunHolder.position.y = EYE_HEIGHT;
+  sunHolder.add(sunPoint);
+  scene.add(sunHolder);
+
   // --- Meteor shower calendar ----------------------------------------------
   // Radiants (J2000) and activity windows from the International Meteor
   // Organization 2026 Shower Calendar, Table 5, cross-checked against the
@@ -2536,9 +2587,24 @@
     // Stars wash out through nautical twilight, the way they really do.
     var starDay = Math.max(0, Math.min(1, (sunAlt + 12 * D2R) / (10.3 * D2R)));
     for (var i = 0; i < mats.length; i++) mats[i].uniforms.uDay.value = starDay;
+    mw.material.uniforms.uDay.value = starDay;
 
-    var figs = showFigures ? (1 - starDay) : 0;
-    constMat.uniforms.uOpacity.value = 0.30 * figs;
+    // The sun's disc: visible from the moment it clears the sea.
+    sunPos[0] = SUN_DIR.x * 7000;
+    sunPos[1] = SUN_DIR.y * 7000;
+    sunPos[2] = SUN_DIR.z * 7000;
+    sunGeo.attributes.position.needsUpdate = true;
+    sunMat.uniforms.uAlpha.value = Math.max(0, Math.min(1, (sunAlt + 0.01) / 0.03));
+
+    // The figures work day and night — that is the point of them. At night
+    // they are the quiet blue chart lines they have always been. In daylight
+    // the SKY is what hides the stars, not the geometry: the constellations
+    // are still exactly there, so the toggle draws them as chalk on the blue
+    // and the names hold their places. Venus is genuinely findable in a day
+    // sky if you know precisely where to look; now the page can tell you.
+    var figs = showFigures ? 1 : 0;
+    constMat.uniforms.uOpacity.value = figs * (0.30 + 0.22 * starDay);
+    constMat.uniforms.uDay.value = starDay;
     for (var j = 0; j < labelSprites.length; j++) labelSprites[j].material.opacity = 0.85 * figs;
 
     updatePlanets(ms);
@@ -2584,6 +2650,7 @@
     // so accuracy there would cost the feature its meaning. Film does the
     // same thing for the same reason.
     if (moonMat) moonMat.uniforms.uPx.value = Math.min(64, 3.3 / camera.fov * (h * DPR));
+    sunMat.uniforms.uPx.value = Math.min(64, 3.3 / camera.fov * (h * DPR));
   }
   window.addEventListener('resize', resize, { passive: true });
   window.addEventListener('orientationchange', function () { setTimeout(resize, 120); }, { passive: true });
