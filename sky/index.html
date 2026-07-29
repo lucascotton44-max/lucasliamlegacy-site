@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ONE-SKY-REALSKY-v1 :: real star engine integrated into the live tracker.
+<!-- ONE-SKY-REALSKY-v1.1 :: real star engine integrated into the live tracker.
      Base: sky/index.html sha256 ada4f4d53a2863a9711b3d0d4a8c8abca240ae9b2127f29840ba848d53404077
      Star data: HYG Database v4.1 (astronexus.com), CC BY-SA 4.0. -->
 <html lang="en">
@@ -2269,32 +2269,32 @@
   scene.add(moonHolder);
 
   // --- Meteor shower calendar ----------------------------------------------
-  // Radiant positions (J2000) are the published peak radiants, good to about
-  // a degree — far finer than anyone judges a radiant by eye. They are what
-  // makes a shower meteor's direction mean something rather than merely look
-  // plausible. VERIFY THESE against a current almanac before a shower night;
-  // they are the one set of numbers in this file taken on authority.
-  // Each entry carries its peak, its published activity window, and its
-  // radiant. The window is what the original page already used for the
-  // Perseids (Jul 17 - Aug 24), generalised to the rest. `from`/`to` are
-  // [month, day] and may wrap the new year.
+  // Radiants (J2000) and activity windows from the International Meteor
+  // Organization 2026 Shower Calendar, Table 5, cross-checked against the
+  // American Meteor Society 2026-27 calendar. The two agree throughout.
+  // IMO prints right ascension in degrees; these are those figures over 15,
+  // which is the hours the alt/az maths wants.
+  //
+  // Checked 2026-07-29. Worth re-checking every few years: radiants drift,
+  // and the Geminid and Quadrantid maxima move by a day or so year to year.
+  // `from`/`to` are [month, day] and may wrap the new year.
   var SHOWERS = [
     { m: 1,  d: 3,  name: 'Quadrantids',   dir: 'northeast',
-      from: [12, 28], to: [1, 12],  ra: 15.33, dec:  49.5 },
+      from: [12, 28], to: [1, 12],  ra: 15.33, dec:  49.0 },
     { m: 4,  d: 22, name: 'Lyrids',        dir: 'northeast',
-      from: [4, 16],  to: [4, 25],  ra: 18.13, dec:  34.0 },
-    { m: 5,  d: 5,  name: 'Eta Aquariids', dir: 'east before dawn',
-      from: [4, 19],  to: [5, 28],  ra: 22.47, dec:  -1.0 },
+      from: [4, 14],  to: [4, 30],  ra: 18.07, dec:  34.0 },
+    { m: 5,  d: 6,  name: 'Eta Aquariids', dir: 'east before dawn',
+      from: [4, 19],  to: [5, 28],  ra: 22.53, dec:  -1.0 },
     { m: 8,  d: 12, name: 'Perseids',      dir: 'northeast after dark',
-      from: [7, 17],  to: [8, 24],  ra:  3.17, dec:  58.0 },
+      from: [7, 17],  to: [8, 24],  ra:  3.20, dec:  58.1 },
     { m: 10, d: 21, name: 'Orionids',      dir: 'east after midnight',
-      from: [10, 2],  to: [11, 7],  ra:  6.35, dec:  15.5 },
+      from: [10, 2],  to: [11, 7],  ra:  6.33, dec:  15.8 },
     { m: 11, d: 17, name: 'Leonids',       dir: 'east after midnight',
-      from: [11, 6],  to: [11, 30], ra: 10.27, dec:  21.6 },
-    { m: 12, d: 13, name: 'Geminids',      dir: 'east',
-      from: [12, 4],  to: [12, 17], ra:  7.47, dec:  32.3 },
+      from: [11, 6],  to: [11, 30], ra: 10.13, dec:  21.8 },
+    { m: 12, d: 14, name: 'Geminids',      dir: 'east',
+      from: [12, 4],  to: [12, 20], ra:  7.47, dec:  33.0 },
     { m: 12, d: 22, name: 'Ursids',        dir: 'north',
-      from: [12, 17], to: [12, 26], ra: 14.47, dec:  75.3 }
+      from: [12, 17], to: [12, 26], ra: 14.47, dec:  76.0 }
   ];
   var activeShower = null;
   (function () {
