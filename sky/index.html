@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ONE-SKY-REALSKY-v2.2 :: real star engine integrated into the live tracker.
+<!-- ONE-SKY-REALSKY-v2.3 :: real star engine integrated into the live tracker.
      Base: sky/index.html sha256 ada4f4d53a2863a9711b3d0d4a8c8abca240ae9b2127f29840ba848d53404077
      Star data: HYG Database v4.1 (astronexus.com), CC BY-SA 4.0. -->
 <html lang="en">
@@ -1796,7 +1796,11 @@
   }
 
   function onOrient(e) {
-    if (e.alpha === null || e.alpha === undefined) return;
+    if (e.alpha === null || e.alpha === undefined ||
+        e.beta === null || e.beta === undefined ||
+        e.gamma === null || e.gamma === undefined) return;
+    // (all three checked: one null channel through the euler would NaN the
+    // quaternion, and a NaN camera renders nothing at all)
     // Some browsers fire only 'deviceorientationabsolute', some fire only
     // 'deviceorientation' (with or without a real compass behind it), and a
     // few fire both. Listen to everything, prefer absolute when it exists.
@@ -3324,7 +3328,7 @@
   //  7. LOOP
   // ==========================================================================
   var clock = new THREE.Clock();
-  var elapsed = 0, running = true;
+  var elapsed = 0, running = true, rafId = 0;
 
   function resize() {
     var w = window.innerWidth, h = window.innerHeight;
@@ -3349,9 +3353,19 @@
   window.addEventListener('orientationchange', function () { setTimeout(resize, 120); }, { passive: true });
   resize();
 
+  // Exactly ONE animation loop, ever. The old handler called tick() on every
+  // return to the tab while the suspended loop ALSO resumed — each app-switch
+  // permanently added a whole extra loop. Proven with instrumented RAF
+  // suspension: 1 chain at baseline, 2 after one hide/show, 4 after three.
+  // A phone that checked messages ten times in an evening was running eleven
+  // skies. Cancel the suspended chain, then start exactly one.
   document.addEventListener('visibilitychange', function () {
     running = !document.hidden;
-    if (running) { clock.getDelta(); tick(); }
+    if (running) {
+      if (rafId) { cancelAnimationFrame(rafId); rafId = 0; }
+      clock.getDelta();
+      tick();
+    }
   });
 
   // A backgrounded tab on a phone can have its GPU context reclaimed. Without
@@ -3384,14 +3398,14 @@
   var mats = [stars.material, haze.material, subMag.material, anchors.material, planetMat];
 
   function tick() {
-    if (!running) return;
-    requestAnimationFrame(tick);
+    if (!running) { rafId = 0; return; }
+    rafId = requestAnimationFrame(tick);
     var dt = Math.min(clock.getDelta(), 0.1);
     elapsed += dt;
 
     // The sky turns because time passes, not because a constant says so.
     // One sidereal-time evaluation and one quaternion per frame place all
-    // 2,865 stars, both Milky Way layers, the figures, the names and the
+    // 4,444 stars, both Milky Way layers, the figures, the names and the
     // planets — the whole celestial frame moves as one rigid thing.
     var nowMs = Date.now();
     if (nowMs - lastBodies > 500) { lastBodies = nowMs; updateSkyBodies(nowMs); }
