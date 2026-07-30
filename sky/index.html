@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ONE-SKY-REALSKY-v2.4 :: real star engine integrated into the live tracker.
+<!-- ONE-SKY-REALSKY-v2.5 :: real star engine integrated into the live tracker.
      Base: sky/index.html sha256 ada4f4d53a2863a9711b3d0d4a8c8abca240ae9b2127f29840ba848d53404077
      Star data: HYG Database v4.1 (astronexus.com), CC BY-SA 4.0.
      Soundtrack: "One Sky" (sky/one-sky.m4a), written for this page. -->
@@ -1589,11 +1589,14 @@
   })();
   scene.add(horizon);
 
-  // A light on the headland tip — Fl R 4s, like a channel marker. One red
-  // point, the only man-made light in the scene. This coast is never
-  // entirely without one, and it gives the far shore its sense of scale.
+  // The channel light — Fl R 4s. One red point, the only man-made light in
+  // the scene. This coast is never entirely without one, and it gives the
+  // far shore its sense of scale. Since v2.5 it hangs in the lantern of the
+  // light tower at the headland's foot, guarding the channel mouth.
   var markerGeo = new THREE.BufferGeometry();
-  markerGeo.setAttribute('position', new THREE.Float32BufferAttribute([48, 56, -1398], 3));
+  // v2.5: the light moved from the crest down into the lantern of the light
+  // tower at the headland's foot — see THE GROUND below.
+  markerGeo.setAttribute('position', new THREE.Float32BufferAttribute([8, 19.4, -1402], 3));
   // A raw WebGL point is a SQUARE — on a high-DPR phone the marker rendered
   // as a little red brick. A light is a glow: gaussian falloff, soft edge.
   var markerMat = new THREE.ShaderMaterial({
@@ -1620,7 +1623,225 @@
   });
   var marker = new THREE.Points(markerGeo, markerMat);
   marker.frustumCulled = false;
-  land.add(marker);          // it stands on the headland, so it turns with it
+  land.add(marker);          // it stands at the headland's foot, turning with it
+
+  // ==========================================================================
+  //  5a2. THE GROUND — a working shore
+  //
+  //  Not a postcard: a timber-crib wharf running out of the spruce bank into
+  //  the channel, a fish store at its root, a dory on her mooring off the
+  //  head, three low rocks awash between here and there, and a small wooden
+  //  light tower on the headland under the red channel light that has always
+  //  been there. Everything is silhouette, like the land — black shapes that
+  //  hold up day and night, reading against water shimmer, airglow and
+  //  stars. The wharf was placed where its posts clear the treeline and
+  //  stand against open water: the channel at the centre of the default
+  //  view. Near shapes are the darkest in the scene, the same rule the
+  //  treelines follow. The one man-made LIGHT is still the one red flasher;
+  //  the tower just gives it something to stand on.
+  //
+  //  All of it lives inside `land`, so it turns with the cove as one piece.
+  // ==========================================================================
+  function box(out, cx, cy, cz, w, h, d, yaw) {
+    // A box: w across, h up from cy, d along its axis, yawed about centre.
+    var c = Math.cos(yaw || 0), s = Math.sin(yaw || 0);
+    var hw = w / 2, hd = d / 2;
+    function P(x, z) { return [cx + x * c + z * s, cz - x * s + z * c]; }
+    var q = [P(-hw, -hd), P(hw, -hd), P(hw, hd), P(-hw, hd)];
+    var lo = cy, hi = cy + h;
+    for (var i = 0; i < 4; i++) {
+      var a = q[i], b = q[(i + 1) % 4];
+      tri3(out, a[0], lo, a[1], b[0], lo, b[1], b[0], hi, b[1]);
+      tri3(out, a[0], lo, a[1], b[0], hi, b[1], a[0], hi, a[1]);
+    }
+    tri3(out, q[0][0], hi, q[0][1], q[1][0], hi, q[1][1], q[2][0], hi, q[2][1]);
+    tri3(out, q[0][0], hi, q[0][1], q[2][0], hi, q[2][1], q[3][0], hi, q[3][1]);
+  }
+  function tri3(a, x1, y1, z1, x2, y2, z2, x3, y3, z3) {
+    a.push(x1, y1, z1, x2, y2, z2, x3, y3, z3);
+  }
+
+  var groundTris = [];
+  (function () {
+    // Root in the bank taper where the near stand thins to open water;
+    // head out in the channel, 38 m from the eye.
+    var RX = -14, RZ = -97, HX = 2, HZ = -38;
+    var dx = HX - RX, dz = HZ - RZ;
+    var L = Math.sqrt(dx * dx + dz * dz);
+    var yaw = Math.atan2(dx, dz);
+    var mx = (RX + HX) / 2, mz = (RZ + HZ) / 2;
+
+    // Deck: a long low slab, top at 2.1 m — just under eye height, the way
+    // a wharf deck sits when you stand on the shore beside it.
+    box(groundTris, mx, 1.7, mz, 3.4, 0.4, L + 1.0, yaw);
+
+    // Piles: bents every ~4.8 m, legs going into the water, tops cut at the
+    // deck. Slight jitter and lean so they read driven, not extruded.
+    var bents = 13;
+    for (var i = 0; i < bents; i++) {
+      var t = i / (bents - 1);
+      var px = RX + dx * t, pz = RZ + dz * t;
+      for (var sdd = -1; sdd <= 1; sdd += 2) {
+        var ox = Math.cos(yaw) * sdd * 1.45, oz = -Math.sin(yaw) * sdd * 1.45;
+        box(groundTris, px + ox + (rnd() - 0.5) * 0.16, -0.6,
+            pz + oz + (rnd() - 0.5) * 0.16,
+            0.30, 2.35 + rnd() * 0.12, 0.30, yaw + (rnd() - 0.5) * 0.1);
+      }
+    }
+    // Bollards along the outer edge, and two taller mooring posts at the
+    // head, leaning apart the way posts do after enough winters.
+    for (var b2 = 0; b2 < 4; b2++) {
+      var tb = 0.18 + b2 * 0.22;
+      box(groundTris, RX + dx * tb + Math.cos(yaw) * 1.35, 2.1,
+          RZ + dz * tb - Math.sin(yaw) * 1.35, 0.26, 0.85, 0.26, yaw);
+    }
+    box(groundTris, HX + Math.cos(yaw) * 1.15, 2.1, HZ - Math.sin(yaw) * 1.15,
+        0.32, 1.45, 0.32, yaw + 0.06);
+    box(groundTris, HX - Math.cos(yaw) * 1.15, 2.1, HZ + Math.sin(yaw) * 1.15,
+        0.32, 1.30, 0.32, yaw - 0.05);
+
+    // The fish store at the root: gable end facing down the wharf, ridge
+    // sagged a hand's width in the middle, like every real one.
+    var sx = RX - Math.cos(yaw) * 4.6, sz = RZ + Math.sin(yaw) * 4.6;
+    box(groundTris, sx, 1.55, sz, 4.2, 2.5, 5.6, yaw);
+    (function () {
+      var c = Math.cos(yaw), s = Math.sin(yaw);
+      function Q(x, z) { return [sx + x * c + z * s, sz - x * s + z * c]; }
+      var e = 4.05, r = 5.2, sag = 0.12;
+      var g0 = Q(-2.1, -2.8), g1 = Q(2.1, -2.8), g2 = Q(-2.1, 2.8), g3 = Q(2.1, 2.8);
+      var rA = Q(0, -2.8), rM = Q(0, 0), rB = Q(0, 2.8);
+      // Gable ends
+      tri3(groundTris, g0[0], e, g0[1], g1[0], e, g1[1], rA[0], r, rA[1]);
+      tri3(groundTris, g2[0], e, g2[1], g3[0], e, g3[1], rB[0], r, rB[1]);
+      // Roof planes, split at the sagged midpoint
+      tri3(groundTris, g0[0], e, g0[1], rA[0], r, rA[1], rM[0], r - sag, rM[1]);
+      tri3(groundTris, g0[0], e, g0[1], rM[0], r - sag, rM[1], g2[0], e, g2[1]);
+      tri3(groundTris, g2[0], e, g2[1], rM[0], r - sag, rM[1], rB[0], r, rB[1]);
+      tri3(groundTris, g1[0], e, g1[1], rM[0], r - sag, rM[1], rA[0], r, rA[1]);
+      tri3(groundTris, g1[0], e, g1[1], g3[0], e, g3[1], rM[0], r - sag, rM[1]);
+      tri3(groundTris, g3[0], e, g3[1], rB[0], r, rB[1], rM[0], r - sag, rM[1]);
+    })();
+
+    // A low shore tongue under the root, running back into the spruce bank —
+    // without it the shed stood on open water. It falls from bank height to
+    // nothing just past the first bent, like a point the wharf leaves from.
+    (function () {
+      var N2 = 14, pv = null;
+      for (var q2 = 0; q2 <= N2; q2++) {
+        var tq = q2 / N2;
+        var gx = -42 + (RX + 7 - (-42)) * tq;          // from inside the bank to past the root
+        var gz = -93 + (RZ + 3 - (-93)) * tq;
+        var gh = 2.6 * (1 - tq * tq) + 0.25 + Math.sin(tq * 19.0) * 0.14;
+        if (pv) {
+          tri3(groundTris, pv[0], pv[2], pv[1], gx, gh, gz, gx, -0.6, gz);
+          tri3(groundTris, pv[0], pv[2], pv[1], gx, -0.6, gz, pv[0], -0.6, pv[1]);
+        }
+        pv = [gx, gz, gh];
+      }
+    })();
+
+    // Rocks awash: low domes, a fan of facets each. Kept under a metre —
+    // anything taller reads as an islet, not a rock.
+    var rocks = [[-24, -60, 2.2, 0.70], [-10, -49, 1.4, 0.50], [14, -70, 2.8, 0.90]];
+    for (var rr = 0; rr < rocks.length; rr++) {
+      var rc = rocks[rr], n = 9, ang0 = rnd() * TAU;
+      for (var kk = 0; kk < n; kk++) {
+        var a1 = ang0 + (kk / n) * TAU, a2 = ang0 + ((kk + 1) / n) * TAU;
+        var r1 = rc[2] * (0.72 + rnd() * 0.55), r2 = rc[2] * (0.72 + rnd() * 0.55);
+        var e1x = rc[0] + Math.cos(a1) * r1, e1z = rc[1] + Math.sin(a1) * r1;
+        var e2x = rc[0] + Math.cos(a2) * r2, e2z = rc[1] + Math.sin(a2) * r2;
+        tri3(groundTris, e1x, -0.3, e1z, e2x, -0.3, e2z, rc[0], rc[3] * (0.8 + rnd() * 0.3), rc[1]);
+      }
+    }
+  })();
+  var groundMesh = new THREE.Mesh(
+    new THREE.BufferGeometry(),
+    new THREE.MeshBasicMaterial({ color: 0x000103, fog: false, side: THREE.DoubleSide }));
+  groundMesh.geometry.setAttribute('position', new THREE.Float32BufferAttribute(groundTris, 3));
+  land.add(groundMesh);
+
+  // The dory: her own mesh, because she moves. A proper dory silhouette —
+  // high sheer at both ends, tombstone transom — lofted from five stations.
+  // She rides the same slow swell the water shader runs on.
+  var dory = (function () {
+    var out = [];
+    // stations: [along, gunwale height, half-beam, keel height]
+    var S = [[-2.50, 1.02, 0.15, 0.46], [-1.25, 0.70, 0.56, 0.10],
+             [0.00, 0.60, 0.72, 0.06], [1.25, 0.68, 0.58, 0.09],
+             [2.50, 1.10, 0.13, 0.44]];
+    for (var i = 0; i < S.length - 1; i++) {
+      var a = S[i], b = S[i + 1];
+      for (var sd = -1; sd <= 1; sd += 2) {
+        tri3(out, a[0], a[3], a[2] * sd, b[0], b[3], b[2] * sd, b[0], b[1], b[2] * sd);
+        tri3(out, a[0], a[3], a[2] * sd, b[0], b[1], b[2] * sd, a[0], a[1], a[2] * sd);
+      }
+      // bottom strake closes the hull so no star shows through her
+      tri3(out, a[0], a[3], -a[2], b[0], b[3], -b[2], b[0], b[3], b[2]);
+      tri3(out, a[0], a[3], -a[2], b[0], b[3], b[2], a[0], a[3], a[2]);
+    }
+    // transom
+    var st = S[0];
+    tri3(out, st[0], st[3], -st[2], st[0], st[3], st[2], st[0], st[1], st[2]);
+    tri3(out, st[0], st[3], -st[2], st[0], st[1], st[2], st[0], st[1], -st[2]);
+    var g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(out, 3));
+    var m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color: 0x000103, fog: false, side: THREE.DoubleSide }));
+    m.position.set(8, 0.02, -36);
+    m.rotation.y = -0.05;   // near-broadside to the shore — she lies to her
+                            // rode across the channel, sheer line readable
+    land.add(m);
+    return m;
+  })();
+
+  // The light station: a small wooden pepper-shaker at the FOOT of the
+  // headland, on a rock shelf where the point meets the water — which is
+  // where a channel-entrance light actually stands, and the only placement
+  // that reads: up on the crest the tower drowned in the ridge silhouette
+  // behind it, but here it breaks the sea horizon. The red flasher moves
+  // into its open lantern — gallery, corner posts and a pyramid roof, no
+  // walls, so the glow stays visible from every bearing and the scene still
+  // has exactly one man-made light.
+  (function () {
+    var out = [], X = 8, Z = -1402;
+    // Rock shelf at the point's foot
+    var n = 9;
+    for (var kk = 0; kk < n; kk++) {
+      var a1 = (kk / n) * TAU, a2 = ((kk + 1) / n) * TAU;
+      var r1 = 6.0 * (0.75 + rnd() * 0.5), r2 = 6.0 * (0.75 + rnd() * 0.5);
+      tri3(out, X + Math.cos(a1) * r1, -0.5, Z + Math.sin(a1) * r1,
+                X + Math.cos(a2) * r2, -0.5, Z + Math.sin(a2) * r2,
+                X + 0.8, 1.3, Z - 0.6);
+    }
+    // Tall enough that the lantern clears the wharf deck from the beach —
+    // the wharf spans the channel-mouth bearings, and a low light drowned
+    // behind its silhouette. A slim tapered square tower, about 3.7:1.
+    var by = 1.0, ty = 18.2;
+    function ring(hw, y) {
+      return [[X - hw, y, Z - hw], [X + hw, y, Z - hw],
+              [X + hw, y, Z + hw], [X - hw, y, Z + hw]];
+    }
+    var A = ring(2.6, by), B = ring(1.35, ty);
+    for (var i = 0; i < 4; i++) {
+      var j = (i + 1) % 4;
+      tri3(out, A[i][0], A[i][1], A[i][2], A[j][0], A[j][1], A[j][2], B[j][0], B[j][1], B[j][2]);
+      tri3(out, A[i][0], A[i][1], A[i][2], B[j][0], B[j][1], B[j][2], B[i][0], B[i][1], B[i][2]);
+    }
+    // Gallery slab
+    box(out, X, ty, Z, 3.9, 0.45, 3.9, 0);
+    // Open lantern: four corner posts, roof held above the light
+    for (var px = -1; px <= 1; px += 2) for (var pz = -1; pz <= 1; pz += 2)
+      box(out, X + px * 1.05, ty + 0.45, Z + pz * 1.05, 0.26, 1.55, 0.26, 0);
+    var R = ring(1.45, ty + 2.0), apex = [X, ty + 3.15, Z];
+    for (var k = 0; k < 4; k++) {
+      var k2 = (k + 1) % 4;
+      tri3(out, R[k][0], R[k][1], R[k][2], R[k2][0], R[k2][1], R[k2][2], apex[0], apex[1], apex[2]);
+    }
+    tri3(out, R[0][0], R[0][1], R[0][2], R[1][0], R[1][1], R[1][2], R[2][0], R[2][1], R[2][2]);
+    tri3(out, R[0][0], R[0][1], R[0][2], R[2][0], R[2][1], R[2][2], R[3][0], R[3][1], R[3][2]);
+    var g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(out, 3));
+    land.add(new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color: 0x000308, fog: false, side: THREE.DoubleSide })));
+  })();
 
   // ==========================================================================
   //  5b. LOOKING AROUND
@@ -3505,6 +3726,14 @@
 
     for (var i = 0; i < mats.length; i++) mats[i].uniforms.uTime.value = elapsed;
     oceanMat.uniforms.uTime.value = elapsed;
+
+    // The dory rides the same slow swell the water shader runs on — same
+    // rates, same reduced-motion damping, so she never bobs on flat water.
+    var bobT = elapsed * (REDUCED ? 0.15 : 1.0);
+    var bobA = REDUCED ? 0.3 : 1.0;
+    dory.rotation.z = Math.sin(bobT * 0.20 + 1.3) * 0.030 * bobA;
+    dory.rotation.x = Math.sin(bobT * 0.14 + 0.4) * 0.022 * bobA;
+    dory.position.y = 0.02 + Math.sin(bobT * 0.17 + 0.8) * 0.05 * bobA;
 
     // Channel marker: flash 0.7 s, dark 3.3 s.
     var mph = elapsed % 4.0;
