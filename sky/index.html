@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ONE-SKY-REALSKY-v2.6 :: real star engine integrated into the live tracker.
+<!-- ONE-SKY-REALSKY-v2.7 :: real star engine integrated into the live tracker.
      Base: sky/index.html sha256 ada4f4d53a2863a9711b3d0d4a8c8abca240ae9b2127f29840ba848d53404077
      Star data: HYG Database v4.1 (astronexus.com), CC BY-SA 4.0.
      Soundtrack: "One Sky" (sky/one-sky.m4a), written for this page. -->
@@ -1340,7 +1340,10 @@
       uHorizon: { value: HORIZON_RGB.clone() },
       uMotion:  { value: REDUCED ? 0.15 : 1.0 },
       uFlash:   { value: 0 },
-      uMoon:    { value: 0.6 }   // no moon up, no moonglade. Set every frame.
+      uMoon:    { value: 0.6 },  // no moon up, no moonglade. Set every frame.
+      uDay:     { value: 0 },    // 0 night, 1 full daylight
+      uSunAxis: { value: new THREE.Vector2(0, -1) },
+      uSunUp:   { value: 0 }     // sun above the horizon, for the sun sheen
     },
     vertexShader: [
       'varying vec3 vWorld;',
@@ -1351,12 +1354,30 @@
       'varying vec3 vWorld;',
       'uniform float uTime; uniform vec3 uEye; uniform vec2 uAxis;',
       'uniform vec3 uHorizon; uniform float uMotion; uniform float uFlash;',
-      'uniform float uMoon;',
+      'uniform float uMoon; uniform float uDay; uniform vec2 uSunAxis;',
+      'uniform float uSunUp;',
       'void main(){',
       '  vec2 rel = vWorld.xz - uEye.xz;',
       '  float dist = length(rel);',
       '  vec2 dir = rel / max(dist, 0.001);',
       '  vec3 base = mix(vec3(0.0040,0.0053,0.0105), uHorizon * 0.62, smoothstep(50.0, 4000.0, dist));',
+      // DAYLIGHT. Water is a mirror held nearly edge-on: at your feet you see
+      // down into it and it is dark; toward the horizon the angle goes
+      // grazing, reflectance climbs, and it takes on the sky. That ramp is
+      // the whole reason a bay reads as water and not as asphalt, and
+      // without it the shore had nothing to stand against at noon. Values
+      // are set BELOW the daylight sky the dome shader makes, because the
+      // sea is always darker than what it reflects.
+      // The ramp is SHORT on purpose. Reflectance climbs with the grazing
+      // angle, and from 2 m of eye height the water is already grazing by
+      // about fifteen metres out — so the bay is bright over nearly all of
+      // it and only the few metres at your feet stay dark. A long ramp put
+      // the bright band in a thin line at the horizon and left the rest
+      // reading as tarmac.
+      '  vec3 dayW = mix(vec3(0.030,0.042,0.058), vec3(0.086,0.114,0.174),',
+      '                  smoothstep(2.0, 42.0, dist));',
+      '  dayW = mix(dayW, vec3(0.100,0.132,0.200), smoothstep(200.0, 4000.0, dist));',
+      '  base = mix(base, dayW, uDay);',
       // Long swell — broad, slow, nearly subliminal.
       '  float swell = sin(rel.x * 0.021 + uTime * 0.20 * uMotion)',
       '              * sin(rel.y * 0.017 - uTime * 0.14 * uMotion);',
@@ -1366,7 +1387,7 @@
       // Broad column of reflected moonlight beneath the sparkle, so the
       // glade reads as lit water rather than glints scattered on black.
       '  float glade = pow(max(dot(dir, uAxis), 0.0), 7.0);',
-      '  base += vec3(0.021, 0.024, 0.032) * glade * smoothstep(4200.0, 300.0, dist) * uMoon;',
+      '  base += vec3(0.021, 0.024, 0.032) * glade * smoothstep(4200.0, 300.0, dist) * uMoon * (1.0 - uDay);',
       '  float t = uTime * uMotion;',
       // Two rotated coordinate frames so the sparkle grid never lines up
       // with the screen axes — axis-aligned sin products read as rows of
@@ -1382,10 +1403,21 @@
       // moonglade, which the previous revision proved the hard way.
       '  float near = smoothstep(2400.0, 260.0, dist) * smoothstep(12.0, 58.0, dist);',
       '  near *= mix(0.42, 1.0, smoothstep(90.0, 500.0, dist));',
-      '  base += vec3(0.230, 0.238, 0.262) * band * (s1*0.9 + s2 + s3*0.45) * near * uMoon * (1.0 + uFlash * 2.2);',
+      '  base += vec3(0.230, 0.238, 0.262) * band * (s1*0.9 + s2 + s3*0.45) * near * uMoon',
+      '        * (1.0 - uDay) * (1.0 + uFlash * 2.2);',
       // A bright fireball genuinely lights the water. Kept very low.
-      '  base += vec3(0.009, 0.010, 0.013) * uFlash;',
-      '  base = mix(base, uHorizon * 0.88, smoothstep(3500.0, 4980.0, dist));',
+      '  base += vec3(0.009, 0.010, 0.013) * uFlash * (1.0 - uDay);',
+      // Daylight has its own glitter, and it is nothing like the moon's: a
+      // wide sheen toward the sun with the same sparkle grid riding on it,
+      // strongest when the sun is low. It is the only reason the bay looks
+      // wet at ten in the morning.
+      '  float sunB = pow(max(dot(dir, uSunAxis), 0.0), 5.0);',
+      '  base += vec3(0.052, 0.060, 0.072) * sunB * uDay * uSunUp',
+      '        * smoothstep(4600.0, 200.0, dist);',
+      '  base += vec3(0.115, 0.120, 0.130) * pow(max(dot(dir, uSunAxis), 0.0), 15.0)',
+      '        * (s1*0.9 + s2 + s3*0.45) * near * uDay * uSunUp;',
+      '  base = mix(base, mix(uHorizon * 0.88, vec3(0.096,0.128,0.196), uDay),',
+      '             smoothstep(3500.0, 4980.0, dist));',
       '  gl_FragColor = vec4(base, 1.0);',
       '}'
     ].join('\n')
@@ -3697,6 +3729,17 @@
     var twi = Math.max(0, Math.min(1, (sunAlt + 18 * D2R) / (18 * D2R)));
     domeMat.uniforms.uTwi.value = twi;
     domeMat.uniforms.uDay.value = Math.max(0, Math.min(1, (sunAlt + 4 * D2R) / (10 * D2R)));
+
+    // The sea lights with the sky, on the dome's own curve so the two never
+    // disagree — a black bay under a blue sky was the tell that the water
+    // had been tuned for night only. The sheen tracks the real sun bearing
+    // and only exists while the sun is actually up.
+    oceanMat.uniforms.uDay.value = domeMat.uniforms.uDay.value;
+    if (Math.abs(SUN_DIR.x) + Math.abs(SUN_DIR.z) > 1e-6) {
+      oceanMat.uniforms.uSunAxis.value.set(SUN_DIR.x, SUN_DIR.z).normalize();
+    }
+    oceanMat.uniforms.uSunUp.value =
+      Math.max(0, Math.min(1, sunAlt / (8 * D2R)));
 
     // Stars wash out through nautical twilight, the way they really do.
     var starDay = Math.max(0, Math.min(1, (sunAlt + 12 * D2R) / (10.3 * D2R)));
