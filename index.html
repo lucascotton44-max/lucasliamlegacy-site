@@ -428,11 +428,17 @@ button:focus-visible {
 
 .cinematic-interlude img {
   width: 100%;
-  height: auto;
-  aspect-ratio: 239 / 100;
+  height: clamp(11rem, 16vw, 14rem);
   object-fit: cover;
   object-position: 50% 38%;
   background: var(--ink);
+}
+
+@media (max-width: 720px) {
+  .cinematic-interlude img {
+    height: auto;
+    aspect-ratio: 239 / 100;
+  }
 }
 
 /* &mdash;&mdash;&mdash; MARQUEE / CREDENTIAL STRIP &mdash;&mdash;&mdash; */
