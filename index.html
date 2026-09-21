@@ -853,6 +853,15 @@ button:focus-visible {
   transform: scale(1.07);
 }
 
+.aew__portal:focus-visible {
+  outline: none;
+}
+
+.aew__portal:focus-visible .aew__portal-core {
+  outline: 3px solid var(--ember);
+  outline-offset: 4px;
+}
+
 .aew__portal[aria-pressed="true"] .aew__portal-core {
   background: var(--paper);
   color: var(--ink);
