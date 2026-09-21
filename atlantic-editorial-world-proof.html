@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Atlantic Editorial World — Responsive Motion Proof</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0f1519;
+  --ink-soft: #1c252b;
+  --paper: #f4efe6;
+  --paper-warm: #ebe4d6;
+  --paper-dim: #e2dac9;
+  --ember: #b8502e;
+  --ember-deep: #8a3a20;
+  --sea: #2d4a52;
+  --fog: #6b665e;
+  --line: rgba(15, 21, 25, 0.12);
+  --line-soft: rgba(15, 21, 25, 0.06);
+  --display: 'Fraunces', 'Times New Roman', serif;
+  --body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --edge: clamp(1rem, 4vw, 4rem);
+  --max: 1440px;
+  --px: 0px;
+  --py: 0px;
+}
+* { box-sizing: border-box; }
+html { background: var(--paper); color: var(--ink); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+body { margin: 0; font-family: var(--body); background: var(--paper); color: var(--ink); overflow-x: hidden; }
+button, a { font: inherit; color: inherit; }
+button { cursor: pointer; }
+button:focus-visible, a:focus-visible { outline: 3px solid var(--ember); outline-offset: 4px; }
+.proof-shell { max-width: var(--max); margin: 0 auto; min-height: 100vh; }
+.proof-bar {
+  display: flex; align-items: center; gap: .5rem; flex-wrap: wrap;
+  padding: .75rem var(--edge); border-bottom: 1px solid var(--line);
+  background: var(--paper-warm);
+  position: sticky; top: 0; z-index: 50;
+}
+.proof-tag {
+  font-family: var(--mono); font-size: .66rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--ember-deep); margin-right: .25rem;
+}
+.proof-step {
+  min-height: 36px; padding: .45rem .65rem; border: 1px solid var(--line);
+  background: var(--paper); font-family: var(--mono); font-size: .6rem;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--fog);
+}
+.proof-step[aria-current="step"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.mast {
+  padding: clamp(2.5rem, 7vw, 6.5rem) var(--edge) clamp(2rem, 5vw, 4rem);
+  border-bottom: 1px solid var(--line); position: relative;
+}
+.mast-meta {
+  font-family: var(--mono); font-size: .66rem; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--fog); margin-bottom: clamp(1rem, 2vw, 1.5rem);
+}
+.mast h1 {
+  margin: 0; max-width: 12ch; font-family: var(--display); font-weight: 300;
+  font-variation-settings: "opsz" 144;
+  font-size: clamp(4.1rem, 10vw, 9.5rem); line-height: .82; letter-spacing: -.055em;
+}
+.mast h1 em { color: var(--ember); font-weight: 400; }
+.mast-bottom {
+  display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(220px, .8fr);
+  gap: 2rem; align-items: end; margin-top: clamp(2rem, 4vw, 4rem);
+}
+.mast-lede { margin: 0; max-width: 44ch; font-family: var(--display); font-size: clamp(1rem, 1.5vw, 1.25rem); line-height: 1.5; }
+.mast-hint {
+  justify-self: end; font-family: var(--mono); font-size: .62rem; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--fog);
+}
+.chapter {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, .55fr);
+  gap: 2rem; align-items: end; padding: clamp(1.25rem, 2.4vw, 2rem) var(--edge);
+  background: var(--paper-warm); border-bottom: 1px solid var(--line);
+}
+.chapter-label {
+  font-family: var(--mono); font-size: .62rem; letter-spacing: .13em; text-transform: uppercase;
+  color: var(--fog); margin-bottom: .6rem;
+}
+.chapter h2 {
+  margin: 0; font-family: var(--display); font-size: clamp(2.1rem, 4vw, 4rem);
+  line-height: .95; font-weight: 300; font-variation-settings: "opsz" 72;
+}
+.chapter h2 em { color: var(--ember); }
+.chapter p { margin: 0; font-size: .8rem; line-height: 1.55; color: var(--fog); max-width: 40ch; }
+.story-world {
+  position: relative; height: clamp(360px, 48vw, 610px); overflow: hidden;
+  background: var(--ink); color: var(--paper); isolation: isolate;
+  transition: height .7s cubic-bezier(.2,.75,.15,1);
+}
+[data-mode="editorial"] .story-world, [data-mode="cinema"] .story-world { height: clamp(105px, 13vw, 155px); }
+[data-mode="archive"] .story-world { height: 88px; }
+.sky {
+  position: absolute; inset: -18px;
+  background: radial-gradient(circle at 73% 18%, rgba(184,80,46,.34), transparent 15%),
+              linear-gradient(180deg, #16272e 0%, #2c464d 47%, #65736f 76%, #10171b 100%);
+  transform: translate(calc(var(--px) * .16), calc(var(--py) * .12));
+  transition: transform .6s cubic-bezier(.2,.7,.2,1), background .45s ease;
+}
+.story-world[data-scene="1"] .sky {
+  background: radial-gradient(circle at 25% 18%, rgba(184,80,46,.20), transparent 16%),
+              linear-gradient(180deg, #1e3036 0%, #40565a 48%, #777d71 75%, #10171b 100%);
+}
+.story-world[data-scene="2"] .sky {
+  background: radial-gradient(circle at 62% 17%, rgba(184,80,46,.23), transparent 14%),
+              linear-gradient(180deg, #17282f 0%, #344a50 48%, #606e69 75%, #10171b 100%);
+}
+.story-world[data-scene="3"] .sky {
+  background: radial-gradient(circle at 74% 20%, rgba(211,122,85,.48), transparent 10%),
+              linear-gradient(180deg, #0f1e25 0%, #213a43 48%, #4c615f 76%, #10171b 100%);
+}
+.far {
+  position: absolute; right: -8%; bottom: 20%; width: 60%; height: 20%;
+  background: #203238;
+  clip-path: polygon(0 72%,18% 51%,35% 63%,51% 37%,67% 53%,82% 27%,100% 44%,100% 100%,0 100%);
+  transform: translate(calc(var(--px) * -.22), calc(var(--py) * -.12));
+  transition: transform .62s cubic-bezier(.2,.7,.2,1);
+}
+.shore {
+  position: absolute; left: -9%; bottom: 12%; width: 77%; height: 35%;
+  background: #111b1f;
+  clip-path: polygon(0 50%,17% 37%,31% 42%,43% 19%,55% 34%,70% 14%,82% 25%,100% 5%,100% 100%,0 100%);
+  transform: translate(calc(var(--px) * .34), calc(var(--py) * .18));
+  transition: transform .52s cubic-bezier(.2,.7,.2,1);
+}
+.water {
+  position: absolute; left: -12px; right: -12px; bottom: -8px; height: 36%;
+  background: linear-gradient(180deg, rgba(38,67,73,.42), #10191d);
+  transform: translate(calc(var(--px) * .08), calc(var(--py) * .05));
+  transition: transform .7s ease;
+}
+.fog {
+  position: absolute; border-radius: 50%; filter: blur(24px); background: rgba(244,239,230,.08);
+  pointer-events: none; transition: transform .8s ease;
+}
+.fog-a { width: 49%; height: 16%; left: -8%; top: 34%; transform: translate(calc(var(--px) * -.3), calc(var(--py) * -.15)); }
+.fog-b { width: 43%; height: 14%; right: -7%; top: 47%; transform: translate(calc(var(--px) * .24), calc(var(--py) * .12)); }
+.world-title {
+  position: absolute; z-index: 5; left: var(--edge); top: clamp(1rem, 2vw, 1.75rem);
+  transition: transform .55s ease, opacity .4s ease;
+}
+.world-title span {
+  display: block; margin-bottom: .55rem; font-family: var(--mono); font-size: .6rem;
+  letter-spacing: .12em; text-transform: uppercase; color: #c6b6a8;
+}
+.world-title strong {
+  display: block; max-width: 8ch; font-family: var(--display); font-size: clamp(2rem, 5.8vw, 5.2rem);
+  line-height: .9; font-weight: 300; font-variation-settings: "opsz" 96;
+}
+.world-title em { color: #d37a55; }
+.world-status {
+  position: absolute; z-index: 5; right: var(--edge); top: clamp(1rem, 2vw, 1.75rem);
+  font-family: var(--mono); font-size: .55rem; letter-spacing: .1em; text-transform: uppercase; color: #aca49a;
+}
+[data-mode="editorial"] .world-title, [data-mode="cinema"] .world-title, [data-mode="archive"] .world-title { opacity: .72; transform: translateY(-4px); }
+.constellation {
+  position: absolute; z-index: 7; left: 0; right: 0; top: 23%; bottom: 6%;
+  transition: opacity .34s ease, transform .58s cubic-bezier(.2,.8,.2,1);
+}
+[data-mode="editorial"] .constellation, [data-mode="cinema"] .constellation, [data-mode="archive"] .constellation {
+  opacity: 0; transform: scale(.97) translateY(-10px); pointer-events: none;
+}
+.links { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.links path { fill: none; stroke: rgba(244,239,230,.18); stroke-width: 1; stroke-dasharray: 3 5; }
+.portal {
+  position: absolute; min-width: 48px; min-height: 48px; border: 0; background: transparent;
+  color: var(--paper); padding: 0; z-index: 2;
+}
+.portal-core {
+  position: relative; width: 52px; height: 52px; margin: 0 auto; border-radius: 50%;
+  border: 1px solid rgba(244,239,230,.58); background: rgba(15,21,25,.72);
+  display: grid; place-items: center; font-family: var(--mono); font-size: .62rem;
+  transition: transform .28s cubic-bezier(.2,.8,.2,1), background .24s ease, border-color .24s ease, opacity .24s ease;
+}
+.portal-core::after {
+  content: ''; position: absolute; inset: -8px; border-radius: 50%; border: 1px solid transparent;
+  opacity: 0; transition: border-color .2s ease, transform .45s ease, opacity .45s ease;
+}
+.portal-label {
+  display: block; margin-top: .38rem; font-family: var(--mono); font-size: .55rem;
+  letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; color: #e8e1d7;
+  text-shadow: 0 1px 3px #10171b;
+}
+.portal:hover .portal-core, .portal:focus-visible .portal-core { transform: scale(1.07); }
+.portal[aria-pressed="true"] .portal-core {
+  background: var(--paper); color: var(--ink); border-color: var(--paper);
+  transform: scale(1.12); box-shadow: 0 0 0 5px rgba(244,239,230,.1);
+}
+.portal[aria-pressed="true"] .portal-core::after { border-color: rgba(244,239,230,.82); opacity: 1; transform: scale(1.06); }
+.portal[aria-pressed="true"] .portal-label { color: #fff; font-weight: 600; }
+.story-world.selecting .portal:not([aria-pressed="true"]) .portal-core { opacity: .5; transform: scale(.92); }
+.story-world.selecting .portal[aria-pressed="true"] .portal-core::after { transform: scale(1.45); opacity: 0; }
+.p0 { left: 12%; bottom: 18%; }
+.p1 { left: 38%; top: 14%; }
+.p2 { right: 11%; bottom: 17%; }
+.p3 { right: 28%; top: 2%; }
+
+.context {
+  display: grid; grid-template-columns: minmax(0,1.35fr) minmax(250px,.65fr);
+  background: var(--paper); border-bottom: 1px solid var(--line);
+  max-height: 310px; overflow: hidden; opacity: 1;
+  transition: max-height .62s ease, opacity .32s ease;
+}
+[data-mode="editorial"] .context, [data-mode="cinema"] .context, [data-mode="archive"] .context { max-height: 0; opacity: 0; border: 0; }
+.story-copy { padding: clamp(1.15rem, 2.4vw, 2rem) var(--edge); }
+.story-copy .meta, .editorial-head .meta {
+  margin-bottom: .5rem; font-family: var(--mono); font-size: .6rem;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--ember-deep);
+}
+.story-copy h3, .editorial-head h3 {
+  margin: 0; font-family: var(--display); font-size: clamp(2rem, 4vw, 3.75rem);
+  line-height: .95; font-weight: 300; font-variation-settings: "opsz" 72;
+}
+.story-copy p {
+  margin: .65rem 0 0; max-width: 62ch; font-size: .82rem; line-height: 1.58; color: var(--fog);
+}
+.action-row { display: flex; gap: .55rem; flex-wrap: wrap; margin-top: 1rem; }
+.action {
+  min-height: 44px; padding: .65rem .85rem; border: 1px solid var(--ink);
+  background: transparent; font-family: var(--mono); font-size: .6rem;
+  letter-spacing: .09em; text-transform: uppercase;
+}
+.action-primary { background: var(--ink); color: var(--paper); }
+.index {
+  padding: clamp(1rem, 2vw, 1.4rem); border-left: 1px solid var(--line);
+}
+.index-label { margin-bottom: .45rem; font-family: var(--mono); font-size: .56rem; letter-spacing: .1em; text-transform: uppercase; color: var(--fog); }
+.index button {
+  width: 100%; min-height: 42px; border: 0; border-top: 1px solid var(--line);
+  background: transparent; padding: .55rem .15rem; text-align: left;
+  display: grid; grid-template-columns: 28px 1fr auto; gap: .45rem; align-items: center;
+}
+.index button:last-child { border-bottom: 1px solid var(--line); }
+.index-num, .index-state { font-family: var(--mono); font-size: .55rem; letter-spacing: .07em; text-transform: uppercase; color: var(--fog); }
+.index-name { font-family: var(--display); font-size: 1rem; }
+.index button[aria-selected="true"] .index-name { color: var(--ember-deep); }
+.index button[aria-selected="true"] .index-state::after { content: 'Active'; color: var(--ember-deep); }
+.index button:not([aria-selected="true"]) .index-state::after { content: 'View'; }
+
+.editorial {
+  display: grid; grid-template-columns: minmax(0,1fr) minmax(230px,.42fr);
+  max-height: 0; overflow: hidden; opacity: 0; transform: translateY(22px);
+  background: var(--paper);
+  transition: max-height .72s cubic-bezier(.2,.75,.15,1), opacity .36s ease, transform .72s cubic-bezier(.2,.75,.15,1);
+}
+[data-mode="editorial"] .editorial, [data-mode="cinema"] .editorial {
+  max-height: 290px; opacity: 1; transform: translateY(0); border-bottom: 1px solid var(--line);
+}
+[data-mode="cinema"] .editorial { max-height: 122px; }
+.editorial-head { padding: clamp(1.15rem, 2.4vw, 2rem) var(--edge); }
+.editorial-head p { margin: .65rem 0 0; max-width: 58ch; font-size: .8rem; line-height: 1.55; color: var(--fog); }
+[data-mode="cinema"] .editorial-head p { display: none; }
+.editorial-action {
+  border-left: 1px solid var(--line); padding: clamp(1rem, 2vw, 1.35rem);
+  display: flex; flex-direction: column; justify-content: flex-end;
+}
+.editorial-action span {
+  margin-bottom: .6rem; font-family: var(--mono); font-size: .56rem;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--fog);
+}
+.editorial-action button {
+  min-height: 44px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper);
+  padding: .65rem .8rem; font-family: var(--mono); font-size: .59rem; letter-spacing: .08em; text-transform: uppercase;
+}
+
+.cinema {
+  display: grid; grid-template-columns: minmax(0,1.45fr) minmax(240px,.55fr);
+  max-height: 0; overflow: hidden; opacity: 0; transform: translateY(16px);
+  background: var(--ink); color: var(--paper);
+  transition: max-height .82s cubic-bezier(.2,.8,.15,1), opacity .38s ease, transform .72s ease;
+}
+[data-mode="cinema"] .cinema { max-height: 510px; opacity: 1; transform: translateY(0); }
+.cinema-media {
+  position: relative; min-height: 335px; overflow: hidden;
+  background: linear-gradient(120deg,#304950,#a9775e 58%,#263d42);
+}
+.cinema[data-scene="1"] .cinema-media { background: linear-gradient(120deg,#273c43,#6d7c74 55%,#ab9d81); }
+.cinema[data-scene="2"] .cinema-media { background: linear-gradient(120deg,#172a31,#52615b 52%,#80543e); }
+.cinema[data-scene="3"] .cinema-media { background: radial-gradient(circle at 73% 27%,#d37a55 0 3%,transparent 4%),linear-gradient(130deg,#111e24,#29464d 55%,#526762); }
+.cinema-media::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 35%, rgba(16,23,27,.58));
+  transform: scale(1.035); transition: transform 1.7s cubic-bezier(.15,.7,.2,1);
+}
+[data-mode="cinema"] .cinema-media::before { transform: scale(1); }
+.cinema-label {
+  position: absolute; left: var(--edge); bottom: 1rem; z-index: 2;
+  font-family: var(--mono); font-size: .57rem; letter-spacing: .1em; text-transform: uppercase; color: var(--paper-dim);
+}
+.cinema-copy { padding: clamp(1.25rem, 2.6vw, 2.25rem); display: flex; flex-direction: column; justify-content: flex-end; }
+.cinema-copy .meta {
+  margin-bottom: .6rem; font-family: var(--mono); font-size: .57rem; letter-spacing: .1em; text-transform: uppercase; color: #d37a55;
+}
+.cinema-copy h4 { margin: 0; font-family: var(--display); font-size: clamp(2rem, 3.4vw, 3.2rem); line-height: .95; font-weight: 300; }
+.cinema-copy p { margin: .7rem 0 0; font-size: .78rem; line-height: 1.58; color: var(--paper-dim); }
+.cinema-copy button {
+  min-height: 44px; margin-top: 1.1rem; border: 1px solid rgba(244,239,230,.45);
+  background: transparent; color: var(--paper); padding: .7rem .8rem; text-align: left;
+  font-family: var(--mono); font-size: .58rem; letter-spacing: .08em; text-transform: uppercase;
+}
+
+.archive {
+  max-height: 0; overflow: hidden; opacity: 0; transform: translateY(18px);
+  padding: 0 var(--edge); background: var(--paper);
+  transition: max-height .7s cubic-bezier(.2,.8,.15,1), opacity .38s ease, transform .7s ease;
+}
+[data-mode="archive"] .archive { max-height: 450px; opacity: 1; transform: translateY(0); padding-bottom: clamp(1.4rem, 3vw, 2.5rem); }
+.archive-head {
+  display: flex; justify-content: space-between; gap: 1rem; align-items: center; flex-wrap: wrap;
+  padding: clamp(1.2rem, 2vw, 1.7rem) 0 .75rem;
+}
+.archive-head strong { font-family: var(--display); font-size: 1.35rem; font-weight: 400; }
+.archive-head span { font-family: var(--mono); font-size: .55rem; letter-spacing: .1em; text-transform: uppercase; color: var(--fog); }
+.records { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); border-left: 1px solid var(--line); }
+.record {
+  min-height: 112px; padding: .9rem .75rem; border: 0; border-top: 1px solid var(--line);
+  border-right: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  background: transparent; text-align: left;
+}
+.record .num { margin-bottom: 1rem; font-family: var(--mono); font-size: .55rem; color: var(--fog); letter-spacing: .08em; text-transform: uppercase; }
+.record h5 { margin: 0 0 .3rem; font-family: var(--display); font-size: 1.05rem; font-weight: 400; line-height: 1.05; }
+.record small { font-size: .63rem; color: var(--fog); }
+.record[aria-selected="true"] { background: var(--ink); color: var(--paper); }
+.record[aria-selected="true"] .num, .record[aria-selected="true"] small { color: #bdb4a8; }
+.archive-actions {
+  display: flex; justify-content: space-between; gap: 1rem; align-items: center; flex-wrap: wrap;
+  padding-top: .9rem;
+}
+.archive-actions p { margin: 0; max-width: 58ch; font-size: .72rem; line-height: 1.5; color: var(--fog); }
+.archive-actions button {
+  min-height: 44px; padding: .65rem .85rem; border: 1px solid var(--ink); background: transparent;
+  font-family: var(--mono); font-size: .58rem; letter-spacing: .08em; text-transform: uppercase;
+}
+.release {
+  padding: clamp(1.15rem, 2.5vw, 2rem) var(--edge); background: var(--paper-warm);
+  display: flex; justify-content: space-between; gap: 1.5rem; align-items: end; flex-wrap: wrap;
+}
+.release strong { max-width: 27ch; font-family: var(--display); font-size: clamp(1.35rem, 2.3vw, 2.2rem); line-height: 1.08; font-weight: 400; }
+.release span { max-width: 44ch; font-family: var(--mono); font-size: .55rem; line-height: 1.5; letter-spacing: .09em; text-transform: uppercase; color: var(--fog); }
+
+@media (max-width: 900px) {
+  .mast-bottom, .chapter { grid-template-columns: 1fr; }
+  .mast-hint { justify-self: start; }
+  .context { grid-template-columns: minmax(0,1fr) minmax(220px,.7fr); }
+  .cinema { grid-template-columns: minmax(0,1.25fr) minmax(220px,.75fr); }
+}
+@media (max-width: 720px) {
+  .proof-bar { position: static; }
+  .story-world { height: 430px; }
+  [data-mode="editorial"] .story-world, [data-mode="cinema"] .story-world, [data-mode="archive"] .story-world { height: 102px; }
+  .context, .editorial, .cinema { grid-template-columns: 1fr; }
+  .index, .editorial-action { border-left: 0; border-top: 1px solid var(--line); }
+  .index { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .index-label { grid-column: 1 / -1; }
+  .index button { min-height: 48px; }
+  [data-mode="editorial"] .editorial { max-height: 410px; }
+  [data-mode="cinema"] .editorial { max-height: 195px; }
+  [data-mode="cinema"] .cinema { max-height: 690px; }
+  .cinema-media { min-height: 230px; }
+  .records { grid-template-columns: 1fr 1fr; }
+  [data-mode="archive"] .archive { max-height: 610px; }
+  .p0 { left: 7%; bottom: 17%; }
+  .p1 { left: 34%; top: 19%; }
+  .p2 { right: 6%; bottom: 17%; }
+  .p3 { right: 20%; top: 2%; }
+  .world-status { display: none; }
+}
+@media (max-width: 430px) {
+  :root { --edge: 1rem; }
+  .proof-bar { padding: .7rem 1rem; }
+  .proof-step { flex: 1 1 calc(50% - .5rem); }
+  .mast { padding-top: 2.2rem; }
+  .mast h1 { font-size: clamp(3.75rem, 19vw, 5.2rem); }
+  .story-world { height: 455px; }
+  .world-title strong { font-size: clamp(2.15rem, 12vw, 3.2rem); }
+  .portal-core { width: 48px; height: 48px; }
+  .p0 { left: 4%; bottom: 16%; }
+  .p1 { left: 30%; top: 23%; }
+  .p2 { right: 3%; bottom: 16%; }
+  .p3 { right: 17%; top: 5%; }
+  .story-copy h3, .editorial-head h3 { font-size: 2.35rem; }
+  .index { padding: .8rem 1rem; }
+  .record { min-height: 102px; }
+}
+@media (max-width: 375px) {
+  .proof-step { flex-basis: 100%; }
+  .story-world { height: 470px; }
+  .portal-label { font-size: .52rem; }
+  .p0 { left: 2%; }
+  .p1 { left: 28%; top: 25%; }
+  .p2 { right: 1%; }
+  .p3 { right: 15%; top: 6%; }
+  .records { grid-template-columns: 1fr; }
+  [data-mode="archive"] .archive { max-height: 820px; }
+}
+@media (hover: none), (pointer: coarse) {
+  .sky, .far, .shore, .water, .fog { transform: none !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+  :root { --px: 0px; --py: 0px; }
+}
+</style>
+</head>
+<body>
+<main id="motionProof" class="proof-shell" data-mode="world">
+  <div class="proof-bar" aria-label="Gate F proof stages">
+    <span class="proof-tag">Gate F · Responsive implementation proof</span>
+    <button class="proof-step" type="button" data-jump="world" aria-current="step">01 Spatial field</button>
+    <button class="proof-step" type="button" data-jump="editorial">02 Editorial transition</button>
+    <button class="proof-step" type="button" data-jump="cinema">03 Cinematic record</button>
+    <button class="proof-step" type="button" data-jump="archive">04 Archive return</button>
+  </div>
+
+  <section class="mast">
+    <div class="mast-meta">Cape Breton · St. Peter's, NS</div>
+    <h1>Lucas<br><em>&amp; Liam</em><br>Legacy.</h1>
+    <div class="mast-bottom">
+      <p class="mast-lede">Brand films, documentary storytelling, live-event production, and campaign media built for Atlantic Canada.</p>
+      <span class="mast-hint">Prototype only · placeholder media</span>
+    </div>
+  </section>
+
+  <section class="chapter">
+    <div>
+      <div class="chapter-label">004 · Selected work</div>
+      <h2>Stories live <em>somewhere.</em></h2>
+    </div>
+    <p>The Atlantic field carries atmosphere. The archive preserves clarity. Cinema appears only after deliberate selection.</p>
+  </section>
+
+  <section class="story-world" data-scene="0" aria-label="Atlantic story field">
+    <div class="sky"></div>
+    <div class="fog fog-a"></div>
+    <div class="fog fog-b"></div>
+    <div class="far"></div>
+    <div class="shore"></div>
+    <div class="water"></div>
+    <div class="world-title">
+      <span>Atlantic Index · Story field</span>
+      <strong>Enter by <em>place.</em></strong>
+    </div>
+    <div class="world-status">All portals visible · 04 stories</div>
+    <div class="constellation">
+      <svg class="links" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M17 70 C28 58 36 35 43 30"></path>
+        <path d="M43 30 C57 19 65 16 70 15"></path>
+        <path d="M70 15 C76 34 82 57 86 71"></path>
+      </svg>
+      <button class="portal p0" type="button" data-scene="0" aria-pressed="true"><span class="portal-core">01</span><span class="portal-label">Land</span></button>
+      <button class="portal p1" type="button" data-scene="1" aria-pressed="false"><span class="portal-core">02</span><span class="portal-label">Canal</span></button>
+      <button class="portal p2" type="button" data-scene="2" aria-pressed="false"><span class="portal-core">03</span><span class="portal-label">Live</span></button>
+      <button class="portal p3" type="button" data-scene="3" aria-pressed="false"><span class="portal-core">04</span><span class="portal-label">ACU</span></button>
+    </div>
+  </section>
+
+  <section class="context">
+    <div class="story-copy">
+      <div class="meta">Record 001 · Tourism / place</div>
+      <h3>The Land Yacht</h3>
+      <p>A place-based production record. Select a portal first, then deliberately move from the spatial field into the editorial record.</p>
+      <div class="action-row">
+        <button class="action action-primary" type="button" data-focus>Focus selection →</button>
+        <button class="action" type="button" data-next>Next story</button>
+      </div>
+    </div>
+    <div class="index">
+      <div class="index-label">Story index · direct access</div>
+      <button type="button" data-scene="0" aria-selected="true"><span class="index-num">01</span><span class="index-name">Land Yacht</span><span class="index-state"></span></button>
+      <button type="button" data-scene="1" aria-selected="false"><span class="index-num">02</span><span class="index-name">Heritage</span><span class="index-state"></span></button>
+      <button type="button" data-scene="2" aria-selected="false"><span class="index-num">03</span><span class="index-name">Harbour Wars</span><span class="index-state"></span></button>
+      <button type="button" data-scene="3" aria-selected="false"><span class="index-num">04</span><span class="index-name">Atlantic Cinematic Universe</span><span class="index-state"></span></button>
+    </div>
+  </section>
+
+  <section class="editorial" aria-live="polite">
+    <div class="editorial-head">
+      <div class="meta">Record 001 · Tourism / place</div>
+      <h3>The Land Yacht</h3>
+      <p>The atmospheric field compresses into a quiet horizon while the chosen record takes editorial control. Orientation stays intact.</p>
+    </div>
+    <div class="editorial-action">
+      <span>Selected record · ready</span>
+      <button type="button" data-open>Open cinematic record →</button>
+    </div>
+  </section>
+
+  <section class="cinema" data-scene="0">
+    <div class="cinema-media"><div class="cinema-label">Placeholder cinematic frame · no real media</div></div>
+    <div class="cinema-copy">
+      <div class="meta">Film spine · selected record</div>
+      <h4>The story opens.</h4>
+      <p>The record expands only after explicit intent. This proof tests responsive choreography and state clarity without adding production footage.</p>
+      <button type="button" data-return>Return cleanly to archive →</button>
+    </div>
+  </section>
+
+  <section class="archive">
+    <div class="archive-head">
+      <strong>Studio Archive</strong>
+      <span>Orientation restored · same four records</span>
+    </div>
+    <div class="records">
+      <button class="record" type="button" data-scene="0" aria-selected="true"><div class="num">001</div><h5>The Land Yacht</h5><small>Tourism / place</small></button>
+      <button class="record" type="button" data-scene="1" aria-selected="false"><div class="num">002</div><h5>Heritage</h5><small>Canal / archive</small></button>
+      <button class="record" type="button" data-scene="2" aria-selected="false"><div class="num">003</div><h5>Harbour Wars</h5><small>Live / community</small></button>
+      <button class="record" type="button" data-scene="3" aria-selected="false"><div class="num">004</div><h5>Atlantic Cinematic Universe</h5><small>Interactive / storyworld</small></button>
+    </div>
+    <div class="archive-actions">
+      <p>The cinematic layer has fully released. The visitor lands in the stable archive rather than being dropped back into an effects-heavy scene.</p>
+      <button type="button" data-reset>Return to story field</button>
+    </div>
+  </section>
+
+  <div class="release">
+    <strong>Motion should clarify state, not advertise itself.</strong>
+    <span>Depth → selection → compression → expansion → release</span>
+  </div>
+</main>
+
+<script>
+(function () {
+  var root = document.getElementById('motionProof');
+  var world = root.querySelector('.story-world');
+  var story = root.querySelector('.story-copy');
+  var editorial = root.querySelector('.editorial');
+  var cinema = root.querySelector('.cinema');
+  var portals = Array.prototype.slice.call(root.querySelectorAll('.portal'));
+  var selectors = Array.prototype.slice.call(root.querySelectorAll('.index button, .record'));
+  var stageButtons = Array.prototype.slice.call(root.querySelectorAll('[data-jump]'));
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var active = 0;
+  var selectTimer = null;
+
+  var records = [
+    ['Record 001 · Tourism / place', 'The Land Yacht', 'A place-based production record. Select a portal first, then deliberately move from the spatial field into the editorial record.'],
+    ['Record 002 · Heritage / documentary', 'St. Peter\'s Canal', 'Place, archive material and documentary storytelling remain connected without turning historical work into a conventional portfolio card.'],
+    ['Record 003 · Live / community', 'Harbour Wars', 'Live production becomes a community record inside the same system: immediate in the field, organized in the archive and available for cinematic expansion.'],
+    ['Record 004 · Atlantic Cinematic Universe', 'Atlantic Cinematic Universe', 'The fictional layer can become more expressive while remaining anchored to the same editorial navigation system.']
+  ];
+
+  function setMode(mode) {
+    root.setAttribute('data-mode', mode);
+    stageButtons.forEach(function (button) {
+      if (button.getAttribute('data-jump') === mode) {
+        button.setAttribute('aria-current', 'step');
+      } else {
+        button.removeAttribute('aria-current');
+      }
+    });
+  }
+
+  function setScene(index, animate) {
+    active = Math.max(0, Math.min(3, Number(index) || 0));
+    world.setAttribute('data-scene', String(active));
+    cinema.setAttribute('data-scene', String(active));
+
+    portals.forEach(function (portal, i) {
+      portal.setAttribute('aria-pressed', String(i === active));
+    });
+
+    selectors.forEach(function (button) {
+      button.setAttribute('aria-selected', String(Number(button.getAttribute('data-scene')) === active));
+    });
+
+    story.querySelector('.meta').textContent = records[active][0];
+    story.querySelector('h3').textContent = records[active][1];
+    story.querySelector('p').textContent = records[active][2];
+    editorial.querySelector('.meta').textContent = records[active][0];
+    editorial.querySelector('h3').textContent = records[active][1];
+
+    if (animate && !reduceMotion) {
+      world.classList.add('selecting');
+      if (selectTimer) window.clearTimeout(selectTimer);
+      selectTimer = window.setTimeout(function () {
+        world.classList.remove('selecting');
+      }, 520);
+    }
+  }
+
+  function resetDepth() {
+    root.style.setProperty('--px', '0px');
+    root.style.setProperty('--py', '0px');
+  }
+
+  if (!reduceMotion && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    world.addEventListener('pointermove', function (event) {
+      if (root.getAttribute('data-mode') !== 'world') return;
+      var rect = world.getBoundingClientRect();
+      var x = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
+      var y = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
+      root.style.setProperty('--px', (x * 9).toFixed(2) + 'px');
+      root.style.setProperty('--py', (y * 6).toFixed(2) + 'px');
+    });
+    world.addEventListener('pointerleave', resetDepth);
+  }
+
+  portals.forEach(function (portal) {
+    portal.addEventListener('click', function () {
+      setScene(portal.getAttribute('data-scene'), true);
+    });
+  });
+
+  selectors.forEach(function (button) {
+    button.addEventListener('click', function () {
+      setScene(button.getAttribute('data-scene'), true);
+      if (root.getAttribute('data-mode') === 'archive') setMode('archive');
+    });
+  });
+
+  story.querySelector('[data-next]').addEventListener('click', function () {
+    setScene((active + 1) % 4, true);
+  });
+
+  story.querySelector('[data-focus]').addEventListener('click', function () {
+    resetDepth();
+    setMode('editorial');
+  });
+
+  editorial.querySelector('[data-open]').addEventListener('click', function () {
+    setMode('cinema');
+  });
+
+  cinema.querySelector('[data-return]').addEventListener('click', function () {
+    setMode('archive');
+  });
+
+  root.querySelector('[data-reset]').addEventListener('click', function () {
+    setMode('world');
+    setScene(active, false);
+    resetDepth();
+    world.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+  });
+
+  stageButtons.forEach(function (button) {
+    button.addEventListener('click', function () {
+      var mode = button.getAttribute('data-jump');
+      if (mode === 'world') {
+        setMode('world');
+      } else if (mode === 'editorial') {
+        setMode('editorial');
+      } else if (mode === 'cinema') {
+        setMode('cinema');
+      } else if (mode === 'archive') {
+        setMode('archive');
+      }
+      resetDepth();
+    });
+  });
+
+  setScene(0, false);
+  setMode('world');
+}());
+</script>
+</body>
+</html>
