@@ -1098,6 +1098,16 @@ button:focus-visible {
   background: linear-gradient(120deg, #304950, #a9775e 58%, #263d42);
 }
 
+.aew__cinema-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+  display: block;
+}
+
 .aew[data-aew-scene="1"] .aew__cinema-visual {
   background: linear-gradient(120deg, #273c43, #6d7c74 55%, #ab9d81);
 }
@@ -2864,7 +2874,8 @@ a.aew__archive-item:hover {
     <div class="aew__panel-inner">
       <div class="aew__cinema">
         <div class="aew__cinema-visual">
-          <span class="aew__cinema-label">Production media slot &middot; placeholder only</span>
+          <img class="aew__cinema-image" src="/work/the-land-yacht/land-yacht-hero.jpg" alt="The Land Yacht on St. Margaret's Bay at dusk, with ACU character Marmalade working at the shoreline." loading="lazy" decoding="async">
+          <span class="aew__cinema-label" data-aew-cinema-label>The Land Yacht &middot; Ingramport, Nova Scotia</span>
         </div>
         <div class="aew__cinema-copy">
           <div class="aew__meta" data-aew-cinema-meta>Film Spine &middot; The Land Yacht</div>
@@ -3345,6 +3356,8 @@ if (aewRoot) {
   const aewEditorialHeading = aewRoot.querySelector('[data-aew-editorial-heading]');
   const aewCinemaMeta = aewRoot.querySelector('[data-aew-cinema-meta]');
   const aewCinemaHeading = aewRoot.querySelector('[data-aew-cinema-heading]');
+  const aewCinemaImage = aewRoot.querySelector('.aew__cinema-image');
+  const aewCinemaLabel = aewRoot.querySelector('[data-aew-cinema-label]');
   const aewArchiveHeading = aewRoot.querySelector('[data-aew-archive-heading]');
   const aewProjectLink = aewRoot.querySelector('[data-aew-project-link]');
   const aewFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -3361,7 +3374,11 @@ if (aewRoot) {
       copy: 'A completed tourism campaign built around a one-of-a-kind stay in Ingramport, Nova Scotia.',
       cinema: 'Film Spine · The Land Yacht',
       href: '/work/the-land-yacht',
-      linkLabel: 'View Case Study'
+      linkLabel: 'View Case Study',
+      assetSrc: '/work/the-land-yacht/land-yacht-hero.jpg',
+      assetAlt: "The Land Yacht on St. Margaret's Bay at dusk, with ACU character Marmalade working at the shoreline.",
+      assetLabel: 'The Land Yacht · Ingramport, Nova Scotia',
+      assetPosition: '50% 38%'
     },
     {
       meta: 'Record 002 · Heritage Documentary · Cape Breton',
@@ -3370,7 +3387,11 @@ if (aewRoot) {
       cinema: "Film Spine · St. Peter's Canal",
       href: 'https://www.youtube.com/watch?v=vFJU9NN8CIw',
       linkLabel: 'Watch the Film',
-      external: true
+      external: true,
+      assetSrc: 'https://img.youtube.com/vi/vFJU9NN8CIw/maxresdefault.jpg',
+      assetAlt: "St. Peter's Canal documentary",
+      assetLabel: "St. Peter's Canal · Cape Breton, Nova Scotia",
+      assetPosition: '50% 50%'
     },
     {
       meta: 'Record 003 · Community Project · Live',
@@ -3378,7 +3399,11 @@ if (aewRoot) {
       copy: 'A live community project connecting Cape Breton and the Maritimes through a shared shooting-star tracker.',
       cinema: 'Film Spine · One Sky',
       href: '/sky/',
-      linkLabel: 'Open One Sky'
+      linkLabel: 'Open One Sky',
+      assetSrc: '/sky/og.png',
+      assetAlt: 'A Cape Breton night sky over the Atlantic, spruce treeline in silhouette beneath the stars.',
+      assetLabel: 'One Sky · Cape Breton & the Maritimes',
+      assetPosition: '50% 50%'
     },
     {
       meta: 'Record 004 · ACU Game Prototype',
@@ -3386,7 +3411,11 @@ if (aewRoot) {
       copy: 'An Atlantic Cinematic Universe game prototype built around real places, local memory, and interactive storytelling.',
       cinema: 'Film Spine · Shoreline Run',
       href: 'shoreline-run.html',
-      linkLabel: 'View Project'
+      linkLabel: 'View Project',
+      assetSrc: '/images/shoreline-run-homepage-tile.png',
+      assetAlt: "Cod B'y and Puffy running across a rugged Atlantic shoreline game world.",
+      assetLabel: 'Shoreline Run · Atlantic Cinematic Universe',
+      assetPosition: '50% 50%'
     }
   ];
 
@@ -3484,6 +3513,11 @@ if (aewRoot) {
     aewEditorialMeta.textContent = record.meta;
     aewEditorialHeading.textContent = record.title;
     aewCinemaMeta.textContent = record.cinema;
+    aewCinemaImage.hidden = false;
+    aewCinemaImage.src = record.assetSrc;
+    aewCinemaImage.alt = record.assetAlt;
+    aewCinemaImage.style.objectPosition = record.assetPosition;
+    aewCinemaLabel.textContent = record.assetLabel;
     aewProjectLink.href = record.href;
     aewProjectLink.firstChild.textContent = record.linkLabel + ' ';
     if (record.external) {
@@ -3518,6 +3552,10 @@ if (aewRoot) {
     selector.addEventListener('click', () => {
       aewSetScene(selector.dataset.aewSelect, true);
     });
+  });
+
+  aewCinemaImage.addEventListener('error', () => {
+    aewCinemaImage.hidden = true;
   });
 
   aewRoot.querySelector('[data-aew-next]').addEventListener('click', () => {
