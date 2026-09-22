@@ -911,6 +911,7 @@ button:focus-visible {
 }
 
 .aew__panel-inner {
+  min-width: 0;
   min-height: 0;
   overflow: hidden;
 }
@@ -1038,16 +1039,16 @@ button:focus-visible {
   font-size: 1.0625rem;
 }
 
-.aew__index button[aria-selected="true"] .aew__index-name {
+.aew__index button[aria-pressed="true"] .aew__index-name {
   color: var(--ember-deep);
 }
 
-.aew__index button[aria-selected="true"] .aew__index-state::after {
+.aew__index button[aria-pressed="true"] .aew__index-state::after {
   content: 'Active';
   color: var(--ember-deep);
 }
 
-.aew__index button:not([aria-selected="true"]) .aew__index-state::after {
+.aew__index button:not([aria-pressed="true"]) .aew__index-state::after {
   content: 'View';
 }
 
@@ -1315,12 +1316,17 @@ a.aew__archive-item:hover {
 
   .aew__index {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0;
   }
 
   .aew__index-label {
     grid-column: 1 / -1;
+  }
+
+  .aew__index button,
+  .aew__index-name {
+    min-width: 0;
   }
 
   .aew__index button {
@@ -2822,10 +2828,10 @@ a.aew__archive-item:hover {
 
         <div class="aew__index">
           <div class="aew__index-label">Story Index &middot; Direct Access</div>
-          <button type="button" data-aew-select="0" aria-selected="true"><span class="aew__index-num">01</span><span class="aew__index-name">The Land Yacht</span><span class="aew__index-state"></span></button>
-          <button type="button" data-aew-select="1" aria-selected="false"><span class="aew__index-num">02</span><span class="aew__index-name">St. Peter's Canal</span><span class="aew__index-state"></span></button>
-          <button type="button" data-aew-select="2" aria-selected="false"><span class="aew__index-num">03</span><span class="aew__index-name">One Sky</span><span class="aew__index-state"></span></button>
-          <button type="button" data-aew-select="3" aria-selected="false"><span class="aew__index-num">04</span><span class="aew__index-name">Shoreline Run</span><span class="aew__index-state"></span></button>
+          <button type="button" data-aew-select="0" aria-pressed="true"><span class="aew__index-num">01</span><span class="aew__index-name">The Land Yacht</span><span class="aew__index-state"></span></button>
+          <button type="button" data-aew-select="1" aria-pressed="false"><span class="aew__index-num">02</span><span class="aew__index-name">St. Peter's Canal</span><span class="aew__index-state"></span></button>
+          <button type="button" data-aew-select="2" aria-pressed="false"><span class="aew__index-num">03</span><span class="aew__index-name">One Sky</span><span class="aew__index-state"></span></button>
+          <button type="button" data-aew-select="3" aria-pressed="false"><span class="aew__index-num">04</span><span class="aew__index-name">Shoreline Run</span><span class="aew__index-state"></span></button>
         </div>
       </div>
     </div>
@@ -3320,6 +3326,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 const aewRoot = document.querySelector('.aew');
 if (aewRoot) {
   const aewWorld = aewRoot.querySelector('.aew__world');
+  const aewConstellation = aewRoot.querySelector('.aew__constellation');
   const aewPanels = Array.from(aewRoot.querySelectorAll('[data-aew-panel]'));
   const aewPortals = Array.from(aewRoot.querySelectorAll('.aew__portal'));
   const aewSelectors = Array.from(aewRoot.querySelectorAll('[data-aew-select]'));
@@ -3390,12 +3397,42 @@ if (aewRoot) {
     });
   }
 
-  function aewSetMode(mode) {
+  function aewSetConstellationState(active) {
+    aewConstellation.inert = !active;
+
+    if (active) {
+      aewConstellation.removeAttribute('aria-hidden');
+    } else {
+      aewConstellation.setAttribute('aria-hidden', 'true');
+    }
+
+    aewPortals.forEach((portal) => {
+      if (active) {
+        portal.removeAttribute('tabindex');
+      } else {
+        portal.setAttribute('tabindex', '-1');
+      }
+    });
+  }
+
+  function aewTransitionTo(mode, focusTarget) {
+    const targetPanel = aewPanels.find((panel) => panel.dataset.aewPanel === mode);
+
+    if (targetPanel) {
+      aewSetPanelState(targetPanel, true);
+    }
+
     aewRoot.dataset.aewMode = mode;
+    aewSetConstellationState(mode === 'world');
+
+    if (focusTarget) {
+      focusTarget.focus({ preventScroll: true });
+    }
+
     aewPanels.forEach((panel) => {
-      const name = panel.dataset.aewPanel;
-      const active = name === mode || (name === 'editorial' && mode === 'cinema');
-      aewSetPanelState(panel, active);
+      if (panel !== targetPanel) {
+        aewSetPanelState(panel, false);
+      }
     });
   }
 
@@ -3421,7 +3458,7 @@ if (aewRoot) {
 
     aewSelectors.forEach((selector) => {
       if (selector.matches('.aew__portal')) return;
-      selector.setAttribute('aria-selected', String(Number(selector.dataset.aewSelect) === aewActive));
+      selector.setAttribute('aria-pressed', String(Number(selector.dataset.aewSelect) === aewActive));
     });
 
     aewRecordMeta.textContent = record.meta;
@@ -3448,13 +3485,14 @@ if (aewRoot) {
     }
   }
 
-  function aewFocus(element) {
-    window.requestAnimationFrame(() => {
-      if (element) element.focus({ preventScroll: true });
-    });
-  }
-
   function aewResetDepth() {
+    if (aewPointerFrame) {
+      window.cancelAnimationFrame(aewPointerFrame);
+      aewPointerFrame = null;
+    }
+
+    aewPointerX = 0;
+    aewPointerY = 0;
     aewWorld.style.setProperty('--aew-px', '0px');
     aewWorld.style.setProperty('--aew-py', '0px');
   }
@@ -3471,24 +3509,20 @@ if (aewRoot) {
 
   aewRoot.querySelector('[data-aew-focus]').addEventListener('click', () => {
     aewResetDepth();
-    aewSetMode('editorial');
-    aewFocus(aewEditorialHeading);
+    aewTransitionTo('editorial', aewEditorialHeading);
   });
 
   aewRoot.querySelector('[data-aew-open-cinema]').addEventListener('click', () => {
-    aewSetMode('cinema');
-    aewFocus(aewCinemaHeading);
+    aewTransitionTo('cinema', aewCinemaHeading);
   });
 
   aewRoot.querySelector('[data-aew-return]').addEventListener('click', () => {
-    aewSetMode('archive');
-    aewFocus(aewArchiveHeading);
+    aewTransitionTo('archive', aewArchiveHeading);
   });
 
   aewRoot.querySelector('[data-aew-reset]').addEventListener('click', () => {
-    aewSetMode('world');
     aewResetDepth();
-    aewFocus(aewPortals[aewActive]);
+    aewTransitionTo('world', aewPortals[aewActive]);
   });
 
   if (!prefersReducedMotion && aewFinePointer) {
@@ -3511,7 +3545,7 @@ if (aewRoot) {
   }
 
   aewSetScene(0, false);
-  aewSetMode('world');
+  aewTransitionTo('world');
 }
 
 </script>
