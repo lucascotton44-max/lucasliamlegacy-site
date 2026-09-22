@@ -948,6 +948,12 @@ button:focus-visible {
   font-variation-settings: "opsz" 72;
 }
 
+.aew__editorial-copy h3:focus,
+.aew__cinema-copy h3:focus,
+.aew__archive-head h3:focus {
+  outline: none;
+}
+
 .aew__record-copy p,
 .aew__editorial-copy p {
   max-width: 62ch;
@@ -1261,7 +1267,16 @@ a.aew__archive-item:hover {
   .aew__context,
   .aew__editorial,
   .aew__cinema {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .aew__record-copy,
+  .aew__index,
+  .aew__editorial-copy,
+  .aew__editorial-action,
+  .aew__cinema-visual,
+  .aew__cinema-copy {
+    min-width: 0;
   }
 
   .aew__index,
@@ -1278,6 +1293,10 @@ a.aew__archive-item:hover {
 @media (max-width: 720px) {
   .aew__world {
     height: 430px;
+  }
+
+  .aew:not([data-aew-mode="world"]) {
+    padding-bottom: 2rem;
   }
 
   .aew:not([data-aew-mode="world"]) .aew__world {
@@ -1306,6 +1325,14 @@ a.aew__archive-item:hover {
 
   .aew__index button {
     min-height: 48px;
+  }
+
+  .aew__editorial-action .aew__button,
+  .aew__cinema-actions .aew__button,
+  .aew__cinema-actions .aew__project-link {
+    width: 100%;
+    max-width: 100%;
+    white-space: normal;
   }
 
   .aew__cinema-visual {
