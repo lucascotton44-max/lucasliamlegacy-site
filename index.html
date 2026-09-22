@@ -949,6 +949,13 @@ button:focus-visible {
   font-variation-settings: "opsz" 72;
 }
 
+.aew__editorial-copy h3,
+.aew__cinema-copy h3,
+.aew__archive-head h3,
+.aew__portal {
+  scroll-margin-top: 5rem;
+}
+
 .aew__editorial-copy h3:focus,
 .aew__cinema-copy h3:focus,
 .aew__archive-head h3:focus {
@@ -3434,6 +3441,16 @@ if (aewRoot) {
         aewSetPanelState(panel, false);
       }
     });
+
+    if (focusTarget) {
+      window.requestAnimationFrame(() => {
+        focusTarget.scrollIntoView({
+          block: 'nearest',
+          inline: 'nearest',
+          behavior: 'auto'
+        });
+      });
+    }
   }
 
   function aewSyncArchiveSelection() {
